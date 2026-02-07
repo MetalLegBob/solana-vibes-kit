@@ -1,6 +1,6 @@
 # Bob's Bazaar
 
-A collection of Claude Code skills for security auditing and development.
+A collection of Claude Code skills for development on Solana.
 
 ## Skills
 

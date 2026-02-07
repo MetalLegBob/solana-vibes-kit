@@ -8,17 +8,41 @@ The Fortress performs a multi-phase security audit by deploying parallel special
 
 ## Pipeline Overview
 
+Each phase runs as a separate command with a fresh context window for maximum quality:
+
 ```
-Phase 0   - Architectural analysis + KB manifest generation
-Phase 0.5 - Static pre-scan (grep patterns + semgrep rules) -> HOT_SPOTS.md
-Phase 1   - 10 parallel context auditors (+ conditional DeFi economic model analyzer)
-Phase 1.5 - Output quality validation gate
-Phase 2   - Context synthesis into unified architecture document
-Phase 3   - Attack strategy generation (priority-tiered)
-Phase 4   - Parallel hypothesis investigation (invariant-first, PoC reasoning, devil's advocate)
-Phase 4.5 - Coverage verification against knowledge base
-Phase 5   - Final synthesis (combination matrix, attack trees, severity re-calibration)
+/the-fortress:scan         → Analyze codebase, detect protocols, generate hot-spots map
+        │
+        ▼
+/the-fortress:analyze      → Deploy 10-11 parallel context auditors
+        │
+        ▼
+/the-fortress:strategize   → Synthesize findings, generate 50-100+ attack hypotheses
+        │
+        ▼
+/the-fortress:investigate  → Investigate hypotheses in priority-ordered batches
+        │
+        ▼
+/the-fortress:report       → Generate final report with attack trees & severity calibration
+        │
+        ▼
+/the-fortress:verify       → (After fixes) Verify vulnerabilities are resolved
 ```
+
+Check progress anytime: `/the-fortress:status`
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `/the-fortress` | Getting-started guide and command reference |
+| `/the-fortress:scan` | Phase 0+0.5: Scan codebase, generate KB manifest, static pre-scan |
+| `/the-fortress:analyze` | Phase 1+1.5: Deploy parallel context auditors + quality gate |
+| `/the-fortress:strategize` | Phase 2+3: Synthesize context + generate attack strategies |
+| `/the-fortress:investigate` | Phase 4+4.5: Investigate hypotheses + coverage verification |
+| `/the-fortress:report` | Phase 5: Final report with combination analysis and attack trees |
+| `/the-fortress:status` | Check audit progress and get next-step guidance |
+| `/the-fortress:verify` | Verify fixes after addressing reported vulnerabilities |
 
 ## Knowledge Base
 
@@ -60,7 +84,15 @@ Plus a conditional **Economic Model Analyzer** for DeFi protocols.
 
 ```
 the-fortress/
-  SKILL.md                          # Main orchestrator prompt (40KB)
+  SKILL.md                          # Help/router — run /the-fortress for guide
+  commands/
+    scan.md                         # Phase 0+0.5 orchestration
+    analyze.md                      # Phase 1+1.5 orchestration
+    strategize.md                   # Phase 2+3 orchestration
+    investigate.md                  # Phase 4+4.5 orchestration
+    report.md                       # Phase 5 orchestration
+    status.md                       # Progress checker
+    verify.md                       # Post-fix verification
   agents/
     context-auditor.md              # Phase 1 agent template
     economic-model-analyzer.md      # Conditional DeFi agent
@@ -73,47 +105,60 @@ the-fortress/
     reference/                      # Bug bounty and audit firm findings
   resources/
     focus-areas.md                  # Per-focus enrichment (10 areas x 9 sections)
-    exploit-patterns.md             # Legacy single-file patterns (kept for reference)
     phase-05-patterns.md            # Grep pattern catalog for static pre-scan
     semgrep-rules/
       solana-anchor.yaml            # Custom Solana/Anchor semgrep rules
   templates/
-    ARCHITECTURE.md                 # Phase 0 output template
+    ARCHITECTURE.md                 # Phase 2 output template
     STRATEGIES.md                   # Phase 3 output template
     FINAL_REPORT.md                 # Phase 5 report template
-    VERIFICATION_REPORT.md          # Phase 4.5 coverage verification template
+    VERIFICATION_REPORT.md          # Verification report template
   research/                         # Raw research from 10 waves of Exa deep-dives
 ```
 
-## Usage
+## Installation
 
-### Installation
-
-Copy this directory into your project's `.claude/skills/`:
+Copy this directory into your project's `.claude/` directories:
 
 ```bash
-cp -R the-fortress/ your-solana-project/.claude/skills/the-fortress/
+# Both skills/ and commands/ directories are required
+
+# 1. Copy the skill (agents, KB, resources, templates)
+mkdir -p your-project/.claude/skills/the-fortress
+cp -R agents knowledge-base resources templates SKILL.md your-project/.claude/skills/the-fortress/
+
+# 2. Copy the commands (subcommand orchestration)
+mkdir -p your-project/.claude/commands/the-fortress
+cp commands/*.md your-project/.claude/commands/the-fortress/
 ```
+
+Or use the install script:
+```bash
+./install.sh your-project/
+```
+
+### Why Two Directories?
+
+- `.claude/skills/the-fortress/` — Skill definition (SKILL.md), agent templates, knowledge base, and resources. This is what `/the-fortress` loads.
+- `.claude/commands/the-fortress/` — Subcommand files. This is what `/the-fortress:scan`, `/the-fortress:analyze`, etc. load. Each gets a fresh context window.
+
+## Usage
 
 ### Running an Audit
 
-In Claude Code, invoke the skill:
-
 ```
-/the-fortress
+/the-fortress:scan
 ```
 
-Or reference it directly in conversation:
-
-> Run The Fortress audit on this codebase
+Follow the prompts. Each phase tells you what was produced and what command to run next.
 
 ### Audit Tiers
 
 | Tier | Strategies | Agents | Use Case |
 |------|-----------|--------|----------|
-| Quick | 15-25 | 10 | Fast pre-commit check |
-| Standard | 30-50 | 10-11 | Pre-launch audit |
-| Comprehensive | 50-80 | 10-11 | Full security review |
+| Quick | 25-40 | 5 | Fast pre-commit check |
+| Standard | 50-75 | 10-11 | Pre-launch audit |
+| Deep | 100-150 | 10-11 | Full security review |
 
 ### Output
 
@@ -121,13 +166,17 @@ The audit produces files in `.audit/`:
 
 ```
 .audit/
-  ARCHITECTURE.md       # Unified architecture understanding
-  HOT_SPOTS.md          # Phase 0.5 static scan results
-  context/              # 10-11 focus area context documents
-  STRATEGIES.md         # Generated attack hypotheses
-  findings/             # Individual investigation results
-  VERIFICATION.md       # Coverage verification report
-  FINAL_REPORT.md       # Prioritized findings with attack trees
+  KB_MANIFEST.md        — Knowledge base loading manifest
+  HOT_SPOTS.md          — Phase 0.5 static scan results
+  context/              — 10-11 focus area context documents
+  ARCHITECTURE.md       — Unified architecture understanding
+  STRATEGIES.md         — Generated attack hypotheses
+  findings/             — Individual investigation results
+  COVERAGE.md           — Coverage verification report
+  FINAL_REPORT.md       — Prioritized findings with attack trees
+  VERIFICATION_REPORT.md — Post-fix verification results
+  PROGRESS.md           — Human-readable progress tracking
+  STATE.json            — Machine-readable audit state
 ```
 
 ## Requirements
@@ -136,9 +185,19 @@ The audit produces files in `.audit/`:
 - A Solana/Anchor codebase to audit
 - Optional: [semgrep](https://semgrep.dev/) for enhanced Phase 0.5 scanning
 
+## Architecture: Why Phase-Based?
+
+Each phase runs as a separate command with its own fresh context window. This is critical:
+
+- Phase 1 agents produce **300-500KB of analysis each** (~3-5MB total for a large codebase)
+- No single context window can synthesize all of that
+- Each phase reads only what it needs (Phase 2 reads ~88KB of condensed summaries, not ~3.7MB)
+- Phase 4 investigators can deep-dive specific focus areas when needed
+- **Result:** Higher quality at every stage of the pipeline
+
 ## Research
 
-The `research/` directory contains raw research notes from 10 waves of investigation that built the knowledge base. These include Exa search results, compiled analyses, and gap assessments covering:
+The `research/` directory contains raw research notes from 10 waves of investigation that built the knowledge base:
 
 - Wave 1-5: Core Solana vulnerabilities, DeFi patterns, exploit history
 - Wave 6: Gaming exploits, NFT attacks, MEV data, wallet drainers

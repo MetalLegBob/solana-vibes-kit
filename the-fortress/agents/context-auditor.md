@@ -83,16 +83,70 @@ After completing systematic analysis, step back and think creatively:
 Document any novel observations — these are often the most valuable findings because they're the ones automated scanners and pattern-matching can't find.
 
 ### Step 5: Document
-Write comprehensive analysis to your output file.
+
+Write your complete analysis to the output file. Your output has two parts — the condensed summary at the top, and the full analysis below it.
 
 ## Output Format
 
 Write your analysis to: **{OUTPUT_FILE}**
 
-Use this structure:
+Your output has TWO parts:
+
+### Part 1: Condensed Summary
+
+The condensed summary MUST appear at the very top of your output file, wrapped in HTML comment markers. It is a structured distillation of your full analysis — write it after completing your analysis, but place it at the top of the file. It must be **self-contained** — a reader should understand the key security posture of your focus area from the summary alone, without reading the full analysis.
+
+The condensed summary is what Phase 2 synthesis reads. The full analysis is what Phase 4 investigators deep-dive into when they need code-level detail for a specific focus area.
 
 ```markdown
-# {Focus Area} Analysis
+<!-- CONDENSED_SUMMARY_START -->
+# {Focus Area} — Condensed Summary
+
+## Key Findings (Top 5-10)
+- {Most important observation}: {Why it matters} — `file.rs:line`
+- {Second observation}: {Why it matters} — `file.rs:line`
+- ...
+
+## Critical Mechanisms
+{1-2 sentences each for the 3-5 most security-relevant mechanisms}
+- **{Mechanism name}**: {What it does, how it works, key concern} — `file.rs:lines`
+- **{Mechanism name}**: {What it does, how it works, key concern} — `file.rs:lines`
+
+## Invariants & Assumptions
+- INVARIANT: {statement} — enforced at `file.rs:line` {/ NOT enforced ⚠}
+- INVARIANT: {statement} — enforced at `file.rs:line`
+- ASSUMPTION: {statement} — validated at `file.rs:line` {/ UNVALIDATED ⚠}
+- ASSUMPTION: {statement} — validated at `file.rs:line`
+{Minimum 3 invariants and 3 assumptions}
+
+## Risk Observations (Prioritized)
+1. **{Highest concern}**: `file.rs:line` — {Why it's risky, potential impact}
+2. **{Second concern}**: `file.rs:line` — {Why it's risky}
+3. ...
+{Ranked by potential severity}
+
+## Novel Attack Surface
+{1-3 bullets on codebase-specific concerns that don't match any known exploit pattern}
+- {Novel observation}: {What's unusual and why it could be exploitable}
+
+## Cross-Focus Handoffs
+- → **{Agent name}**: {Specific item they should investigate}
+- → **{Agent name}**: {Specific item they should investigate}
+{Minimum 2 handoffs}
+
+## Trust Boundaries
+{Brief trust model — 3-5 sentences on who/what is trusted vs untrusted, where boundaries are}
+<!-- CONDENSED_SUMMARY_END -->
+```
+
+### Part 2: Full Analysis
+
+The full deep analysis goes below the condensed summary. Go as deep as needed — no size limits:
+
+```markdown
+---
+
+# {Focus Area} — Full Analysis
 
 ## Executive Summary
 {2-3 paragraph overview of what you found}
@@ -128,7 +182,7 @@ Use this structure:
 {...}
 
 ## Trust Model
-{Who/what is trusted, who/what is untrusted}
+{Who/what is trusted, who/what is untrusted — full detail}
 
 ## State Analysis
 {What state is read/written related to this focus}
@@ -195,6 +249,17 @@ Use this structure:
 
 Before finalizing your output:
 
+**Condensed Summary (Part 1):**
+- [ ] Condensed summary at top of file (between `<!-- CONDENSED_SUMMARY_START -->` and `<!-- CONDENSED_SUMMARY_END -->` markers)
+- [ ] Summary is self-contained (distills key findings without needing full analysis)
+- [ ] Key Findings section has 5-10 entries with file:line references
+- [ ] >= 3 invariants with enforcement status
+- [ ] >= 3 assumptions with validation status
+- [ ] Risk observations are prioritized
+- [ ] >= 2 cross-focus handoffs
+- [ ] Trust boundaries summarized
+
+**Full Analysis (Part 2):**
 - [ ] All hot-spots for your focus area analyzed
 - [ ] All relevant files identified and analyzed (not just hot-spots)
 - [ ] Every function has documented purpose, inputs, outputs

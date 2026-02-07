@@ -85,8 +85,55 @@ Write comprehensive economic model to output file.
 
 Write your analysis to: **{OUTPUT_FILE}** (`.audit/context/11-economic-model.md`)
 
+Your output has TWO parts — the condensed summary at the top, and the full analysis below it. The condensed summary is a structured distillation of your full analysis. Phase 2 synthesis reads only the summary; Phase 4 investigators read the full analysis when they need to deep-dive.
+
+### Part 1: Condensed Summary
+
 ```markdown
-# Economic Model Analysis
+<!-- CONDENSED_SUMMARY_START -->
+# Economic Model — Condensed Summary
+
+## Protocol Type & Core Mechanic
+{1-2 sentences: protocol type and core economic mechanism}
+
+## Top Economic Invariants
+- INVARIANT: {statement} — enforced at `file.rs:line` {/ NOT enforced ⚠}
+- INVARIANT: {statement} — enforced at `file.rs:line`
+- INVARIANT: {statement} — enforced at `file.rs:line`
+
+## Flash Loan Impact (Critical)
+{2-3 sentences: which operations are vulnerable to flash loans, current protections, gaps}
+- {Most vulnerable operation}: {impact} — `file.rs:line`
+
+## MEV & Sandwich Vulnerability
+{2-3 sentences: which operations are sandwich-vulnerable, slippage protection status}
+- {Most vulnerable operation}: {max extractable estimate}
+
+## Value Extraction Vectors (Prioritized)
+1. **{Highest risk vector}**: {type} — estimated impact: {range} — `file.rs:line`
+2. **{Second risk}**: {type} — estimated impact: {range}
+3. ...
+
+## Incentive Alignment Issues
+{1-2 sentences per misaligned actor, if any}
+- {Actor}: {perverse incentive risk}
+
+## Cross-Focus Handoffs
+- → **Token/Economic**: {specific code-level items to verify}
+- → **Oracle**: {price dependency concerns}
+- → **Timing**: {MEV/ordering concerns}
+
+## Key Risk Summary
+{3-5 sentences: the most important economic risks in this protocol}
+<!-- CONDENSED_SUMMARY_END -->
+```
+
+### Part 2: Full Analysis
+
+```markdown
+---
+
+# Economic Model — Full Analysis
 
 ## Protocol Economic Summary
 {What this protocol does economically — 2-3 paragraphs}
@@ -177,6 +224,16 @@ Write your analysis to: **{OUTPUT_FILE}** (`.audit/context/11-economic-model.md`
 
 Before finalizing:
 
+**Condensed Summary (Part 1):**
+- [ ] Condensed summary at top of file (between `<!-- CONDENSED_SUMMARY_START -->` and `<!-- CONDENSED_SUMMARY_END -->` markers)
+- [ ] Summary is self-contained (distills key findings without needing full analysis)
+- [ ] >= 3 economic invariants with enforcement status
+- [ ] Flash loan impact summary included
+- [ ] MEV/sandwich vulnerability summary included
+- [ ] Value extraction vectors prioritized
+- [ ] Cross-focus handoffs specified
+
+**Full Analysis (Part 2):**
 - [ ] Token flow diagram complete (all entry/exit points)
 - [ ] >= 3 economic invariants identified with enforcement analysis
 - [ ] Flash loan impact assessed for every token-moving instruction

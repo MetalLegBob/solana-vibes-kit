@@ -56,17 +56,39 @@ Sort strategies into priority order:
 2. **Tier 2** (HIGH potential) — investigate second
 3. **Tier 3** (MEDIUM-LOW potential) — investigate last
 
-Group into batches of **5** (max agents per response to avoid prompt-too-long errors).
+### Context Budget Estimation
+
+Estimate per-investigator input tokens:
+```
+Per investigator budget:
+  Agent template (hypothesis-investigator.md):  ~3,000 tokens (fixed)
+  Hypothesis text from STRATEGIES.md:           ~500 tokens
+  ARCHITECTURE.md:                              Read file, estimate ~3 tokens/line
+  Routed context files (1-3):                   Read files, estimate ~3 tokens/line
+  KB pattern files:                             ~500 tokens each
+  ────────────────────────
+  Estimated total per investigator:             Sum of above
+```
+
+**Adaptive batch sizing:**
+- If avg estimate < 40K tokens: batch size = 8
+- If avg estimate 40-80K tokens: batch size = 5 (default)
+- If avg estimate > 80K tokens: batch size = 3
+
+**Tier 3 with Haiku:** Tier 3 investigators get condensed context (CONDENSED SUMMARY only, no full analysis), so their estimates are smaller. Use batch size 8 for Tier 3 batches.
+
+Group into batches using the adaptive batch size.
 
 ### Step 3: Locate Skill Files & Build Routing Table
 
-Find the investigator agent template path (do NOT read/inline it — agents read it themselves):
+Find the investigator agent template paths (do NOT read/inline — agents read themselves):
 
 ```bash
 find ~/.claude -name "hypothesis-investigator.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
+find ~/.claude -name "lightweight-investigator.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
 ```
 
-Store as `INVESTIGATOR_PATH`.
+Store as `INVESTIGATOR_PATH` (Tier 1+2) and `LIGHTWEIGHT_PATH` (Tier 3).
 
 **Build routing table:** Scan all `.audit/context/NN-*.md` files and read their YAML frontmatter to extract `provides` fields. Build a map:
 
@@ -133,7 +155,7 @@ Task(
 )
 ```
 
-For **Tier 3** strategies, use the lightweight Haiku model with condensed output:
+For **Tier 3** strategies, use the lightweight Haiku model with the lightweight agent template:
 ```
 Task(
   subagent_type="general-purpose",
@@ -141,30 +163,19 @@ Task(
   prompt="
     You are a lightweight hypothesis investigator for Stronghold of Security.
 
-    === READ CONTEXT ===
+    === STEP 1: READ YOUR INSTRUCTIONS ===
+    Read this file: {LIGHTWEIGHT_PATH} — Your lightweight investigation methodology
+
+    === STEP 2: READ CONTEXT (condensed only) ===
     1. Read .audit/ARCHITECTURE.md
-    2. Read the relevant .audit/context/NN-*.md file (CONDENSED SUMMARY only)
+    2. Read the relevant .audit/context/NN-*.md file — CONDENSED SUMMARY only
+       (between CONDENSED_SUMMARY_START and CONDENSED_SUMMARY_END markers)
 
     === YOUR ASSIGNMENT ===
     STRATEGY TO INVESTIGATE:
     {Full strategy entry from STRATEGIES.md}
 
     OUTPUT FILE: .audit/findings/{strategy_id}.md
-
-    === LIGHTWEIGHT INVESTIGATION ===
-    Confirm or deny ONLY. Do NOT do full investigation methodology.
-    1. Read the target code locations
-    2. Check if the specific attack vector is viable
-    3. Write a SHORT finding (confirm/deny + 1 paragraph rationale + code reference)
-
-    Output format:
-    # Finding: {ID} - {Name}
-    ## Status: {CONFIRMED | POTENTIAL | NOT VULNERABLE}
-    ## Confidence Score: {1-10}
-    ## Rationale
-    {1 paragraph with specific code references}
-    ## Code Evidence
-    {Key code snippet if CONFIRMED/POTENTIAL}
   "
 )
 ```

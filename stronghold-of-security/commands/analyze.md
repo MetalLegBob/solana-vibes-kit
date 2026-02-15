@@ -59,7 +59,31 @@ Store these paths as `AUDITOR_PATH`, `ECON_AGENT_PATH`, `FOCUS_AREAS_PATH`.
 
 Also read `.audit/KB_MANIFEST.md` to get the Phase 1 KB file list (paths only — don't read the KB files yourself, agents will read them).
 
-### Step 3: Spawn Context Auditors in Batches of 5
+### Step 3: Estimate Context Budget
+
+Before spawning, estimate per-agent input tokens:
+
+```
+Per agent budget estimate:
+  Agent template (context-auditor.md):  ~3,000 tokens (fixed)
+  Focus manifest KB:                    Read manifest, count files × ~500 tokens each
+  INDEX.md:                             Read .audit/INDEX.md, count LOC for focus-tagged files × ~3 tokens/LOC
+  Hot-spots for focus area:             Count entries in HOT_SPOTS.md for this focus × ~50 tokens each
+  ────────────────────────
+  Estimated total per agent:            Sum of above
+```
+
+**Adaptive batch sizing based on estimate:**
+- If avg estimate < 40K tokens: batch size = 8
+- If avg estimate 40-80K tokens: batch size = 5 (default)
+- If avg estimate > 80K tokens: batch size = 3
+
+**Auto-split for large scopes:**
+If estimated total > 120K tokens for any single agent, split that agent's file list across 2 agents covering the same focus area. Each gets half the relevant files, full KB manifest. Both write to the same output file (first writes, second appends).
+
+Report estimate to user: "Estimated ~{N}K tokens per agent, using batch size {N}."
+
+### Step 4: Spawn Context Auditors
 
 **Focus Areas and Output Files:**
 
@@ -80,15 +104,13 @@ For `quick` tier: Only spawn agents 01, 02, 04, 05, 06 (5 core focus areas, sing
 
 **CRITICAL — Batching Rules:**
 
-- Spawn **max 5 agents per response** to avoid prompt-too-long errors
+- Spawn **max {adaptive_batch_size} agents per response** (from Step 3 estimate)
 - Each batch is a single response with multiple Task() calls (agents run in parallel within a batch)
 - Wait for a batch to complete, then spawn the next batch
 - Do NOT use `run_in_background=true` — background agents cannot get permission to write files
 - Do NOT inline file contents into prompts — agents read files themselves via the Read tool
 
-**Batch 1:** Agents 01-05 (spawn all 5 in a single response)
-**Batch 2:** Agents 06-10 (spawn all 5 in a single response)
-**Batch 3:** Agent 11 economic model analyzer (only if `config.defi_economic_agent === true`)
+Group agents into batches of {adaptive_batch_size}. Economic model analyzer goes in the final batch (only if `config.defi_economic_agent === true`).
 
 **Spawn Pattern — each agent gets this prompt (with its specific focus area):**
 

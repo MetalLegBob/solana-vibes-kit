@@ -2,7 +2,7 @@
 
 **Project:** {PROJECT_NAME}
 **Generated:** {TIMESTAMP}
-**Source:** The Fortress Phase 2 Synthesis
+**Source:** Stronghold of Security Phase 2 Synthesis
 
 ---
 

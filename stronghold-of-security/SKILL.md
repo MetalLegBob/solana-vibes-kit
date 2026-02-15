@@ -1,9 +1,9 @@
 ---
-name: the-fortress
-version: "2.0.0"
+name: stronghold-of-security
+version: "3.0.0"
 description: >
-  The Fortress: Comprehensive adversarial security audit for Solana/Anchor smart contracts.
-  Run /the-fortress for a getting-started guide, or /the-fortress:scan to begin an audit.
+  Stronghold of Security: Comprehensive adversarial security audit for Solana/Anchor smart contracts.
+  Run /stronghold-of-security for a getting-started guide, or /SOS:scan to begin an audit.
 user-invocable: true
 allowed-tools:
   - Read
@@ -12,7 +12,7 @@ allowed-tools:
   - Grep
 ---
 
-# The Fortress
+# Stronghold of Security
 
 A comprehensive, multi-agent adversarial security audit pipeline for Solana/Anchor smart contracts.
 
@@ -22,12 +22,12 @@ A comprehensive, multi-agent adversarial security audit pipeline for Solana/Anch
 
 ## Getting Started
 
-The Fortress runs as a multi-phase pipeline. Each phase is a separate command with its own fresh context window, ensuring maximum quality throughout the entire audit.
+Stronghold of Security runs as a multi-phase pipeline. Each phase is a separate command with its own fresh context window, ensuring maximum quality throughout the entire audit.
 
 ### Quick Start
 
 ```
-/the-fortress:scan
+/SOS:scan
 ```
 
 This begins the audit by analyzing your codebase and generating a hot-spots map. Follow the prompts — each phase tells you what was produced and what command to run next.
@@ -36,43 +36,43 @@ This begins the audit by analyzing your codebase and generating a hot-spots map.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         THE FORTRESS v2.0                           │
+│                         STRONGHOLD OF SECURITY v3.0                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  /the-fortress:scan         Phase 0 + 0.5                          │
+│  /SOS:scan         Phase 0 + 0.5                          │
 │  ═══════════════════        Pre-flight analysis                    │
 │  Detect ecosystem, protocols, risk indicators                      │
 │  Generate KB manifest, run static pre-scan                         │
 │  Output: KB_MANIFEST.md, HOT_SPOTS.md                              │
 │                          │                                          │
 │                          ▼                                          │
-│  /the-fortress:analyze      Phase 1 + 1.5                          │
+│  /SOS:analyze      Phase 1 + 1.5                          │
 │  ════════════════════       Parallel context building               │
 │  10-11 specialized auditors analyze the ENTIRE codebase            │
 │  Each through a different security lens                            │
 │  Output: .audit/context/ (10-11 deep analysis files)               │
 │                          │                                          │
 │                          ▼                                          │
-│  /the-fortress:strategize   Phase 2 + 3                            │
+│  /SOS:strategize   Phase 2 + 3                            │
 │  ═════════════════════      Synthesis + strategy generation        │
 │  Merge context into unified architecture                           │
 │  Generate 50-100+ attack hypotheses from KB + novel analysis       │
 │  Output: ARCHITECTURE.md, STRATEGIES.md                            │
 │                          │                                          │
 │                          ▼                                          │
-│  /the-fortress:investigate  Phase 4 + 4.5                          │
+│  /SOS:investigate  Phase 4 + 4.5                          │
 │  ══════════════════════     Hypothesis investigation               │
 │  Priority-ordered batch investigation                              │
 │  Coverage verification against knowledge base                      │
 │  Output: .audit/findings/ (one per hypothesis), COVERAGE.md        │
 │                          │                                          │
 │                          ▼                                          │
-│  /the-fortress:report       Phase 5                                │
+│  /SOS:report       Phase 5                                │
 │  ═════════════════          Final synthesis                        │
 │  Combination matrix, attack trees, severity calibration            │
 │  Output: FINAL_REPORT.md                                           │
 │                                                                     │
-│  /the-fortress:verify       Post-fix verification                  │
+│  /SOS:verify       Post-fix verification                  │
 │  ═════════════════          (after developer applies fixes)        │
 │  Re-check findings, regression scan                                │
 │  Output: VERIFICATION_REPORT.md                                    │
@@ -86,32 +86,32 @@ This begins the audit by analyzing your codebase and generating a hot-spots map.
 
 | Command | Description |
 |---------|-------------|
-| `/the-fortress` | This help guide |
-| `/the-fortress:scan` | Scan codebase, detect config, generate KB manifest, run static pre-scan |
-| `/the-fortress:analyze` | Deploy 10-11 parallel context auditors + quality gate |
-| `/the-fortress:strategize` | Synthesize context + generate prioritized attack strategies |
-| `/the-fortress:investigate` | Investigate hypotheses in priority-ordered batches + coverage check |
-| `/the-fortress:report` | Generate final report with combination analysis and attack trees |
-| `/the-fortress:status` | Check audit progress and get next-step guidance |
-| `/the-fortress:verify` | Verify fixes after addressing reported vulnerabilities |
+| `/stronghold-of-security` | This help guide |
+| `/SOS:scan` | Scan codebase, detect config, generate KB manifest, run static pre-scan |
+| `/SOS:analyze` | Deploy 10-11 parallel context auditors + quality gate |
+| `/SOS:strategize` | Synthesize context + generate prioritized attack strategies |
+| `/SOS:investigate` | Investigate hypotheses in priority-ordered batches + coverage check |
+| `/SOS:report` | Generate final report with combination analysis and attack trees |
+| `/SOS:status` | Check audit progress and get next-step guidance |
+| `/SOS:verify` | Verify fixes after addressing reported vulnerabilities |
 
 ### Typical Workflow
 
 Run `/clear` between each phase to give the next phase a fresh context window. This is critical for quality — each phase produces large outputs that would otherwise consume context.
 
-1. **`/the-fortress:scan`** — Analyze your codebase
+1. **`/SOS:scan`** — Analyze your codebase
 2. `/clear`
-3. **`/the-fortress:analyze`** — Deploy auditors
+3. **`/SOS:analyze`** — Deploy auditors
 4. `/clear`
-5. **`/the-fortress:strategize`** — Generate attack strategies
+5. **`/SOS:strategize`** — Generate attack strategies
 6. `/clear`
-7. **`/the-fortress:investigate`** — Run investigations
+7. **`/SOS:investigate`** — Run investigations
 8. `/clear`
-9. **`/the-fortress:report`** — Generate final report
+9. **`/SOS:report`** — Generate final report
 10. *(Fix vulnerabilities)*
-11. **`/the-fortress:verify`** — Confirm fixes are effective
+11. **`/SOS:verify`** — Confirm fixes are effective
 
-Check progress anytime with **`/the-fortress:status`**.
+Check progress anytime with **`/SOS:status`**.
 
 ---
 
@@ -125,7 +125,7 @@ Check progress anytime with **`/the-fortress:status`**.
 
 The tier is auto-detected based on codebase size and complexity. Override with:
 ```
-/the-fortress:scan --tier deep
+/SOS:scan --tier deep
 ```
 
 ---
@@ -205,16 +205,16 @@ Copy the skill and commands to your project:
 
 ```bash
 # Option 1: Manual copy
-cp -R the-fortress/ your-project/.claude/skills/the-fortress/
-cp -R the-fortress/commands/ your-project/.claude/commands/the-fortress/
+cp -R stronghold-of-security/ your-project/.claude/skills/stronghold-of-security/
+cp -R stronghold-of-security/commands/ your-project/.claude/commands/stronghold-of-security/
 
 # Option 2: Install script
-./the-fortress/install.sh your-project/
+./stronghold-of-security/install.sh your-project/
 ```
 
 Both the `skills/` and `commands/` directories are required:
-- `skills/the-fortress/` — Skill definition, agents, knowledge base, resources
-- `commands/the-fortress/` — Subcommand orchestration files
+- `skills/stronghold-of-security/` — Skill definition, agents, knowledge base, resources
+- `commands/stronghold-of-security/` — Subcommand orchestration files
 
 ---
 

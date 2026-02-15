@@ -1,5 +1,5 @@
 ---
-name: the-fortress:investigate
+name: SOS:investigate
 description: "Phase 4+4.5: Investigate attack hypotheses in priority-ordered batches, then verify coverage"
 allowed-tools:
   - Read
@@ -11,7 +11,7 @@ allowed-tools:
   - Task
 ---
 
-# The Fortress — Phase 4 + 4.5: Investigate & Verify Coverage
+# Stronghold of Security — Phase 4 + 4.5: Investigate & Verify Coverage
 
 Investigate each attack hypothesis with dedicated agents, then verify coverage against the knowledge base.
 
@@ -24,7 +24,7 @@ Investigate each attack hypothesis with dedicated agents, then verify coverage a
 If prerequisites are missing:
 ```
 Phase 2+3 (strategize) has not been completed yet.
-Run /the-fortress:strategize first to synthesize context and generate attack strategies.
+Run /SOS:strategize first to synthesize context and generate attack strategies.
 ```
 
 ### Resume Support
@@ -60,7 +60,7 @@ Group into batches of **5** (max agents per response to avoid prompt-too-long er
 Find the investigator agent template path (do NOT read/inline it — agents read it themselves):
 
 ```bash
-find ~/.claude -name "hypothesis-investigator.md" -path "*/the-fortress/agents/*" 2>/dev/null | head -1
+find ~/.claude -name "hypothesis-investigator.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
 ```
 
 Store as `INVESTIGATOR_PATH`.
@@ -83,7 +83,7 @@ Store as `INVESTIGATOR_PATH`.
 Task(
   subagent_type="general-purpose",
   prompt="
-    You are a hypothesis investigator for The Fortress security audit.
+    You are a hypothesis investigator for Stronghold of Security security audit.
 
     === STEP 1: READ YOUR INSTRUCTIONS ===
     Read this file: {INVESTIGATOR_PATH} — Your full investigation methodology
@@ -191,7 +191,7 @@ Goal-backward check that nothing important was missed before final synthesis.
 Task(
   subagent_type="general-purpose",
   prompt="
-    You are a coverage verification agent for The Fortress security audit.
+    You are a coverage verification agent for Stronghold of Security security audit.
     Your job is to check that the investigation phase didn't miss anything important.
 
     === WHAT TO READ ===
@@ -326,7 +326,7 @@ Update `.audit/PROGRESS.md` with investigate phase marked as completed.
 {Top 3-5 most significant CONFIRMED/POTENTIAL findings with brief descriptions}
 
 ### Next Step:
-Run **`/clear`** then **`/the-fortress:report`** to generate the final audit report.
+Run **`/clear`** then **`/SOS:report`** to generate the final audit report.
 The report will include combination analysis, attack trees, and severity calibration
 across all {total_findings} findings.
 (`/clear` gives the next phase a fresh context window — critical for quality.)

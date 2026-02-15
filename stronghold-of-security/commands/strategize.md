@@ -1,5 +1,5 @@
 ---
-name: the-fortress:strategize
+name: SOS:strategize
 description: "Phase 2+3: Synthesize context into architecture doc, then generate attack strategies"
 allowed-tools:
   - Read
@@ -10,7 +10,7 @@ allowed-tools:
   - Grep
 ---
 
-# The Fortress — Phase 2 + 3: Synthesize & Strategize
+# Stronghold of Security — Phase 2 + 3: Synthesize & Strategize
 
 Merge all context auditor findings into a unified architecture document, then generate prioritized attack hypotheses.
 
@@ -22,7 +22,7 @@ Merge all context auditor findings into a unified architecture document, then ge
 If prerequisites are missing:
 ```
 Phase 1 (analyze) has not been completed yet.
-Run /the-fortress:analyze first to deploy context auditors.
+Run /SOS:analyze first to deploy context auditors.
 ```
 
 ---
@@ -63,7 +63,7 @@ Write `.audit/ARCHITECTURE.md` using the template from the skill's templates dir
 
 Find the template:
 ```bash
-find ~/.claude -name "ARCHITECTURE.md" -path "*/the-fortress/templates/*" 2>/dev/null | head -1
+find ~/.claude -name "ARCHITECTURE.md" -path "*/stronghold-of-security/templates/*" 2>/dev/null | head -1
 ```
 
 The architecture document should contain:
@@ -100,7 +100,7 @@ Read `.audit/KB_MANIFEST.md` and load the Phase 3 KB files:
 
 Find the KB files in the skill directory:
 ```bash
-find ~/.claude -name "exploit-patterns-index.md" -path "*/the-fortress/knowledge-base/*" 2>/dev/null | head -1
+find ~/.claude -name "exploit-patterns-index.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
 ```
 
 **Important context budget:** The KB files total ~300KB+. To fit within context, prioritize:
@@ -152,7 +152,7 @@ Write `.audit/STRATEGIES.md` using the template from the skill directory.
 
 Find the template:
 ```bash
-find ~/.claude -name "STRATEGIES.md" -path "*/the-fortress/templates/*" 2>/dev/null | head -1
+find ~/.claude -name "STRATEGIES.md" -path "*/stronghold-of-security/templates/*" 2>/dev/null | head -1
 ```
 
 Organize strategies by priority tier:
@@ -221,7 +221,7 @@ Update `.audit/PROGRESS.md` with strategize phase marked as completed.
 - {1-2 notable novel observations}
 
 ### Next Step:
-Run **`/clear`** then **`/the-fortress:investigate`** to investigate all {N} hypotheses
+Run **`/clear`** then **`/SOS:investigate`** to investigate all {N} hypotheses
 in priority-ordered batches of 5 parallel investigators.
 (`/clear` gives the next phase a fresh context window — critical for quality.)
 

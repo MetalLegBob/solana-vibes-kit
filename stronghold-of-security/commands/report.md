@@ -1,5 +1,5 @@
 ---
-name: the-fortress:report
+name: SOS:report
 description: "Phase 5: Generate final audit report with combination analysis, attack trees, and severity calibration"
 allowed-tools:
   - Read
@@ -11,7 +11,7 @@ allowed-tools:
   - Task
 ---
 
-# The Fortress — Phase 5: Final Report
+# Stronghold of Security — Phase 5: Final Report
 
 Generate the comprehensive audit report by synthesizing all findings with combination analysis, attack trees, and severity calibration.
 
@@ -23,7 +23,7 @@ Generate the comprehensive audit report by synthesizing all findings with combin
 If prerequisites are missing:
 ```
 Phase 4 (investigate) has not been completed yet.
-Run /the-fortress:investigate first to investigate attack hypotheses.
+Run /SOS:investigate first to investigate attack hypotheses.
 ```
 
 ---
@@ -34,7 +34,7 @@ Run /the-fortress:investigate first to investigate attack hypotheses.
 
 Read the final synthesizer agent template:
 ```bash
-find ~/.claude -name "final-synthesizer.md" -path "*/the-fortress/agents/*" 2>/dev/null | head -1
+find ~/.claude -name "final-synthesizer.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
 ```
 
 ### Step 2: Gather All Inputs
@@ -51,9 +51,9 @@ The final synthesizer needs:
    - Find and read `exploit-patterns-index.md` for cross-referencing
 
 ```bash
-find ~/.claude -name "severity-calibration.md" -path "*/the-fortress/knowledge-base/*" 2>/dev/null | head -1
-find ~/.claude -name "common-false-positives.md" -path "*/the-fortress/knowledge-base/*" 2>/dev/null | head -1
-find ~/.claude -name "exploit-patterns-index.md" -path "*/the-fortress/knowledge-base/*" 2>/dev/null | head -1
+find ~/.claude -name "severity-calibration.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
+find ~/.claude -name "common-false-positives.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
+find ~/.claude -name "exploit-patterns-index.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
 ```
 
 ### Step 3: Assess Context Budget
@@ -158,7 +158,7 @@ Read the Executive Summary and Severity Breakdown from the generated report, the
 ```markdown
 ---
 
-## The Fortress Audit Complete
+## Stronghold of Security Audit Complete
 
 ### Final Report: `.audit/FINAL_REPORT.md`
 
@@ -201,7 +201,7 @@ Read the Executive Summary and Severity Breakdown from the generated report, the
 ### What's Next?
 1. **Review the report:** Read `.audit/FINAL_REPORT.md` for full details
 2. **Fix vulnerabilities:** Address findings in priority order (fix critical nodes first)
-3. **Verify fixes:** After applying fixes, run `/the-fortress:verify` to confirm they're effective
+3. **Verify fixes:** After applying fixes, run `/SOS:verify` to confirm they're effective
 4. **Consider:** Manual expert review for NEEDS MANUAL REVIEW items
 
 ---

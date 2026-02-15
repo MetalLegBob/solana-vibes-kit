@@ -1,5 +1,5 @@
 ---
-name: the-fortress:status
+name: SOS:status
 description: "Check audit progress and get guidance on next steps"
 allowed-tools:
   - Read
@@ -8,7 +8,7 @@ allowed-tools:
   - Grep
 ---
 
-# The Fortress — Status & Progress
+# Stronghold of Security — Status & Progress
 
 Check the current state of a Fortress audit and get guidance on what to do next.
 
@@ -28,7 +28,7 @@ test -f .audit/STATE.json && echo "AUDIT_EXISTS" || echo "NO_AUDIT"
 No `.audit/STATE.json` found in this directory.
 
 ### Getting Started:
-Run `/the-fortress:scan` to begin a new security audit.
+Run `/SOS:scan` to begin a new security audit.
 
 This will:
 1. Analyze your codebase structure and detect protocol patterns
@@ -39,14 +39,14 @@ This will:
 ### Full Audit Pipeline:
 | Step | Command | Description |
 |------|---------|-------------|
-| 1 | `/the-fortress:scan` | Scan codebase & generate hot-spots map |
-| 2 | `/the-fortress:analyze` | Deploy 10-11 parallel context auditors |
-| 3 | `/the-fortress:strategize` | Synthesize findings & generate attack strategies |
-| 4 | `/the-fortress:investigate` | Investigate hypotheses in priority batches |
-| 5 | `/the-fortress:report` | Generate final report with attack trees |
-| 6 | `/the-fortress:verify` | (After fixes) Verify vulnerabilities resolved |
+| 1 | `/SOS:scan` | Scan codebase & generate hot-spots map |
+| 2 | `/SOS:analyze` | Deploy 10-11 parallel context auditors |
+| 3 | `/SOS:strategize` | Synthesize findings & generate attack strategies |
+| 4 | `/SOS:investigate` | Investigate hypotheses in priority batches |
+| 5 | `/SOS:report` | Generate final report with attack trees |
+| 6 | `/SOS:verify` | (After fixes) Verify vulnerabilities resolved |
 
-Run `/the-fortress` for a detailed getting-started guide.
+Run `/stronghold-of-security` for a detailed getting-started guide.
 ```
 
 ### If audit exists:
@@ -58,7 +58,7 @@ Read `.audit/STATE.json` and determine the current phase.
 ## Step 3: Display Progress
 
 ```markdown
-## The Fortress — Audit Status
+## Stronghold of Security — Audit Status
 
 **Audit ID:** {audit_id}
 **Started:** {started_at}
@@ -117,8 +117,8 @@ All phases have finished. Your report is at `.audit/FINAL_REPORT.md`.
 
 **Options:**
 - Review the report: Read `.audit/FINAL_REPORT.md`
-- Verify fixes: After applying fixes, run `/the-fortress:verify`
-- Start fresh: Delete `.audit/` and run `/the-fortress:scan`
+- Verify fixes: After applying fixes, run `/SOS:verify`
+- Start fresh: Delete `.audit/` and run `/SOS:scan`
 ```
 
 ### If investigation is in progress (partial):
@@ -127,5 +127,5 @@ All phases have finished. Your report is at `.audit/FINAL_REPORT.md`.
 ### Investigation In Progress
 Phase 4 was interrupted. {completed}/{total} strategies investigated.
 
-**Resume:** Run `/the-fortress:investigate` — it will automatically pick up from Batch {next_batch}.
+**Resume:** Run `/SOS:investigate` — it will automatically pick up from Batch {next_batch}.
 ```

@@ -1,5 +1,5 @@
 ---
-name: the-fortress:verify
+name: SOS:verify
 description: "Verify that fixes for reported vulnerabilities were properly applied"
 allowed-tools:
   - Read
@@ -11,7 +11,7 @@ allowed-tools:
   - Task
 ---
 
-# The Fortress — Verification Mode
+# Stronghold of Security — Verification Mode
 
 After fixes are applied to address audit findings, use this command to verify the fixes are effective and no regressions were introduced.
 
@@ -24,7 +24,7 @@ If no report exists:
 ```
 No audit report found at .audit/FINAL_REPORT.md.
 Complete an audit first by running the full pipeline:
-  /the-fortress:scan → /the-fortress:analyze → /the-fortress:strategize → /the-fortress:investigate → /the-fortress:report
+  /SOS:scan → /SOS:analyze → /SOS:strategize → /SOS:investigate → /SOS:report
 ```
 
 ---
@@ -121,7 +121,7 @@ Read all VERIFY-*.md files and compile the verification report.
 Write `.audit/VERIFICATION_REPORT.md`:
 
 ```markdown
-# The Fortress — Verification Report
+# Stronghold of Security — Verification Report
 
 **Original Audit Date:** {from STATE.json}
 **Verification Date:** {now}
@@ -196,7 +196,7 @@ All findings have been successfully resolved. The codebase addresses all identif
 - {N} regressions detected — new issues introduced by fixes
 - Review `.audit/VERIFICATION_REPORT.md` for details
 
-After addressing remaining issues, run `/the-fortress:verify` again.
+After addressing remaining issues, run `/SOS:verify` again.
 
 ---
 ```

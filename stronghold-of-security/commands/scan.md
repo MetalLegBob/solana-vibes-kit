@@ -1,5 +1,5 @@
 ---
-name: the-fortress:scan
+name: SOS:scan
 description: "Phase 0+0.5: Scan codebase, detect configuration, generate KB manifest, run static pre-scan"
 allowed-tools:
   - Read
@@ -10,9 +10,9 @@ allowed-tools:
   - Grep
 ---
 
-# The Fortress — Phase 0 + 0.5: Scan & Pre-Scan
+# Stronghold of Security — Phase 0 + 0.5: Scan & Pre-Scan
 
-You are starting a comprehensive security audit using The Fortress pipeline.
+You are starting a comprehensive security audit using Stronghold of Security pipeline.
 This command performs the initial codebase scan and static pre-analysis.
 
 ## What This Phase Does
@@ -189,7 +189,7 @@ which semgrep >/dev/null 2>&1 && echo "SEMGREP_AVAILABLE" || echo "SEMGREP_NOT_A
 
 Read the pattern catalog from the skill's resources directory. The file is at the skill installation path — find it with:
 ```bash
-find ~/.claude -name "phase-05-patterns.md" -path "*/the-fortress/*" 2>/dev/null | head -1
+find ~/.claude -name "phase-05-patterns.md" -path "*/stronghold-of-security/*" 2>/dev/null | head -1
 ```
 
 For each pattern category in the catalog, run the grep commands against the source files. Collect all matches.
@@ -197,7 +197,7 @@ For each pattern category in the catalog, run the grep commands against the sour
 If semgrep is available, also run the custom rules:
 ```bash
 # Find the semgrep rules file
-RULES_PATH=$(find ~/.claude -name "solana-anchor.yaml" -path "*/the-fortress/*" 2>/dev/null | head -1)
+RULES_PATH=$(find ~/.claude -name "solana-anchor.yaml" -path "*/stronghold-of-security/*" 2>/dev/null | head -1)
 if [ -n "$RULES_PATH" ]; then
   semgrep --config "$RULES_PATH" --json programs/ 2>/dev/null
 fi
@@ -293,7 +293,7 @@ Write `.audit/STATE.json`:
 
 Write `.audit/PROGRESS.md`:
 ```markdown
-# The Fortress — Audit Progress
+# Stronghold of Security — Audit Progress
 
 **Audit ID:** {uuid}
 **Started:** {date}
@@ -304,11 +304,11 @@ Write `.audit/PROGRESS.md`:
 
 | Phase | Command | Status | Output |
 |-------|---------|--------|--------|
-| Scan | `/the-fortress:scan` | Completed | KB_MANIFEST.md, HOT_SPOTS.md |
-| Analyze | `/the-fortress:analyze` | Pending | — |
-| Strategize | `/the-fortress:strategize` | Pending | — |
-| Investigate | `/the-fortress:investigate` | Pending | — |
-| Report | `/the-fortress:report` | Pending | — |
+| Scan | `/SOS:scan` | Completed | KB_MANIFEST.md, HOT_SPOTS.md |
+| Analyze | `/SOS:analyze` | Pending | — |
+| Strategize | `/SOS:strategize` | Pending | — |
+| Investigate | `/SOS:investigate` | Pending | — |
+| Report | `/SOS:report` | Pending | — |
 
 ## Last Updated
 {timestamp}
@@ -342,7 +342,7 @@ After all Phase 0 + 0.5 work is done, present this to the user:
 - Target strategies: {N}
 
 ### Next Step:
-Run **`/clear`** then **`/the-fortress:analyze`** to deploy {N} parallel context auditors.
+Run **`/clear`** then **`/SOS:analyze`** to deploy {N} parallel context auditors.
 (`/clear` gives the next phase a fresh context window — critical for quality.)
 
 ---

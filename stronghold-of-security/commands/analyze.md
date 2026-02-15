@@ -1,5 +1,5 @@
 ---
-name: the-fortress:analyze
+name: SOS:analyze
 description: "Phase 1+1.5: Deploy parallel context auditors and validate output quality"
 allowed-tools:
   - Read
@@ -11,7 +11,7 @@ allowed-tools:
   - Task
 ---
 
-# The Fortress — Phase 1 + 1.5: Analyze & Validate
+# Stronghold of Security — Phase 1 + 1.5: Analyze & Validate
 
 Deploy parallel context auditors to build deep security understanding of the codebase through 10 specialized lenses.
 
@@ -26,7 +26,7 @@ Before starting, verify the scan phase is complete:
 If any prerequisite is missing:
 ```
 Phase 0 (scan) has not been completed yet.
-Run /the-fortress:scan first to analyze the codebase and generate the KB manifest.
+Run /SOS:scan first to analyze the codebase and generate the KB manifest.
 ```
 
 ---
@@ -48,9 +48,9 @@ Read `.audit/KB_MANIFEST.md` to get:
 Find the file paths for agent templates and resources. These paths will be given to agents so they can read the files themselves (do NOT inline file contents into prompts — that makes prompts too large).
 
 ```bash
-find ~/.claude -name "context-auditor.md" -path "*/the-fortress/agents/*" 2>/dev/null | head -1
-find ~/.claude -name "economic-model-analyzer.md" -path "*/the-fortress/agents/*" 2>/dev/null | head -1
-find ~/.claude -name "focus-areas.md" -path "*/the-fortress/resources/*" 2>/dev/null | head -1
+find ~/.claude -name "context-auditor.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
+find ~/.claude -name "economic-model-analyzer.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
+find ~/.claude -name "focus-areas.md" -path "*/stronghold-of-security/resources/*" 2>/dev/null | head -1
 ```
 
 Store these paths as `AUDITOR_PATH`, `ECON_AGENT_PATH`, `FOCUS_AREAS_PATH`.
@@ -94,7 +94,7 @@ For `quick` tier: Only spawn agents 01, 02, 04, 05, 06 (5 core focus areas, sing
 Task(
   subagent_type="general-purpose",
   prompt="
-    You are a context auditor for The Fortress security audit.
+    You are a context auditor for Stronghold of Security security audit.
 
     === STEP 1: READ YOUR INSTRUCTIONS ===
     Read these files in order:
@@ -132,7 +132,7 @@ Task(
 Task(
   subagent_type="general-purpose",
   prompt="
-    You are an economic model analyzer for The Fortress security audit.
+    You are an economic model analyzer for Stronghold of Security security audit.
 
     === STEP 1: READ YOUR INSTRUCTIONS ===
     Read this file: {ECON_AGENT_PATH} — Your full agent instructions
@@ -257,7 +257,7 @@ After Phase 1 + 1.5 is done, present to the user:
 - **Full Analysis** (remaining) — Complete deep analysis for Phase 4 investigators
 
 ### Next Step:
-Run **`/clear`** then **`/the-fortress:strategize`** to synthesize all context into a unified
+Run **`/clear`** then **`/SOS:strategize`** to synthesize all context into a unified
 architecture document and generate attack hypotheses.
 (`/clear` gives the next phase a fresh context window — critical for quality.)
 

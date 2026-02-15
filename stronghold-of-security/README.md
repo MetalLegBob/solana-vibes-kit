@@ -1,48 +1,48 @@
-# The Fortress
+# Stronghold of Security
 
 A comprehensive adversarial security audit system for Solana/Anchor smart contracts, built as a Claude Code skill.
 
 ## What It Does
 
-The Fortress performs a multi-phase security audit by deploying parallel specialized agents to analyze your codebase through different security lenses, then synthesizes findings into a prioritized report with attack trees and fix recommendations.
+Stronghold of Security performs a multi-phase security audit by deploying parallel specialized agents to analyze your codebase through different security lenses, then synthesizes findings into a prioritized report with attack trees and fix recommendations.
 
 ## Pipeline Overview
 
 Each phase runs as a separate command with a fresh context window for maximum quality:
 
 ```
-/the-fortress:scan         → Analyze codebase, detect protocols, generate hot-spots map
+/SOS:scan         → Analyze codebase, detect protocols, generate hot-spots map
         │
         ▼
-/the-fortress:analyze      → Deploy 10-11 parallel context auditors
+/SOS:analyze      → Deploy 10-11 parallel context auditors
         │
         ▼
-/the-fortress:strategize   → Synthesize findings, generate 50-100+ attack hypotheses
+/SOS:strategize   → Synthesize findings, generate 50-100+ attack hypotheses
         │
         ▼
-/the-fortress:investigate  → Investigate hypotheses in priority-ordered batches
+/SOS:investigate  → Investigate hypotheses in priority-ordered batches
         │
         ▼
-/the-fortress:report       → Generate final report with attack trees & severity calibration
+/SOS:report       → Generate final report with attack trees & severity calibration
         │
         ▼
-/the-fortress:verify       → (After fixes) Verify vulnerabilities are resolved
+/SOS:verify       → (After fixes) Verify vulnerabilities are resolved
 ```
 
-Check progress anytime: `/the-fortress:status`
+Check progress anytime: `/SOS:status`
 
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/the-fortress` | Getting-started guide and command reference |
-| `/the-fortress:scan` | Phase 0+0.5: Scan codebase, generate KB manifest, static pre-scan |
-| `/the-fortress:analyze` | Phase 1+1.5: Deploy parallel context auditors + quality gate |
-| `/the-fortress:strategize` | Phase 2+3: Synthesize context + generate attack strategies |
-| `/the-fortress:investigate` | Phase 4+4.5: Investigate hypotheses + coverage verification |
-| `/the-fortress:report` | Phase 5: Final report with combination analysis and attack trees |
-| `/the-fortress:status` | Check audit progress and get next-step guidance |
-| `/the-fortress:verify` | Verify fixes after addressing reported vulnerabilities |
+| `/stronghold-of-security` | Getting-started guide and command reference |
+| `/SOS:scan` | Phase 0+0.5: Scan codebase, generate KB manifest, static pre-scan |
+| `/SOS:analyze` | Phase 1+1.5: Deploy parallel context auditors + quality gate |
+| `/SOS:strategize` | Phase 2+3: Synthesize context + generate attack strategies |
+| `/SOS:investigate` | Phase 4+4.5: Investigate hypotheses + coverage verification |
+| `/SOS:report` | Phase 5: Final report with combination analysis and attack trees |
+| `/SOS:status` | Check audit progress and get next-step guidance |
+| `/SOS:verify` | Verify fixes after addressing reported vulnerabilities |
 
 ## Knowledge Base
 
@@ -83,8 +83,8 @@ Plus a conditional **Economic Model Analyzer** for DeFi protocols.
 ## File Structure
 
 ```
-the-fortress/
-  SKILL.md                          # Help/router — run /the-fortress for guide
+stronghold-of-security/
+  SKILL.md                          # Help/router — run /stronghold-of-security for guide
   commands/
     scan.md                         # Phase 0+0.5 orchestration
     analyze.md                      # Phase 1+1.5 orchestration
@@ -124,12 +124,12 @@ Copy this directory into your project's `.claude/` directories:
 # Both skills/ and commands/ directories are required
 
 # 1. Copy the skill (agents, KB, resources, templates)
-mkdir -p your-project/.claude/skills/the-fortress
-cp -R agents knowledge-base resources templates SKILL.md your-project/.claude/skills/the-fortress/
+mkdir -p your-project/.claude/skills/stronghold-of-security
+cp -R agents knowledge-base resources templates SKILL.md your-project/.claude/skills/stronghold-of-security/
 
 # 2. Copy the commands (subcommand orchestration)
-mkdir -p your-project/.claude/commands/the-fortress
-cp commands/*.md your-project/.claude/commands/the-fortress/
+mkdir -p your-project/.claude/commands/stronghold-of-security
+cp commands/*.md your-project/.claude/commands/stronghold-of-security/
 ```
 
 Or use the install script:
@@ -139,15 +139,15 @@ Or use the install script:
 
 ### Why Two Directories?
 
-- `.claude/skills/the-fortress/` — Skill definition (SKILL.md), agent templates, knowledge base, and resources. This is what `/the-fortress` loads.
-- `.claude/commands/the-fortress/` — Subcommand files. This is what `/the-fortress:scan`, `/the-fortress:analyze`, etc. load. Each gets a fresh context window.
+- `.claude/skills/stronghold-of-security/` — Skill definition (SKILL.md), agent templates, knowledge base, and resources. This is what `/stronghold-of-security` loads.
+- `.claude/commands/stronghold-of-security/` — Subcommand files. This is what `/SOS:scan`, `/SOS:analyze`, etc. load. Each gets a fresh context window.
 
 ## Usage
 
 ### Running an Audit
 
 ```
-/the-fortress:scan
+/SOS:scan
 ```
 
 Follow the prompts. Each phase tells you what was produced and what command to run next.

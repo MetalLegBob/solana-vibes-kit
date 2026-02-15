@@ -4,7 +4,7 @@ A collection of Claude Code skills for development on Solana.
 
 ## Skills
 
-### [The Fortress](the-fortress/)
+### [Stronghold of Security](stronghold-of-security/)
 
 A comprehensive adversarial security audit system for Solana/Anchor smart contracts. Uses parallel multi-agent analysis with a 128-pattern exploit knowledge base built from 200+ real-world incidents.
 
@@ -21,20 +21,20 @@ A comprehensive adversarial security audit system for Solana/Anchor smart contra
 These skills are designed for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
 ```bash
-# Install The Fortress
-cd the-fortress && ./install.sh /path/to/your-project
+# Install Stronghold of Security
+cd stronghold-of-security && ./install.sh /path/to/your-project
 ```
 
 Or manually:
 ```bash
 # Copy skill files
-cp -R the-fortress/agents the-fortress/knowledge-base the-fortress/resources \
-      the-fortress/templates the-fortress/SKILL.md \
-      your-project/.claude/skills/the-fortress/
+cp -R stronghold-of-security/agents stronghold-of-security/knowledge-base stronghold-of-security/resources \
+      stronghold-of-security/templates stronghold-of-security/SKILL.md \
+      your-project/.claude/skills/stronghold-of-security/
 
 # Copy command files
-mkdir -p your-project/.claude/commands/the-fortress
-cp the-fortress/commands/*.md your-project/.claude/commands/the-fortress/
+mkdir -p your-project/.claude/commands/stronghold-of-security
+cp stronghold-of-security/commands/*.md your-project/.claude/commands/stronghold-of-security/
 ```
 
 ## License

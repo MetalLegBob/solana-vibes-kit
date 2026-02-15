@@ -1,11 +1,11 @@
 rules:
   # ═══════════════════════════════════════════════════════════
-  # Solana/Anchor Security Rules for The Fortress Phase 0.5
+  # Solana/Anchor Security Rules for Stronghold of Security Phase 0.5
   # ═══════════════════════════════════════════════════════════
 
   # --- Arithmetic Safety ---
 
-  - id: fortress-unchecked-arithmetic-add
+  - id: sos-unchecked-arithmetic-add
     languages: [rust]
     patterns:
       - pattern: $X + $Y
@@ -19,12 +19,12 @@ rules:
       overflow handling.
     severity: WARNING
     metadata:
-      fortress-category: arithmetic
-      fortress-risk: HIGH
-      fortress-ep: EP-015, EP-016
+      sos-category: arithmetic
+      sos-risk: HIGH
+      sos-ep: EP-015, EP-016
       cwe: CWE-190
 
-  - id: fortress-unchecked-arithmetic-sub
+  - id: sos-unchecked-arithmetic-sub
     languages: [rust]
     patterns:
       - pattern: $X - $Y
@@ -37,12 +37,12 @@ rules:
       values in release builds. Use checked_sub() or saturating_sub().
     severity: WARNING
     metadata:
-      fortress-category: arithmetic
-      fortress-risk: HIGH
-      fortress-ep: EP-015, EP-016
+      sos-category: arithmetic
+      sos-risk: HIGH
+      sos-ep: EP-015, EP-016
       cwe: CWE-191
 
-  - id: fortress-unchecked-arithmetic-mul
+  - id: sos-unchecked-arithmetic-mul
     languages: [rust]
     patterns:
       - pattern: $X * $Y
@@ -53,12 +53,12 @@ rules:
       token amounts and price calculations.
     severity: WARNING
     metadata:
-      fortress-category: arithmetic
-      fortress-risk: HIGH
-      fortress-ep: EP-015
+      sos-category: arithmetic
+      sos-risk: HIGH
+      sos-ep: EP-015
       cwe: CWE-190
 
-  - id: fortress-dangerous-cast
+  - id: sos-dangerous-cast
     languages: [rust]
     pattern-either:
       - pattern: $EXPR as u64
@@ -72,14 +72,14 @@ rules:
       error handling instead of bare `as` casts.
     severity: WARNING
     metadata:
-      fortress-category: arithmetic
-      fortress-risk: MEDIUM
-      fortress-ep: EP-017
+      sos-category: arithmetic
+      sos-risk: MEDIUM
+      sos-ep: EP-017
       cwe: CWE-681
 
   # --- Panic / DoS ---
 
-  - id: fortress-unwrap-in-program
+  - id: sos-unwrap-in-program
     languages: [rust]
     pattern: $EXPR.unwrap()
     message: >
@@ -88,12 +88,12 @@ rules:
       map_err() with proper error types.
     severity: WARNING
     metadata:
-      fortress-category: error-handling
-      fortress-risk: MEDIUM
-      fortress-ep: EP-084, EP-085
+      sos-category: error-handling
+      sos-risk: MEDIUM
+      sos-ep: EP-084, EP-085
       cwe: CWE-754
 
-  - id: fortress-expect-in-program
+  - id: sos-expect-in-program
     languages: [rust]
     pattern: $EXPR.expect($MSG)
     message: >
@@ -101,14 +101,14 @@ rules:
       with a message. Use proper error handling instead.
     severity: WARNING
     metadata:
-      fortress-category: error-handling
-      fortress-risk: MEDIUM
-      fortress-ep: EP-084
+      sos-category: error-handling
+      sos-risk: MEDIUM
+      sos-ep: EP-084
       cwe: CWE-754
 
   # --- Account Validation ---
 
-  - id: fortress-unchecked-account
+  - id: sos-unchecked-account
     languages: [rust]
     pattern: "UncheckedAccount<'info>"
     message: >
@@ -117,12 +117,12 @@ rules:
       Verify the /// CHECK: comment explains why this is safe.
     severity: WARNING
     metadata:
-      fortress-category: account-validation
-      fortress-risk: HIGH
-      fortress-ep: EP-001, EP-002, EP-003
+      sos-category: account-validation
+      sos-risk: HIGH
+      sos-ep: EP-001, EP-002, EP-003
       cwe: CWE-284
 
-  - id: fortress-raw-account-info
+  - id: sos-raw-account-info
     languages: [rust]
     pattern: "AccountInfo<'info>"
     message: >
@@ -130,13 +130,13 @@ rules:
       must be done manually. Prefer typed Anchor accounts.
     severity: INFO
     metadata:
-      fortress-category: account-validation
-      fortress-risk: MEDIUM
-      fortress-ep: EP-001
+      sos-category: account-validation
+      sos-risk: MEDIUM
+      sos-ep: EP-001
 
   # --- CPI Safety ---
 
-  - id: fortress-raw-invoke
+  - id: sos-raw-invoke
     languages: [rust]
     pattern: solana_program::program::invoke(...)
     message: >
@@ -145,12 +145,12 @@ rules:
       type checking.
     severity: WARNING
     metadata:
-      fortress-category: cpi
-      fortress-risk: HIGH
-      fortress-ep: EP-042, EP-043
+      sos-category: cpi
+      sos-risk: HIGH
+      sos-ep: EP-042, EP-043
       cwe: CWE-346
 
-  - id: fortress-raw-invoke-signed
+  - id: sos-raw-invoke-signed
     languages: [rust]
     pattern: solana_program::program::invoke_signed(...)
     message: >
@@ -159,12 +159,12 @@ rules:
       authority to the called program.
     severity: WARNING
     metadata:
-      fortress-category: cpi
-      fortress-risk: HIGH
-      fortress-ep: EP-042, EP-044
+      sos-category: cpi
+      sos-risk: HIGH
+      sos-ep: EP-042, EP-044
       cwe: CWE-346
 
-  - id: fortress-remaining-accounts
+  - id: sos-remaining-accounts
     languages: [rust]
     pattern: ctx.remaining_accounts
     message: >
@@ -173,14 +173,14 @@ rules:
       and signer status. Common source of type confusion attacks.
     severity: WARNING
     metadata:
-      fortress-category: account-validation
-      fortress-risk: HIGH
-      fortress-ep: EP-003, EP-011
+      sos-category: account-validation
+      sos-risk: HIGH
+      sos-ep: EP-003, EP-011
       cwe: CWE-20
 
   # --- Initialization ---
 
-  - id: fortress-init-if-needed
+  - id: sos-init-if-needed
     languages: [rust]
     pattern: init_if_needed
     message: >
@@ -190,7 +190,7 @@ rules:
       of reinitialization attacks.
     severity: WARNING
     metadata:
-      fortress-category: state-machine
-      fortress-risk: MEDIUM
-      fortress-ep: EP-075, EP-076
+      sos-category: state-machine
+      sos-risk: MEDIUM
+      sos-ep: EP-075, EP-076
       cwe: CWE-665

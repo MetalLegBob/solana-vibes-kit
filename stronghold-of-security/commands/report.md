@@ -184,7 +184,7 @@ Read the Executive Summary and Severity Breakdown from the generated report, the
   FINAL_REPORT.md       — ** THE FINAL AUDIT REPORT **
   PROGRESS.md           — Audit progress tracking
   STATE.json            — Machine-readable audit state
-  context/              — 10-11 deep context analyses
+  context/              — 8-9 deep context analyses
   findings/             — Individual investigation results
 ```
 

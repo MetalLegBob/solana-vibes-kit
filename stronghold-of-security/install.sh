@@ -15,10 +15,12 @@ mkdir -p "$TARGET/.claude/commands/stronghold-of-security"
 
 # Copy skill files (agents, KB, resources, templates, SKILL.md)
 cp -R "$SCRIPT_DIR/agents" "$TARGET/.claude/skills/stronghold-of-security/"
-cp -R "$SCRIPT_DIR/knowledge-base" "$TARGET/.claude/skills/stronghold-of-security/"
 cp -R "$SCRIPT_DIR/resources" "$TARGET/.claude/skills/stronghold-of-security/"
 cp -R "$SCRIPT_DIR/templates" "$TARGET/.claude/skills/stronghold-of-security/"
 cp "$SCRIPT_DIR/SKILL.md" "$TARGET/.claude/skills/stronghold-of-security/"
+
+# Copy knowledge base (excluding archive and research)
+rsync -a --exclude='archive/' "$SCRIPT_DIR/knowledge-base" "$TARGET/.claude/skills/stronghold-of-security/"
 
 # Copy command files
 cp "$SCRIPT_DIR/commands/"*.md "$TARGET/.claude/commands/stronghold-of-security/"

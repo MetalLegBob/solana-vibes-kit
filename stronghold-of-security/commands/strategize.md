@@ -44,7 +44,7 @@ For each file in `.audit/context/NN-*.md`:
 3. If markers are not found, fall back to reading the first 200 lines of the file (graceful degradation)
 4. Collect all summaries
 
-This should yield ~8KB per agent x 10-11 agents = ~80-88KB of concentrated security context.
+This should yield ~8KB per agent x 8-9 agents = ~64-72KB of concentrated security context.
 
 ### Step 2: Synthesize Architecture Document
 

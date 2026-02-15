@@ -1,4 +1,4 @@
-# Bob's Bazaar
+# Solana Vibes Kit (SVK)
 
 A collection of Claude Code skills for development on Solana.
 

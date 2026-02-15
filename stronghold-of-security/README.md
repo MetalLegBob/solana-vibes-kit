@@ -11,7 +11,8 @@ Stronghold of Security performs a multi-phase security audit by deploying parall
 Each phase runs as a separate command with a fresh context window for maximum quality:
 
 ```
-/SOS:scan         → Analyze codebase, build index, detect protocols, generate hot-spots map
+/SOS:scan         → Analyze codebase, detect protocols, generate hot-spots map
+  └ /SOS:index    → Build structured codebase INDEX.md (runs automatically)
         │
         ▼
 /SOS:analyze      → Deploy 8-9 parallel context auditors

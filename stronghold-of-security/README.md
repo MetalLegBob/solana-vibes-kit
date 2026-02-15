@@ -11,7 +11,7 @@ Stronghold of Security performs a multi-phase security audit by deploying parall
 Each phase runs as a separate command with a fresh context window for maximum quality:
 
 ```
-/SOS:scan         → Analyze codebase, detect protocols, generate hot-spots map
+/SOS:scan         → Analyze codebase, build index, detect protocols, generate hot-spots map
         │
         ▼
 /SOS:analyze      → Deploy 8-9 parallel context auditors
@@ -36,7 +36,8 @@ Check progress anytime: `/SOS:status`
 | Command | Description |
 |---------|-------------|
 | `/stronghold-of-security` | Getting-started guide and command reference |
-| `/SOS:scan` | Phase 0+0.5: Scan codebase, generate KB manifest, static pre-scan |
+| `/SOS:scan` | Phase 0+0.25+0.5: Scan codebase, build index, generate KB manifest, static pre-scan |
+| `/SOS:index` | Build codebase INDEX.md with per-file metadata and focus relevance tags |
 | `/SOS:analyze` | Phase 1+1.5: Deploy 8-9 parallel context auditors + quality gate |
 | `/SOS:strategize` | Phase 2+3: Synthesize context + generate attack strategies |
 | `/SOS:investigate` | Phase 4+4.5: Investigate hypotheses + coverage verification |
@@ -44,16 +45,31 @@ Check progress anytime: `/SOS:status`
 | `/SOS:status` | Check audit progress and get next-step guidance |
 | `/SOS:verify` | Verify fixes after addressing reported vulnerabilities |
 
+## Smart Model Selection
+
+Each phase uses the optimal model for its task type:
+
+| Model | Phases | Why |
+|-------|--------|-----|
+| **Opus** | Strategize, Report | Creative synthesis, novel discovery, cross-cutting reasoning |
+| **Sonnet** | Phase 1 (default), Investigate (Tier 1+2), Verify | Structured analysis guided by KB and hot-spots |
+| **Haiku** | Index, Quality Gate, Investigate (Tier 3) | Mechanical extraction, confirm/deny checks |
+
+During `/SOS:scan`, you choose the Phase 1 model (Opus or Sonnet). All other model assignments are automatic. Deep tier defaults to Opus for Phase 1; quick tier defaults to Sonnet.
+
 ## Knowledge Base
 
-128 exploit patterns across 17 files (~480KB), built from 200+ Exa research searches across 10 research waves:
+128 exploit patterns as individual indexed files, built from 200+ Exa research searches across 10 research waves:
 
-| Category | Files | Content |
-|----------|-------|---------|
-| **Core** | 7 files | 128 exploit patterns (EPs) with CVSS, PoC outlines, detection rules, fix patterns |
-| **Solana** | 4 files | Anchor version gotchas, runtime quirks, known vulnerable deps, token extensions |
-| **Protocols** | 7 files | AMM/DEX, lending, staking, bridge, NFT, oracle, governance attack playbooks |
-| **Reference** | 2 files | Bug bounty findings, audit firm patterns |
+| Category | Content |
+|----------|---------|
+| **Patterns** | 128 individual EP files organized by category (account-validation, arithmetic, oracle, CPI, etc.) |
+| **PATTERNS_INDEX.md** | Lightweight master catalog (~500 tokens) — agents read this first, then load individual files |
+| **Focus Manifests** | 8 per-focus loading lists — each agent loads only the 10-25 EPs relevant to its focus area |
+| **Solana** | Anchor version gotchas, runtime quirks, known vulnerable deps, token extensions |
+| **Protocols** | AMM/DEX, lending, staking, bridge, NFT, oracle, governance attack playbooks |
+| **Reference** | Bug bounty findings, audit firm patterns |
+| **Core** | Severity calibration, secure patterns, common false positives |
 
 ### Key Incidents Covered
 
@@ -170,6 +186,7 @@ The audit produces files in `.audit/`:
 
 ```
 .audit/
+  INDEX.md              — Structured codebase index with focus relevance tags
   KB_MANIFEST.md        — Knowledge base loading manifest
   HOT_SPOTS.md          — Phase 0.5 static scan results
   context/              — 8-9 focus area context documents
@@ -195,9 +212,17 @@ Each phase runs as a separate command with its own fresh context window. This is
 
 - Phase 1 agents produce **300-500KB of analysis each** (~3-5MB total for a large codebase)
 - No single context window can synthesize all of that
-- Each phase reads only what it needs (Phase 2 reads ~88KB of condensed summaries, not ~3.7MB)
+- Each phase reads only what it needs (Phase 2 reads ~64-72KB of condensed summaries, not ~3.7MB)
 - Phase 4 investigators can deep-dive specific focus areas when needed
 - **Result:** Higher quality at every stage of the pipeline
+
+### Key v3.0 Optimizations
+
+- **3-Layer Search:** Agents read INDEX.md first (Layer 1), then function signatures (Layer 2), then full source only for high-relevance files (Layer 3). ~60-75% reduction in per-agent codebase token consumption.
+- **Provides/Requires Routing:** Phase 1 agents tag their output with `provides` fields. Phase 4 investigators receive only the 1-3 context files matching each hypothesis's `requires` — not all 8-9.
+- **Context Budget Estimation:** Token cost estimated before spawning agents. Adaptive batch sizing (3-8 agents) based on estimate. Auto-splits agents exceeding 120K tokens.
+- **Phase 4 Resume:** Investigation resumes from where it left off on re-run. File-based detection — if a finding file exists, that strategy is skipped.
+- **Index-First KB Loading:** Phase 3 reads PATTERNS_INDEX.md (~500 tokens) first, then loads only the individual pattern files relevant to the codebase. ~60-70% KB token reduction.
 
 ## Research
 

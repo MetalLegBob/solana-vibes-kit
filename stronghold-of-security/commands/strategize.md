@@ -139,6 +139,7 @@ For each strategy, document:
 - `Target Code`: Specific functions/modules to investigate
 - `Potential Impact`: What damage could occur
 - `Historical Precedent`: Similar past exploits (EP-XXX reference) or "Novel"
+- `Requires`: Which Phase 1 focus area findings are needed to investigate this (e.g., [cpi-findings, access-control-findings]). Used by Phase 4 for automatic context routing.
 - `Investigation Approach`: How to validate/invalidate this hypothesis
 
 ### Step 4: Deduplication Check

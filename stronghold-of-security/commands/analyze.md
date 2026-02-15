@@ -197,42 +197,36 @@ Update `.audit/STATE.json`:
 
 **When to run:** After all Phase 1 agents complete. Skip for `quick` tier.
 
-### Validation Criteria
-
-For each `.audit/context/NN-*.md` file, check:
-
-| Check | Threshold | Method |
-|-------|-----------|--------|
-| **Has condensed summary** | Markers present | Grep for `CONDENSED_SUMMARY_START` and `CONDENSED_SUMMARY_END` |
-| **Summary size** | >= 500 words | Word count between markers |
-| **Full analysis size** | >= 3,000 words | Word count after end marker |
-| **Code file references** | >= 5 files | Count unique file paths (pattern: backtick + path + colon + line) |
-| **Invariants documented** | >= 3 | Count lines containing "INVARIANT:" or "Invariant" in headers |
-| **Assumptions documented** | >= 3 | Count lines containing "ASSUMPTION:" or "Assumption" in headers |
-| **Cross-focus handoffs** | >= 2 | Check "Cross-Focus Handoffs" or "Cross-Reference" section exists with entries |
-
 ### Process
 
-1. Read each context file
-2. Score against criteria (each check: pass/fail)
-3. Calculate pass rate (checks passed / total checks)
-4. If pass rate < 70% for any agent:
-   - Re-run that specific agent with feedback about what's missing
-   - Include the original output as "starting point — expand on these areas: {missing sections}"
-   - Maximum 1 re-run per agent
-5. Log validation results
+Locate the quality gate agent template:
+```bash
+find ~/.claude -name "quality-gate.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
+```
 
-### Validation Output
-
-Write a brief validation summary (don't create a separate file — include in PROGRESS.md update):
+Spawn a single Haiku agent to validate all context files:
 
 ```
-Phase 1.5 Validation:
-- 01-access-control: 7/7 checks passed
-- 02-arithmetic: 6/7 checks passed (missing: cross-focus handoffs)
-- ...
-- Re-runs triggered: {N} ({list of agents re-run})
+Task(
+  subagent_type="general-purpose",
+  model="{config.models.quality_gate}",  // "haiku" — from STATE.json
+  prompt="
+    You are a quality gate validator.
+
+    === READ YOUR INSTRUCTIONS ===
+    Read this file: {QUALITY_GATE_PATH} — Full validation criteria
+
+    === VALIDATE THESE FILES ===
+    {List all .audit/context/NN-*.md files}
+
+    Report which files pass and which need re-runs.
+  "
+)
 ```
+
+If any agent scores < 70%, re-run that specific agent with feedback about what's missing. Maximum 1 re-run per agent.
+
+Log validation results in PROGRESS.md update.
 
 ---
 

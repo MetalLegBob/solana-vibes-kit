@@ -58,7 +58,7 @@ Sort strategies into priority order:
 
 Group into batches of **5** (max agents per response to avoid prompt-too-long errors).
 
-### Step 3: Locate Skill Files
+### Step 3: Locate Skill Files & Build Routing Table
 
 Find the investigator agent template path (do NOT read/inline it — agents read it themselves):
 
@@ -67,6 +67,18 @@ find ~/.claude -name "hypothesis-investigator.md" -path "*/stronghold-of-securit
 ```
 
 Store as `INVESTIGATOR_PATH`.
+
+**Build routing table:** Scan all `.audit/context/NN-*.md` files and read their YAML frontmatter to extract `provides` fields. Build a map:
+
+```
+provides → file mapping:
+  access-control-findings → .audit/context/01-access-control.md
+  access-control-invariants → .audit/context/01-access-control.md
+  arithmetic-findings → .audit/context/02-arithmetic.md
+  ...
+```
+
+For each strategy's `Requires` field, look up matching context files from this map. Each investigator gets **only the 1-3 context files whose `provides` match the strategy's `requires`** — not all context files.
 
 ### Step 4: Execute Batches (5 Agents Per Batch)
 
@@ -93,12 +105,13 @@ Task(
     === STEP 1: READ YOUR INSTRUCTIONS ===
     Read this file: {INVESTIGATOR_PATH} — Your full investigation methodology
 
-    === STEP 2: READ CONTEXT ===
+    === STEP 2: READ CONTEXT (routed via provides/requires) ===
     1. Read .audit/ARCHITECTURE.md — Unified architectural understanding
-    2. Read the relevant context file(s) for deep analysis:
-       {List relevant .audit/context/NN-*.md files based on strategy.category}
-       The FULL ANALYSIS section (after CONDENSED_SUMMARY_END marker)
-       contains detailed code-level analysis.
+    2. Read ONLY these context files (matched via provides/requires routing):
+       {List 1-3 .audit/context/NN-*.md files whose 'provides' matches
+        this strategy's 'Requires' field}
+       Read the FULL ANALYSIS section (after CONDENSED_SUMMARY_END marker)
+       for detailed code-level analysis.
     3. Check .audit/findings/ for completed investigations.
        If a prior finding covers your hypothesis's code path,
        reference it rather than re-analyzing. Focus on what's NEW.
@@ -161,20 +174,7 @@ After each batch completes, update STATE.json with per-strategy status and repor
 
 ### Step 5: Strategy Supplement (After First Tier 1 Batch Only)
 
-After Batch 1 completes, read all Batch 1 findings:
-
-```bash
-ls .audit/findings/H*.md 2>/dev/null
-```
-
-If any findings are CONFIRMED or POTENTIAL:
-1. Read the confirmed/potential findings
-2. Generate up to 10 supplemental strategies (S001-S010) inspired by early findings
-   - What related attack vectors does this confirmed vulnerability enable?
-   - Are there similar patterns elsewhere in the codebase?
-   - Can this finding be chained with other known concerns?
-3. Append supplemental strategies to `.audit/STRATEGIES.md` under "## Supplemental Strategies"
-4. Add them to the end of the investigation queue
+After Batch 1 completes, if any findings are CONFIRMED or POTENTIAL: generate up to 10 supplemental strategies (S001-S010) inspired by early findings. Append to `.audit/STRATEGIES.md` under "## Supplemental Strategies" and add to the investigation queue.
 
 If no CONFIRMED or POTENTIAL in Batch 1, skip this step.
 

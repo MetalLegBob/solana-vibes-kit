@@ -72,47 +72,34 @@ If total fits in context (~200KB or less):
 
 Read `config.models.report` from `.audit/STATE.json` (default: opus).
 
+Locate the synthesizer template:
+```bash
+find ~/.claude -name "final-synthesizer.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
+```
+
 ```
 Task(
   subagent_type="general-purpose",
   model="{config.models.report}",  // "opus" — from STATE.json
   prompt="
-    === FINAL SYNTHESIZER INSTRUCTIONS ===
-    {FULL CONTENT of agents/final-synthesizer.md, inlined}
+    You are the final report synthesizer for Stronghold of Security.
 
-    === FINDINGS TO SYNTHESIZE ===
-    {All finding contents, inlined per Step 3 budget}
+    === STEP 1: READ YOUR INSTRUCTIONS ===
+    Read this file: {SYNTHESIZER_PATH} — Full synthesis methodology
 
-    === ARCHITECTURAL CONTEXT ===
-    {CONTENT of .audit/ARCHITECTURE.md, inlined}
+    === STEP 2: READ ALL INPUTS ===
+    1. All .audit/findings/H*.md, S*.md, G*.md — Investigation results
+    2. .audit/ARCHITECTURE.md — Architectural context
+    3. .audit/STRATEGIES.md — Attack hypotheses
+    4. .audit/COVERAGE.md — Coverage gaps (if exists)
 
-    === STRATEGIES ===
-    {CONTENT of .audit/STRATEGIES.md — or summary if too large}
-
-    === COVERAGE REPORT ===
-    {CONTENT of .audit/COVERAGE.md if exists, otherwise 'Coverage verification was skipped'}
-
-    === KNOWLEDGE BASE FOR CALIBRATION ===
-
-    SEVERITY CALIBRATION:
-    {CONTENT of severity-calibration.md, inlined}
-
-    COMMON FALSE POSITIVES:
-    {CONTENT of common-false-positives.md, inlined}
-
-    EXPLOIT PATTERNS INDEX:
-    {CONTENT of exploit-patterns-index.md, inlined}
+    === STEP 3: READ KB FOR CALIBRATION ===
+    {severity-calibration.md path}
+    {common-false-positives.md path}
+    {PATTERNS_INDEX.md path}
 
     === OUTPUT ===
     Write the final report to .audit/FINAL_REPORT.md
-
-    Follow the full synthesis process:
-    1. Aggregate all findings by status and severity
-    2. Build N x N combination matrix for CONFIRMED + POTENTIAL findings
-    3. Generate attack trees for each combination impact
-    4. Identify critical fix nodes (fixes that break the most attack paths)
-    5. Perform severity re-calibration
-    6. Write comprehensive report
   "
 )
 ```

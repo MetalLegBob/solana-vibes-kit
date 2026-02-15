@@ -99,6 +99,14 @@ The condensed summary MUST appear at the very top of your output file, wrapped i
 The condensed summary is what Phase 2 synthesis reads. The full analysis is what Phase 4 investigators deep-dive into when they need code-level detail for a specific focus area.
 
 ```markdown
+---
+task_id: sos-phase1-{focus_area_slug}
+provides: [{focus_area_slug}-findings, {focus_area_slug}-invariants]
+focus_area: {focus_area_slug}
+files_analyzed: [{list of files}]
+finding_count: {N}
+severity_breakdown: {critical: N, high: N, medium: N, low: N}
+---
 <!-- CONDENSED_SUMMARY_START -->
 # {Focus Area} — Condensed Summary
 

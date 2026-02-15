@@ -13,7 +13,7 @@ allowed-tools:
 
 # Stronghold of Security — Phase 1 + 1.5: Analyze & Validate
 
-Deploy parallel context auditors to build deep security understanding of the codebase through 10 specialized lenses.
+Deploy parallel context auditors to build deep security understanding of the codebase through 8 specialized lenses.
 
 ## Prerequisites
 
@@ -89,18 +89,17 @@ Report estimate to user: "Estimated ~{N}K tokens per agent, using batch size {N}
 
 | # | Focus Area | Output File |
 |---|------------|-------------|
-| 01 | Access Control | `.audit/context/01-access-control.md` |
+| 01 | Access Control & Account Validation | `.audit/context/01-access-control.md` |
 | 02 | Arithmetic Safety | `.audit/context/02-arithmetic.md` |
-| 03 | State Machine | `.audit/context/03-state-machine.md` |
+| 03 | State Machine & Error Handling | `.audit/context/03-state-machine.md` |
 | 04 | CPI & External Calls | `.audit/context/04-cpi-external.md` |
 | 05 | Token & Economic | `.audit/context/05-token-economic.md` |
-| 06 | Account Validation | `.audit/context/06-account-validation.md` |
-| 07 | Oracle & External Data | `.audit/context/07-oracle-data.md` |
-| 08 | Upgrade & Admin | `.audit/context/08-upgrade-admin.md` |
-| 09 | Error Handling | `.audit/context/09-error-handling.md` |
-| 10 | Timing & Ordering | `.audit/context/10-timing-ordering.md` |
+| 06 | Oracle & External Data | `.audit/context/06-oracle-data.md` |
+| 07 | Upgrade & Admin | `.audit/context/07-upgrade-admin.md` |
+| 08 | Timing & Ordering | `.audit/context/08-timing-ordering.md` |
 
-For `quick` tier: Only spawn agents 01, 02, 04, 05, 06 (5 core focus areas, single batch).
+For `quick` tier: Only spawn agents 01, 02, 04, 05 (4 core focus areas, single batch).
+Conditional: Agent 09 economic model analyzer (if `config.defi_economic_agent === true`).
 
 **CRITICAL — Batching Rules:**
 
@@ -110,7 +109,8 @@ For `quick` tier: Only spawn agents 01, 02, 04, 05, 06 (5 core focus areas, sing
 - Do NOT use `run_in_background=true` — background agents cannot get permission to write files
 - Do NOT inline file contents into prompts — agents read files themselves via the Read tool
 
-Group agents into batches of {adaptive_batch_size}. Economic model analyzer goes in the final batch (only if `config.defi_economic_agent === true`).
+**Batch 1:** Agents 01-05 (or up to {adaptive_batch_size})
+**Batch 2:** Agents 06-08 + conditional Agent 09 (economic model, if `config.defi_economic_agent === true`)
 
 **Spawn Pattern — each agent gets this prompt (with its specific focus area):**
 
@@ -168,7 +168,7 @@ Task(
     {path to matched protocol playbook from KB_MANIFEST}
 
     === YOUR ASSIGNMENT ===
-    OUTPUT FILE: .audit/context/11-economic-model.md
+    OUTPUT FILE: .audit/context/09-economic-model.md
 
     Model the economic system: token flows, invariants, value extraction,
     flash loan impact, MEV sensitivity, incentive alignment.
@@ -262,8 +262,8 @@ After Phase 1 + 1.5 is done, present to the user:
 ## Phase 1 + 1.5 Complete
 
 ### What was produced:
-- `.audit/context/01-access-control.md` through `10-timing-ordering.md` — 10 deep context analyses
-{- `.audit/context/11-economic-model.md` — DeFi economic model analysis (if applicable)}
+- `.audit/context/01-access-control.md` through `08-timing-ordering.md` — 8 deep context analyses
+{- `.audit/context/09-economic-model.md` — DeFi economic model analysis (if applicable)}
 
 ### Summary:
 - **Agents completed:** {N}/{N}

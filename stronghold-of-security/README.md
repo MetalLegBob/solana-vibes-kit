@@ -14,7 +14,7 @@ Each phase runs as a separate command with a fresh context window for maximum qu
 /SOS:scan         → Analyze codebase, detect protocols, generate hot-spots map
         │
         ▼
-/SOS:analyze      → Deploy 10-11 parallel context auditors
+/SOS:analyze      → Deploy 8-9 parallel context auditors
         │
         ▼
 /SOS:strategize   → Synthesize findings, generate 50-100+ attack hypotheses
@@ -37,7 +37,7 @@ Check progress anytime: `/SOS:status`
 |---------|-------------|
 | `/stronghold-of-security` | Getting-started guide and command reference |
 | `/SOS:scan` | Phase 0+0.5: Scan codebase, generate KB manifest, static pre-scan |
-| `/SOS:analyze` | Phase 1+1.5: Deploy parallel context auditors + quality gate |
+| `/SOS:analyze` | Phase 1+1.5: Deploy 8-9 parallel context auditors + quality gate |
 | `/SOS:strategize` | Phase 2+3: Synthesize context + generate attack strategies |
 | `/SOS:investigate` | Phase 4+4.5: Investigate hypotheses + coverage verification |
 | `/SOS:report` | Phase 5: Final report with combination analysis and attack trees |
@@ -65,18 +65,16 @@ Check progress anytime: `/SOS:status`
 
 ## Focus Areas
 
-The 10 parallel context auditors each analyze through one lens:
+The 8 parallel context auditors each analyze through one lens:
 
-1. **Access Control** - Authority, signer checks, role matrices
-2. **Arithmetic** - Overflow, precision loss, rounding
-3. **State Machine** - Transitions, race conditions, invariants
-4. **CPI & External** - Cross-program invocation, program validation
-5. **Token & Economic** - Token flows, economic invariants, MEV
-6. **Account Validation** - PDA derivation, type cosplay, ownership
-7. **Oracle & Data** - Price feeds, staleness, manipulation
-8. **Upgrade & Admin** - Upgradeability, admin functions, timelocks
-9. **Error Handling** - Panics, error propagation, DoS
-10. **Timing & Ordering** - Front-running, transaction ordering, atomicity
+1. **Access Control & Account Validation** — Authority, signer checks, PDA derivation, type cosplay, ownership
+2. **Arithmetic Safety** — Overflow, precision loss, rounding
+3. **State Machine & Error Handling** — Transitions, race conditions, invariants, panic paths, error propagation
+4. **CPI & External Calls** — Cross-program invocation, program validation, privilege propagation
+5. **Token & Economic** — Token flows, economic invariants, MEV
+6. **Oracle & External Data** — Price feeds, staleness, manipulation
+7. **Upgrade & Admin** — Upgradeability, admin functions, timelocks
+8. **Timing & Ordering** — Front-running, transaction ordering, atomicity
 
 Plus a conditional **Economic Model Analyzer** for DeFi protocols.
 
@@ -86,7 +84,8 @@ Plus a conditional **Economic Model Analyzer** for DeFi protocols.
 stronghold-of-security/
   SKILL.md                          # Help/router — run /stronghold-of-security for guide
   commands/
-    scan.md                         # Phase 0+0.5 orchestration
+    scan.md                         # Phase 0+0.25+0.5 orchestration
+    index.md                        # Standalone codebase indexer
     analyze.md                      # Phase 1+1.5 orchestration
     strategize.md                   # Phase 2+3 orchestration
     investigate.md                  # Phase 4+4.5 orchestration
@@ -96,15 +95,20 @@ stronghold-of-security/
   agents/
     context-auditor.md              # Phase 1 agent template
     economic-model-analyzer.md      # Conditional DeFi agent
-    hypothesis-investigator.md      # Phase 4 investigation agent
+    hypothesis-investigator.md      # Phase 4 investigation agent (Tier 1+2)
+    lightweight-investigator.md     # Phase 4 lightweight agent (Tier 3, Haiku)
+    quality-gate.md                 # Phase 1.5 validation agent
     final-synthesizer.md            # Phase 5 synthesis agent
   knowledge-base/
-    core/                           # Exploit patterns, severity calibration, secure patterns
+    PATTERNS_INDEX.md               # Master catalog of 128 exploit patterns
+    patterns/                       # 128 individual pattern files by category
+    focus-manifests/                # Per-focus KB loading lists (8 files)
+    core/                           # Severity calibration, secure patterns, false positives
     solana/                         # Solana/Anchor-specific knowledge
     protocols/                      # Protocol-type attack playbooks
     reference/                      # Bug bounty and audit firm findings
   resources/
-    focus-areas.md                  # Per-focus enrichment (10 areas x 9 sections)
+    focus-areas.md                  # Per-focus enrichment (8 areas x 9 sections)
     phase-05-patterns.md            # Grep pattern catalog for static pre-scan
     semgrep-rules/
       solana-anchor.yaml            # Custom Solana/Anchor semgrep rules
@@ -156,9 +160,9 @@ Follow the prompts. Each phase tells you what was produced and what command to r
 
 | Tier | Strategies | Agents | Use Case |
 |------|-----------|--------|----------|
-| Quick | 25-40 | 5 | Fast pre-commit check |
-| Standard | 50-75 | 10-11 | Pre-launch audit |
-| Deep | 100-150 | 10-11 | Full security review |
+| Quick | 25-40 | 4 | Fast pre-commit check |
+| Standard | 50-75 | 8-9 | Pre-launch audit |
+| Deep | 100-150 | 8-9 | Full security review |
 
 ### Output
 
@@ -168,7 +172,7 @@ The audit produces files in `.audit/`:
 .audit/
   KB_MANIFEST.md        — Knowledge base loading manifest
   HOT_SPOTS.md          — Phase 0.5 static scan results
-  context/              — 10-11 focus area context documents
+  context/              — 8-9 focus area context documents
   ARCHITECTURE.md       — Unified architecture understanding
   STRATEGIES.md         — Generated attack hypotheses
   findings/             — Individual investigation results

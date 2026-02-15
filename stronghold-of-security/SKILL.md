@@ -48,9 +48,9 @@ This begins the audit by analyzing your codebase and generating a hot-spots map.
 │                          ▼                                          │
 │  /SOS:analyze      Phase 1 + 1.5                          │
 │  ════════════════════       Parallel context building               │
-│  10-11 specialized auditors analyze the ENTIRE codebase            │
+│  8-9 specialized auditors analyze the ENTIRE codebase              │
 │  Each through a different security lens                            │
-│  Output: .audit/context/ (10-11 deep analysis files)               │
+│  Output: .audit/context/ (8-9 deep analysis files)                 │
 │                          │                                          │
 │                          ▼                                          │
 │  /SOS:strategize   Phase 2 + 3                            │
@@ -89,7 +89,7 @@ This begins the audit by analyzing your codebase and generating a hot-spots map.
 | `/stronghold-of-security` | This help guide |
 | `/SOS:scan` | Scan codebase, detect config, generate KB manifest, build index, run static pre-scan |
 | `/SOS:index` | Build codebase INDEX.md with per-file metadata and focus relevance |
-| `/SOS:analyze` | Deploy 10-11 parallel context auditors + quality gate |
+| `/SOS:analyze` | Deploy 8-9 parallel context auditors + quality gate |
 | `/SOS:strategize` | Synthesize context + generate prioritized attack strategies |
 | `/SOS:investigate` | Investigate hypotheses in priority-ordered batches + coverage check |
 | `/SOS:report` | Generate final report with combination analysis and attack trees |
@@ -120,9 +120,9 @@ Check progress anytime with **`/SOS:status`**.
 
 | Tier | Focus Areas | Strategies | Best For |
 |------|-------------|------------|----------|
-| `quick` | 5 | 25-40 | Rapid sanity check, small changes, < 10 files |
-| `standard` | 10 | 50-75 | Normal audits, medium codebases, 10-50 files |
-| `deep` | 10+ | 100-150 | Pre-mainnet, high-value protocols, 50+ files |
+| `quick` | 4 | 25-40 | Rapid sanity check, small changes, < 10 files |
+| `standard` | 8 | 50-75 | Normal audits, medium codebases, 10-50 files |
+| `deep` | 8+ | 100-150 | Pre-mainnet, high-value protocols, 50+ files |
 
 The tier is auto-detected based on codebase size and complexity. Override with:
 ```
@@ -133,18 +133,16 @@ The tier is auto-detected based on codebase size and complexity. Override with:
 
 ## Focus Areas
 
-The 10 parallel context auditors each analyze through one lens:
+The 8 parallel context auditors each analyze through one lens:
 
-1. **Access Control** — Authority, signer checks, role matrices
-2. **Arithmetic** — Overflow, precision loss, rounding
-3. **State Machine** — Transitions, race conditions, invariants
-4. **CPI & External** — Cross-program invocation, program validation
+1. **Access Control & Account Validation** — Authority, signer checks, PDA derivation, type cosplay, ownership
+2. **Arithmetic Safety** — Overflow, precision loss, rounding
+3. **State Machine & Error Handling** — Transitions, race conditions, invariants, panic paths, error propagation
+4. **CPI & External Calls** — Cross-program invocation, program validation, privilege propagation
 5. **Token & Economic** — Token flows, economic invariants, MEV
-6. **Account Validation** — PDA derivation, type cosplay, ownership
-7. **Oracle & Data** — Price feeds, staleness, manipulation
-8. **Upgrade & Admin** — Upgradeability, admin functions, timelocks
-9. **Error Handling** — Panics, error propagation, DoS
-10. **Timing & Ordering** — Front-running, transaction ordering, atomicity
+6. **Oracle & External Data** — Price feeds, staleness, manipulation
+7. **Upgrade & Admin** — Upgradeability, admin functions, timelocks
+8. **Timing & Ordering** — Front-running, transaction ordering, atomicity
 
 Plus a conditional **Economic Model Analyzer** for DeFi protocols.
 
@@ -176,7 +174,7 @@ All audit outputs go to `.audit/`:
   INDEX.md              — Structured codebase index with focus relevance tags
   KB_MANIFEST.md        — Knowledge base loading manifest
   HOT_SPOTS.md          — Phase 0.5 static pre-scan results
-  context/              — 10-11 deep context analyses
+  context/              — 8-9 deep context analyses
   ARCHITECTURE.md       — Unified architecture understanding
   STRATEGIES.md         — Generated attack hypotheses
   findings/             — Individual investigation results

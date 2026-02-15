@@ -88,35 +88,39 @@ The architecture document should contain:
 
 Generate 50-100 attack hypotheses based on the architectural understanding and knowledge base.
 
-### Step 1: Load Knowledge Base
+### Step 1: Load Knowledge Base (Index-First)
 
-Read `.audit/KB_MANIFEST.md` and load the Phase 3 KB files:
-- `exploit-patterns-index.md` — Master index of all 128 EPs
-- `exploit-patterns-core.md` — EP-001 to EP-067
-- `exploit-patterns-advanced.md` — EP-068 to EP-097
-- `exploit-patterns-incidents.md` — EP-098 to EP-118
-- `exploit-patterns-recent.md` — EP-119 to EP-128
-- `audit-firm-findings.md` — Aggregated public audit findings
-- `bug-bounty-findings.md` — Aggregated bounty disclosures
-- All matched protocol playbooks
+Read `.audit/KB_MANIFEST.md` for Phase 3 KB loading instructions, then:
 
-Find the KB files in the skill directory:
+**1. Read the patterns index (~500 tokens):**
 ```bash
-find ~/.claude -name "exploit-patterns-index.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
+find ~/.claude -name "PATTERNS_INDEX.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
+```
+This lightweight catalog lists all 128 EPs with name, severity, and file path.
+
+**2. Cross-reference with ARCHITECTURE.md findings:**
+- Identify which EP categories are relevant to this codebase's architecture
+- Match risk observations and invariants to specific EPs from the index
+
+**3. Load individual pattern files for matched EPs only:**
+For each relevant EP identified in step 2, read its individual file from `knowledge-base/patterns/{category}/EP-NNN-*.md`. Only load patterns that are relevant — not all 128.
+
+**4. Load reference files (always):**
+```bash
+find ~/.claude -name "audit-firm-findings.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
+find ~/.claude -name "bug-bounty-findings.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
 ```
 
-**Important context budget:** The KB files total ~300KB+. To fit within context, prioritize:
-1. Always read `exploit-patterns-index.md` (master index, ~11KB) — use it to identify relevant EPs
-2. Read the protocol playbook(s) matching detected protocol types
-3. Read `audit-firm-findings.md` and `bug-bounty-findings.md`
-4. For specific EP details, read the relevant exploit-patterns-*.md file and locate the specific EP entry
+**5. Load matched protocol playbooks** from KB_MANIFEST.
+
+**Context budget:** This index-first approach loads ~50-100KB instead of ~300KB+ (monolithic files). Read PATTERNS_INDEX.md first, then selectively load individual pattern files.
 
 ### Step 2: Generate Attack Hypotheses
 
 Read `.audit/ARCHITECTURE.md` for the architectural understanding.
 
 **Sources for strategy generation:**
-1. **Historical exploits** — Use exploit-patterns-index to identify EPs relevant to this codebase's architecture
+1. **Historical exploits** — Use PATTERNS_INDEX.md to identify relevant EPs, then read their individual pattern files for attack details
 2. **Architectural weaknesses** — Risk observations from the architecture document
 3. **Protocol-specific patterns** — Attack vectors from matched protocol playbooks
 4. **Novel attack surfaces** — Codebase-specific concerns that don't match any known EP (from architecture doc's novel observations section)
@@ -222,6 +226,10 @@ Update `.audit/PROGRESS.md` with strategize phase marked as completed.
 ### Architecture Highlights:
 - {1-2 key cross-cutting concerns}
 - {1-2 notable novel observations}
+
+### Phase Stats:
+- **Model:** {config.models.strategize} (main context — no subagents)
+- **Estimated tokens:** ~{context_summaries + KB_loaded}K input
 
 ### Next Step:
 Run **`/clear`** then **`/SOS:investigate`** to investigate all {N} hypotheses

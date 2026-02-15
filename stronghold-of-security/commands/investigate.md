@@ -30,10 +30,26 @@ Run /SOS:strategize first to synthesize context and generate attack strategies.
 ### Resume Support
 
 Check if `phases.investigate.status === "in_progress"` in STATE.json. If so, this is a **resume**:
-- Read `phases.investigate.batches_completed` and `phases.investigate.strategies` to find where we left off
-- Skip already-completed strategies
-- Resume from the next incomplete batch
-- Display: "Resuming investigation from Batch {N}. {completed}/{total} strategies already investigated."
+
+1. **Detect completed strategies from files:**
+   ```bash
+   ls .audit/findings/H*.md .audit/findings/S*.md .audit/findings/G*.md 2>/dev/null | sort
+   ```
+   Parse filenames to get completed strategy IDs (e.g., `H001`, `H002`, `S001`).
+
+2. **Cross-reference with STATE.json:**
+   Compare `phases.investigate.strategies` status map with actual files. Trust files as ground truth — if a finding file exists, the strategy is done regardless of STATE.json.
+
+3. **Handle partial batches:** If a batch was interrupted (some findings written, others not), only re-run the missing strategies from that batch. Do NOT re-run strategies that already have finding files.
+
+4. **Report and continue:**
+   ```
+   Resuming investigation from Batch {N}. {completed}/{total} strategies already investigated.
+   Skipping: {list of completed IDs}
+   Remaining: {N} strategies in {N} batches
+   ```
+
+5. **Rebuild routing table** (Step 3) before resuming — context file frontmatter is still available.
 
 ---
 
@@ -377,6 +393,11 @@ Update `.audit/PROGRESS.md` with investigate phase marked as completed.
 
 ### Notable Findings:
 {Top 3-5 most significant CONFIRMED/POTENTIAL findings with brief descriptions}
+
+### Phase Stats:
+- **Model:** {config.models.investigate} (Tier 1+2), {config.models.investigate_tier3} (Tier 3)
+- **Agents spawned:** {total_agents} investigators + 1 coverage verifier
+- **Estimated tokens:** ~{agents × avg_estimate}K input across all batches
 
 ### Next Step:
 Run **`/clear`** then **`/SOS:report`** to generate the final audit report.

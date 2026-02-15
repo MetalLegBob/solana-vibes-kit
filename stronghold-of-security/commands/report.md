@@ -48,12 +48,12 @@ The final synthesizer needs:
 5. **KB files for severity calibration:**
    - Find and read `severity-calibration.md` from the skill's knowledge base
    - Find and read `common-false-positives.md` from the skill's knowledge base
-   - Find and read `exploit-patterns-index.md` for cross-referencing
+   - Find and read `PATTERNS_INDEX.md` for cross-referencing
 
 ```bash
 find ~/.claude -name "severity-calibration.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
 find ~/.claude -name "common-false-positives.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
-find ~/.claude -name "exploit-patterns-index.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
+find ~/.claude -name "PATTERNS_INDEX.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
 ```
 
 ### Step 3: Assess Context Budget
@@ -94,9 +94,9 @@ Task(
     4. .audit/COVERAGE.md — Coverage gaps (if exists)
 
     === STEP 3: READ KB FOR CALIBRATION ===
-    {severity-calibration.md path}
-    {common-false-positives.md path}
-    {PATTERNS_INDEX.md path}
+    {severity-calibration.md path} — Severity calibration reference
+    {common-false-positives.md path} — False positive patterns
+    {PATTERNS_INDEX.md path} — Master EP catalog for cross-referencing
 
     === OUTPUT ===
     Write the final report to .audit/FINAL_REPORT.md
@@ -187,6 +187,11 @@ Read the Executive Summary and Severity Breakdown from the generated report, the
   context/              — 10-11 deep context analyses
   findings/             — Individual investigation results
 ```
+
+### Phase Stats:
+- **Model:** {config.models.report} (final synthesizer)
+- **Agents spawned:** 1 synthesizer
+- **Estimated tokens:** ~{findings + architecture + KB}K input
 
 ### What's Next?
 1. **Review the report:** Read `.audit/FINAL_REPORT.md` for full details

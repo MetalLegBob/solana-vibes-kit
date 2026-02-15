@@ -122,22 +122,34 @@ Task(
     You are a context auditor for Stronghold of Security security audit.
 
     === STEP 1: READ YOUR INSTRUCTIONS ===
-    Read these files in order:
     1. {AUDITOR_PATH} — Your full agent instructions and methodology
     2. {FOCUS_AREAS_PATH} — Find and read the section for '{focus_area_name}'
-    3. .audit/HOT_SPOTS.md — Find entries tagged with your focus area
 
-    === STEP 2: READ KNOWLEDGE BASE ===
+    === STEP 2: READ CODEBASE INDEX ===
+    Read .audit/INDEX.md — identify files tagged with your focus area.
+    Prioritize files with high risk marker counts for your focus.
+
+    === STEP 3: 3-LAYER SEARCH ===
+    Layer 1: You've read the index. Identify your 10-20 most relevant files.
+    Layer 2: For those files, read function signatures and struct definitions.
+             Prioritize based on relevance to your focus.
+    Layer 3: Read full source ONLY for the 5-10 files needing deep analysis.
+             For files with zero hot-spots for your focus, Layer 2 only.
+
+    === STEP 4: READ KNOWLEDGE BASE ===
     {List of KB file paths from KB_MANIFEST.md Phase 1 section}
+
+    === STEP 5: READ HOT-SPOTS ===
+    Read .audit/HOT_SPOTS.md — find entries tagged with your focus area.
+    Analyze hot-spotted locations FIRST with extra scrutiny.
 
     === YOUR ASSIGNMENT ===
     FOCUS: {focus_area_name}
     OUTPUT FILE: {output_file_path}
 
-    Analyze the ENTIRE codebase through your specific lens.
     Apply micro-first analysis (5 Whys, 5 Hows, First Principles).
-    Analyze hot-spotted locations FIRST with extra scrutiny, then expand
-    to full codebase coverage.
+    Use 3-layer search: INDEX → signatures → full source.
+    Analyze hot-spotted locations FIRST, then expand coverage.
 
     === OUTPUT FORMAT ===
     Write your output file with TWO parts:
@@ -275,6 +287,11 @@ After Phase 1 + 1.5 is done, present to the user:
 ### Each context file contains:
 - **Condensed Summary** (~8KB) — Key findings, invariants, risks, and cross-focus handoffs
 - **Full Analysis** (remaining) — Complete deep analysis for Phase 4 investigators
+
+### Phase Stats:
+- **Model:** {config.models.phase1} (context auditors), {config.models.quality_gate} (quality gate)
+- **Agents spawned:** {N} auditors + 1 quality gate validator
+- **Estimated tokens:** ~{agents × avg_estimate}K input across all batches
 
 ### Next Step:
 Run **`/clear`** then **`/SOS:strategize`** to synthesize all context into a unified

@@ -175,6 +175,26 @@ Wait for user confirmation before proceeding to Phase 0.5.
 
 ---
 
+## Phase 0.25: Codebase Indexing
+
+**Goal:** Build a structured INDEX.md for agents to use 3-layer search instead of reading the entire codebase.
+
+### Spawn Indexer Agent
+
+```
+Task(
+  subagent_type="general-purpose",
+  model="haiku",
+  prompt="... (see /SOS:index command for full prompt)"
+)
+```
+
+Use the exact prompt from `stronghold-of-security/commands/index.md` Step 2. The indexer runs on Haiku for cost efficiency — this is mechanical extraction, not reasoning.
+
+After completion, verify `.audit/INDEX.md` was created. Report file count and LOC to user.
+
+---
+
 ## Phase 0.5: Static Pre-Scan (Hot-Spots Map)
 
 **Goal:** Build a hot-spots map using pattern-based static analysis. This gives Phase 1 agents concrete leads instead of searching blind.
@@ -326,6 +346,7 @@ After all Phase 0 + 0.5 work is done, present this to the user:
 ## Phase 0 + 0.5 Complete
 
 ### What was produced:
+- `.audit/INDEX.md` — Structured codebase index ({N} files, {N} LOC)
 - `.audit/KB_MANIFEST.md` — Knowledge base loading manifest for all phases
 - `.audit/HOT_SPOTS.md` — Static pre-scan results ({N} patterns found across {N} files)
 - `.audit/STATE.json` — Audit state tracking

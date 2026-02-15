@@ -39,11 +39,11 @@ This begins the audit by analyzing your codebase and generating a hot-spots map.
 │                         STRONGHOLD OF SECURITY v3.0                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  /SOS:scan         Phase 0 + 0.5                          │
+│  /SOS:scan         Phase 0 + 0.25 + 0.5                    │
 │  ═══════════════════        Pre-flight analysis                    │
 │  Detect ecosystem, protocols, risk indicators                      │
-│  Generate KB manifest, run static pre-scan                         │
-│  Output: KB_MANIFEST.md, HOT_SPOTS.md                              │
+│  Build codebase INDEX.md, generate KB manifest, run pre-scan       │
+│  Output: INDEX.md, KB_MANIFEST.md, HOT_SPOTS.md                    │
 │                          │                                          │
 │                          ▼                                          │
 │  /SOS:analyze      Phase 1 + 1.5                          │
@@ -87,7 +87,8 @@ This begins the audit by analyzing your codebase and generating a hot-spots map.
 | Command | Description |
 |---------|-------------|
 | `/stronghold-of-security` | This help guide |
-| `/SOS:scan` | Scan codebase, detect config, generate KB manifest, run static pre-scan |
+| `/SOS:scan` | Scan codebase, detect config, generate KB manifest, build index, run static pre-scan |
+| `/SOS:index` | Build codebase INDEX.md with per-file metadata and focus relevance |
 | `/SOS:analyze` | Deploy 10-11 parallel context auditors + quality gate |
 | `/SOS:strategize` | Synthesize context + generate prioritized attack strategies |
 | `/SOS:investigate` | Investigate hypotheses in priority-ordered batches + coverage check |
@@ -172,6 +173,7 @@ All audit outputs go to `.audit/`:
 
 ```
 .audit/
+  INDEX.md              — Structured codebase index with focus relevance tags
   KB_MANIFEST.md        — Knowledge base loading manifest
   HOT_SPOTS.md          — Phase 0.5 static pre-scan results
   context/              — 10-11 deep context analyses

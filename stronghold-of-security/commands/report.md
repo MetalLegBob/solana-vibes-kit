@@ -70,9 +70,12 @@ If total fits in context (~200KB or less):
 
 ### Step 4: Spawn Final Synthesizer
 
+Read `config.models.report` from `.audit/STATE.json` (default: opus).
+
 ```
 Task(
   subagent_type="general-purpose",
+  model="{config.models.report}",  // "opus" — from STATE.json
   prompt="
     === FINAL SYNTHESIZER INSTRUCTIONS ===
     {FULL CONTENT of agents/final-synthesizer.md, inlined}

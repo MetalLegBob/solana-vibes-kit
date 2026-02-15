@@ -57,9 +57,12 @@ git diff --name-only HEAD -- {file_path} 2>/dev/null
 
 For each CONFIRMED and POTENTIAL finding, spawn a verification agent:
 
+Read `config.models.verify` from `.audit/STATE.json` (default: sonnet).
+
 ```
 Task(
   subagent_type="general-purpose",
+  model="{config.models.verify}",  // "sonnet" — from STATE.json
   prompt="
     You are verifying whether a previously-identified vulnerability has been fixed.
 

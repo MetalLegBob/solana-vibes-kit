@@ -12,6 +12,8 @@ allowed-tools:
 
 # Stronghold of Security — Phase 2 + 3: Synthesize & Strategize
 
+**Model:** This phase runs in the main context (no subagents). Recommended: Opus for best creative synthesis of cross-cutting concerns and novel strategy generation. Read `config.models.strategize` from STATE.json.
+
 Merge all context auditor findings into a unified architecture document, then generate prioritized attack hypotheses.
 
 ## Prerequisites

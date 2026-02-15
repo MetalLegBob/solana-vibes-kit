@@ -39,6 +39,8 @@ Read `.audit/STATE.json` to get:
 - `config.tier` — determines number of focus areas and agent depth
 - `config.defi_economic_agent` — whether to spawn 11th agent
 - `config.protocol_types` — for economic model agent
+- `config.models.phase1` — model for context auditor agents (opus or sonnet)
+- `config.models.quality_gate` — model for quality gate validation (haiku)
 
 Read `.audit/KB_MANIFEST.md` to get:
 - Phase 1 agent KB file list (which knowledge base files each agent loads)
@@ -93,6 +95,7 @@ For `quick` tier: Only spawn agents 01, 02, 04, 05, 06 (5 core focus areas, sing
 ```
 Task(
   subagent_type="general-purpose",
+  model="{config.models.phase1}",  // Read from STATE.json — "opus" or "sonnet"
   prompt="
     You are a context auditor for Stronghold of Security security audit.
 
@@ -131,6 +134,7 @@ Task(
 ```
 Task(
   subagent_type="general-purpose",
+  model="{config.models.phase1}",  // Same model as other Phase 1 agents
   prompt="
     You are an economic model analyzer for Stronghold of Security security audit.
 

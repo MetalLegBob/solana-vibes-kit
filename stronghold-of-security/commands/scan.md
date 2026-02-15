@@ -171,7 +171,30 @@ Display the pre-flight analysis results and ask for confirmation:
 Proceed with these settings? [Y/n/customize]
 ```
 
-Wait for user confirmation before proceeding to Phase 0.5.
+Wait for user confirmation before proceeding.
+
+### Step 4: Model Selection for Phase 1
+
+After user confirms settings, present model selection:
+
+```markdown
+### Phase 1 Model Selection
+
+Phase 1 agents analyze the entire codebase through specialized security lenses.
+Choose the model for these agents:
+
+  → **Opus** (recommended for deep tier): Maximum novel discovery,
+    strongest cross-file reasoning. Higher cost.
+  → **Sonnet**: Strong structured analysis guided by KB and hot-spots.
+    ~50-60% cheaper. Slightly weaker on novel/creative findings.
+```
+
+**Defaults by tier:**
+- `deep`: Opus (recommend Opus, user can override to Sonnet)
+- `standard`: User choice (present both options equally)
+- `quick`: Sonnet (recommend Sonnet, user can override to Opus)
+
+Store choice in STATE.json under `config.models.phase1`.
 
 ---
 
@@ -291,7 +314,18 @@ Write `.audit/STATE.json`:
     "strategy_count": {N},
     "ecosystem": "{ecosystem}",
     "protocol_types": ["{list}"],
-    "defi_economic_agent": {true/false}
+    "defi_economic_agent": {true/false},
+    "models": {
+      "index": "haiku",
+      "phase1": "{user_choice — opus or sonnet}",
+      "quality_gate": "haiku",
+      "strategize": "opus",
+      "investigate": "sonnet",
+      "investigate_tier3": "haiku",
+      "coverage": "sonnet",
+      "report": "opus",
+      "verify": "sonnet"
+    }
   },
   "phases": {
     "scan": {

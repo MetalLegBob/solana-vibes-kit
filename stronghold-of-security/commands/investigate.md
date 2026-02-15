@@ -43,6 +43,9 @@ Check if `phases.investigate.status === "in_progress"` in STATE.json. If so, thi
 
 Read `.audit/STATE.json` for:
 - `config.tier` — affects coverage verification
+- `config.models.investigate` — model for Tier 1+2 investigators (default: sonnet)
+- `config.models.investigate_tier3` — model for Tier 3 investigators (default: haiku)
+- `config.models.coverage` — model for coverage verification agent (default: sonnet)
 
 Read `.audit/STRATEGIES.md` and parse all strategies.
 
@@ -79,9 +82,11 @@ Store as `INVESTIGATOR_PATH`.
 
 **Spawn Pattern — each investigator gets this prompt:**
 
+For **Tier 1 and Tier 2** strategies, use the full investigation model:
 ```
 Task(
   subagent_type="general-purpose",
+  model="{config.models.investigate}",  // "sonnet" — from STATE.json
   prompt="
     You are a hypothesis investigator for Stronghold of Security security audit.
 
@@ -111,6 +116,42 @@ Task(
     Investigate this attack hypothesis.
     Determine: CONFIRMED / POTENTIAL / NOT VULNERABLE / NEEDS MANUAL REVIEW
     Write finding to the output file.
+  "
+)
+```
+
+For **Tier 3** strategies, use the lightweight Haiku model with condensed output:
+```
+Task(
+  subagent_type="general-purpose",
+  model="{config.models.investigate_tier3}",  // "haiku" — from STATE.json
+  prompt="
+    You are a lightweight hypothesis investigator for Stronghold of Security.
+
+    === READ CONTEXT ===
+    1. Read .audit/ARCHITECTURE.md
+    2. Read the relevant .audit/context/NN-*.md file (CONDENSED SUMMARY only)
+
+    === YOUR ASSIGNMENT ===
+    STRATEGY TO INVESTIGATE:
+    {Full strategy entry from STRATEGIES.md}
+
+    OUTPUT FILE: .audit/findings/{strategy_id}.md
+
+    === LIGHTWEIGHT INVESTIGATION ===
+    Confirm or deny ONLY. Do NOT do full investigation methodology.
+    1. Read the target code locations
+    2. Check if the specific attack vector is viable
+    3. Write a SHORT finding (confirm/deny + 1 paragraph rationale + code reference)
+
+    Output format:
+    # Finding: {ID} - {Name}
+    ## Status: {CONFIRMED | POTENTIAL | NOT VULNERABLE}
+    ## Confidence Score: {1-10}
+    ## Rationale
+    {1 paragraph with specific code references}
+    ## Code Evidence
+    {Key code snippet if CONFIRMED/POTENTIAL}
   "
 )
 ```
@@ -190,6 +231,7 @@ Goal-backward check that nothing important was missed before final synthesis.
 ```
 Task(
   subagent_type="general-purpose",
+  model="{config.models.coverage}",  // "sonnet" — from STATE.json
   prompt="
     You are a coverage verification agent for Stronghold of Security security audit.
     Your job is to check that the investigation phase didn't miss anything important.

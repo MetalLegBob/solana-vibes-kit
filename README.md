@@ -28,6 +28,17 @@ A full-stack documentation skill that transforms project ideas into comprehensiv
 - Creative doc discovery — suggests non-obvious documents you wouldn't think to write
 - Solana domain pack with 97 pre-researched knowledge files across 18 categories
 
+### [SVK Setup](svk-setup/)
+
+A guided onboarding skill that interviews users about their experience and project scope, recommends tools from a tiered catalog, walks through installation, and generates a personalized reference document. The first thing a new SVK user runs.
+
+**Features:**
+- 4-phase pipeline: interview → recommend → install → reference
+- 5-7 question adaptive interview producing beginner/intermediate/advanced profiles
+- 28-tool catalog across 10 categories with 3 tiers (essential/recommended/optional)
+- Choice groups for search (Brave/Exa/stacked) and memory (CMEM/Supermemory)
+- Personalized reference doc with use cases tailored to project type
+
 ## Installation
 
 These skills are designed for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
@@ -38,6 +49,9 @@ cd stronghold-of-security && ./install.sh /path/to/your-project
 
 # Install Grand Library
 cd grand-library && ./install.sh /path/to/your-project
+
+# Install SVK Setup
+cd svk-setup && ./install.sh /path/to/your-project
 ```
 
 ## License

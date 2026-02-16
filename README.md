@@ -26,6 +26,7 @@ A full-stack documentation skill that transforms project ideas into comprehensiv
 - 4-pass reconciliation: completeness, consistency, gap analysis, and verification audit
 - Creative doc discovery — suggests non-obvious documents you wouldn't think to write
 - Solana domain pack with 97 pre-researched knowledge files across 18 categories
+- Forkable repo catalogue with 80+ curated open source repos — fork-opportunity detection during interviews, `/GL:repos` browser with live verification
 
 ### [Stronghold of Security](stronghold-of-security/)
 

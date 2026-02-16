@@ -55,10 +55,23 @@ This begins by discovering your project — greenfield or existing code — and 
 │  Output: DECISIONS/*.md (per-topic), updated PROJECT_BRIEF.md       │
 │                          │                                          │
 │                          ▼                                          │
-│  /GL:draft         Phase 2 — Document Generation (Milestone 2)     │
-│  /GL:reconcile     Phase 3 — Reconciliation (Milestone 2)          │
+│  /GL:draft         Phase 2 — Document Generation                   │
+│  ═══════════       Wave-based parallel doc writing                  │
+│  Wave 1: Foundation docs (overview, architecture, data model)       │
+│  → User validates Wave 1 →                                          │
+│  Wave 2+: Feature specs, flows, references, creative docs           │
+│  Output: .docs/<all-documents>.md                                   │
+│                          │                                          │
+│                          ▼                                          │
+│  /GL:reconcile     Phase 3 — Reconciliation (Opus)                 │
+│  ════════════════  Cross-check ALL docs for contradictions          │
+│  Identify gaps, unanswered questions, implicit assumptions          │
+│  Verify every decision from interview is reflected in docs          │
+│  Output: RECONCILIATION_REPORT.md, updated docs                     │
 │                                                                     │
 │  /GL:status        Check progress anytime                          │
+│  /GL:update        Re-interview a topic, regenerate affected docs  │
+│  /GL:add           Add a new document to the suite                  │
 │                                                                     │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -71,9 +84,9 @@ Run `/clear` between each phase for fresh context windows.
 2. `/clear`
 3. **`/GL:interview`** — Deep topic-by-topic Q&A (may need multiple sessions)
 4. `/clear`
-5. **`/GL:draft`** — Generate all documents *(Milestone 2)*
+5. **`/GL:draft`** — Generate all documents (validate Wave 1 before continuing)
 6. `/clear`
-7. **`/GL:reconcile`** — Cross-check everything *(Milestone 2)*
+7. **`/GL:reconcile`** — Cross-check everything, resolve conflicts
 
 Check progress anytime with **`/GL:status`**.
 
@@ -103,8 +116,8 @@ All Grand Library artifacts are written to a `.docs/` directory in the project r
 │   ├── architecture.md
 │   ├── token-model.md
 │   └── ...
-├── <generated docs (Milestone 2)>
-└── RECONCILIATION_REPORT.md (Milestone 2)
+├── <generated docs>
+└── RECONCILIATION_REPORT.md
 ```
 
 ---

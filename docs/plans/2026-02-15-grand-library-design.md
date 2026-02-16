@@ -549,4 +549,34 @@ Check progress anytime with **`/GL:status`**.
 
 ---
 
+## Future: Self-Growing Knowledge Base
+
+**Status:** Idea — not planned for any current milestone
+
+### Concept
+
+When the research subagent discovers knowledge that doesn't exist in a domain pack, that research could be formatted as a domain pack knowledge file and contributed back to the SVK repository as a PR. Over time, domain packs grow organically from real user sessions.
+
+### How It Could Work
+
+**Phase 1 — Research Contribution (per-session, opt-in):**
+When a research subagent produces a high-confidence finding (8+/10) on a topic not covered by the domain pack, it formats the result using the pack's existing templates. At session end, offer: "I researched 3 topics not in the Solana domain pack. Want me to open a PR to contribute them back?" Uses `gh pr create` on a fork — mechanically straightforward.
+
+**Phase 2 — SVK-Wide Knowledge Pipeline:**
+Expand beyond Grand Library. Any SVK skill session could surface generalizable knowledge — unusual fixes, edge cases discovered during audits (SOS), architectural patterns that worked well. A post-session hook reviews artifacts, sanitizes them, and opens PRs. The approval workflow is standard GitHub PR review.
+
+### Privacy & Quality Constraints
+
+- **Opt-in required.** Users must explicitly consent to contribute research back. Never automatic.
+- **Sanitization layer.** Strip all project-specific details. Only emit general-purpose knowledge. "PDA derivation: use seeds X for pattern Y" is safe. "Bob's NFT marketplace uses this PDA scheme" is not.
+- **Human review.** Every contribution goes through PR approval. No auto-merge.
+- **Deduplication.** Check if the knowledge already exists in the pack before creating a PR.
+- **Quality threshold.** Only contribute research with confidence >= 8/10. Low-confidence findings stay local.
+
+### Why This Matters
+
+Domain packs start curated but small. Real users encounter edge cases, niche patterns, and novel combinations that no upfront curation can anticipate. A contribution pipeline turns every GL session into a potential improvement to the pack — the more people use it, the better it gets for everyone.
+
+---
+
 *This document is the approved design for Grand Library v1.0. Implementation follows the SVK Skill Foundation patterns documented in `Documents/Skill_Foundation.md`.*

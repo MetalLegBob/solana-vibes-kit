@@ -16,6 +16,18 @@ A comprehensive adversarial security audit system for Solana/Anchor smart contra
 - Attack trees, combination matrix analysis, and severity re-calibration
 - Condensed summary system for efficient cross-phase synthesis
 
+### [Grand Library](grand-library/)
+
+A full-stack documentation skill that transforms project ideas into comprehensive specification suites. Eliminates coin-flip decisions by making every choice explicit, validated, and written down.
+
+**Features:**
+- 4-phase pipeline: survey → interview → draft → reconcile — each phase gets a fresh context window
+- Adaptive interview engine with topic-tree pruning and research-backed options for micro-decisions
+- Wave-based document generation with Opus subagents and user validation gates
+- 4-pass reconciliation: completeness, consistency, gap analysis, and verification audit
+- Creative doc discovery — suggests non-obvious documents you wouldn't think to write
+- Solana domain pack with 97 pre-researched knowledge files across 18 categories
+
 ## Installation
 
 These skills are designed for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
@@ -23,18 +35,9 @@ These skills are designed for [Claude Code](https://docs.anthropic.com/en/docs/c
 ```bash
 # Install Stronghold of Security
 cd stronghold-of-security && ./install.sh /path/to/your-project
-```
 
-Or manually:
-```bash
-# Copy skill files
-cp -R stronghold-of-security/agents stronghold-of-security/knowledge-base stronghold-of-security/resources \
-      stronghold-of-security/templates stronghold-of-security/SKILL.md \
-      your-project/.claude/skills/stronghold-of-security/
-
-# Copy command files
-mkdir -p your-project/.claude/commands/stronghold-of-security
-cp stronghold-of-security/commands/*.md your-project/.claude/commands/stronghold-of-security/
+# Install Grand Library
+cd grand-library && ./install.sh /path/to/your-project
 ```
 
 ## License

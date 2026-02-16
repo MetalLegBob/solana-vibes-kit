@@ -4,17 +4,16 @@ A collection of Claude Code skills for development on Solana.
 
 ## Skills
 
-### [Stronghold of Security](stronghold-of-security/)
+### [SVK Setup](svk-setup/)
 
-A comprehensive adversarial security audit system for Solana/Anchor smart contracts. Uses parallel multi-agent analysis with a 128-pattern exploit knowledge base built from 200+ real-world incidents.
+A guided onboarding skill that interviews users about their experience and project scope, recommends tools from a tiered catalog, walks through installation, and generates a personalized reference document. The first thing a new SVK user runs.
 
 **Features:**
-- Phase-based pipeline with 7 subcommands — each phase gets a fresh context window for maximum quality
-- 10+ specialized security agents analyzing through different lenses (access control, arithmetic, state machine, CPI, token economics, oracle, etc.)
-- 128 exploit patterns with CVSS scoring, PoC outlines, and fix recommendations
-- Protocol-specific playbooks (AMM/DEX, lending, staking, bridge, NFT, oracle, governance)
-- Attack trees, combination matrix analysis, and severity re-calibration
-- Condensed summary system for efficient cross-phase synthesis
+- 4-phase pipeline: interview → recommend → install → reference
+- 5-7 question adaptive interview producing beginner/intermediate/advanced profiles
+- 28-tool catalog across 10 categories with 3 tiers (essential/recommended/optional)
+- Choice groups for search (Brave/Exa/stacked) and memory (CMEM/Supermemory)
+- Personalized reference doc with use cases tailored to project type
 
 ### [Grand Library](grand-library/)
 
@@ -28,30 +27,31 @@ A full-stack documentation skill that transforms project ideas into comprehensiv
 - Creative doc discovery — suggests non-obvious documents you wouldn't think to write
 - Solana domain pack with 97 pre-researched knowledge files across 18 categories
 
-### [SVK Setup](svk-setup/)
+### [Stronghold of Security](stronghold-of-security/)
 
-A guided onboarding skill that interviews users about their experience and project scope, recommends tools from a tiered catalog, walks through installation, and generates a personalized reference document. The first thing a new SVK user runs.
+A comprehensive adversarial security audit system for Solana/Anchor smart contracts. Uses parallel multi-agent analysis with a 128-pattern exploit knowledge base built from 200+ real-world incidents.
 
 **Features:**
-- 4-phase pipeline: interview → recommend → install → reference
-- 5-7 question adaptive interview producing beginner/intermediate/advanced profiles
-- 28-tool catalog across 10 categories with 3 tiers (essential/recommended/optional)
-- Choice groups for search (Brave/Exa/stacked) and memory (CMEM/Supermemory)
-- Personalized reference doc with use cases tailored to project type
+- Phase-based pipeline with 7 subcommands — each phase gets a fresh context window for maximum quality
+- 10+ specialized security agents analyzing through different lenses (access control, arithmetic, state machine, CPI, token economics, oracle, etc.)
+- 128 exploit patterns with CVSS scoring, PoC outlines, and fix recommendations
+- Protocol-specific playbooks (AMM/DEX, lending, staking, bridge, NFT, oracle, governance)
+- Attack trees, combination matrix analysis, and severity re-calibration
+- Condensed summary system for efficient cross-phase synthesis
 
 ## Installation
 
 These skills are designed for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
 
 ```bash
-# Install Stronghold of Security
-cd stronghold-of-security && ./install.sh /path/to/your-project
+# Install SVK Setup
+cd svk-setup && ./install.sh /path/to/your-project
 
 # Install Grand Library
 cd grand-library && ./install.sh /path/to/your-project
 
-# Install SVK Setup
-cd svk-setup && ./install.sh /path/to/your-project
+# Install Stronghold of Security
+cd stronghold-of-security && ./install.sh /path/to/your-project
 ```
 
 ## License

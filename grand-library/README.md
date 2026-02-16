@@ -29,6 +29,7 @@ This copies Grand Library into your project's `.claude/` directory.
 | `/GL:status` | Check progress, get next-step guidance |
 | `/GL:draft` | Generate documents in waves with Opus |
 | `/GL:reconcile` | Cross-check all docs for contradictions and gaps |
+| `/GL:repos` | Browse forkable open source repo catalogue |
 | `/GL:update` | Re-interview a topic and regenerate affected docs |
 | `/GL:add` | Add a new document to an existing suite |
 

@@ -53,6 +53,28 @@ Update the template frontmatter with actual values:
 - **Actionability:** An engineer should be able to implement from this document without asking clarifying questions (except for NEEDS_VERIFICATION items).
 - **Consistency:** No contradictions with PROJECT_BRIEF.md or prior wave docs.
 
+## Recommended Starting Points (Repo Catalogue)
+
+When writing architecture, feature spec, or program spec documents, check whether any DECISIONS reference forking an existing repo or describe functionality that matches the domain pack's repo catalogue (`repos-*.md` files in the knowledge directory).
+
+If matches exist, add a **"Recommended Starting Points"** section near the end of the document (before any appendices):
+
+```markdown
+## Recommended Starting Points
+
+Based on the decisions captured for this project, these open source repos are relevant:
+
+### {Repo Name}
+- **URL:** {url}
+- **License:** {license} — {fork-friendly assessment}
+- **Relevance:** {why this repo matches this project's decisions}
+- **Builder notes:** {key advice from the catalogue entry}
+
+> Verify before forking: check last commit date, recent vulnerabilities, and current license.
+```
+
+Only include this section when repos are genuinely relevant to the document's scope. Omit from test plans, error handling playbooks, or deployment sequences where repo suggestions don't add value.
+
 ## Output
 
 Return the complete document as a single markdown file, ready to be written to `.docs/{doc_id}.md`.

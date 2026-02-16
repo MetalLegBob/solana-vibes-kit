@@ -70,6 +70,7 @@ This begins by discovering your project — greenfield or existing code — and 
 │  Output: RECONCILIATION_REPORT.md, updated docs                     │
 │                                                                     │
 │  /GL:status        Check progress anytime                          │
+│  /GL:repos         Browse forkable open source repo catalogue      │
 │  /GL:update        Re-interview a topic, regenerate affected docs  │
 │  /GL:add           Add a new document to the suite                  │
 │                                                                     │
@@ -130,5 +131,8 @@ All Grand Library artifacts are written to a `.docs/` directory in the project r
 | Survey | Orchestrator / doc manifest | User's context |
 | Interview | Conversation | User's context |
 | Interview | Research subagents | Sonnet |
+| Interview | Fork opportunity verification | Haiku |
+| Repos | Catalogue browsing | User's context |
+| Repos | Live verification | Haiku |
 | Draft | Doc-writing subagents | Opus |
 | Reconcile | Cross-check + gap analysis | Opus |

@@ -100,7 +100,23 @@ Based on the user's answer, ask follow-up questions that drill deeper:
 
 **Branching:** If the user's answer reveals unexpected complexity, add follow-up questions not in the original tree. Announce this: "That's more complex than the standard path — let me ask a few extra questions about {area}."
 
-### 3d. Research Fork
+### 3d. Fork Opportunity Check
+After the opening question and initial drill-down, check whether the builder is describing functionality that has forkable open source precedent. Load the domain pack's `creative-triggers.md` and check the **Fork Opportunity Triggers** table.
+
+If a match is detected, pause the interview and offer:
+
+"There are battle-tested open source repos you could fork instead of building {what they described} from scratch. Want me to show you the options before we continue designing?"
+
+**If yes:**
+1. Load the matching `repos-*.md` catalogue file from the domain pack's `knowledge/` directory
+2. Spawn a **Haiku research subagent** to live-verify the top 3-5 matching repos (check last commit, recent vulnerabilities, license status)
+3. Present the verified repos with trust signals, builder notes, and license warnings (flag BSL/AGPL prominently)
+4. Let the builder decide: fork a repo (adjust interview to focus on customizations needed) or build from scratch (continue normal interview)
+5. If they choose to fork, capture as a decision: "D{N}: Starting from {repo name} fork — rationale: {why this repo}"
+
+**If no:** Continue the interview as normal. The catalogue entries will still appear in generated docs during the draft phase.
+
+### 3e. Research Fork
 When the user faces a decision they're unsure about — "I'm not sure whether to use X or Y" — offer to research it:
 
 "Want me to research the trade-offs between X and Y? I can look into current best practices and present your options."
@@ -139,7 +155,7 @@ Task(
 Present the research results to the user and let them decide. If the research is inconclusive (confidence < 6), flag it:
 "Research was inconclusive on this. Let's document your preferred approach and mark it as NEEDS_VERIFICATION — the reconciliation phase will flag this for follow-up."
 
-### 3e. Decision Capture
+### 3f. Decision Capture
 
 After the topic conversation is done, write `DECISIONS/{topic-slug}.md` following the template in `resources/decision-template.md`.
 
@@ -149,10 +165,11 @@ After the topic conversation is done, write `DECISIONS/{topic-slug}.md` followin
 - Include rationale and alternatives considered
 - Tag uncertain items with `NEEDS_VERIFICATION`
 - List which docs from the manifest this decision affects
+- If the builder chose to fork an existing repo (from step 3d), include it as a decision with the repo URL, license, and what customizations are planned
 
 Show the decisions file to the user for validation: "Here's what I captured from our {topic} discussion. Anything I missed or got wrong?"
 
-### 3f. Update PROJECT_BRIEF.md
+### 3g. Update PROJECT_BRIEF.md
 
 Append one-line summaries of each decision to the Decisions section:
 ```
@@ -162,7 +179,7 @@ Append one-line summaries of each decision to the Decisions section:
 
 **Check token count.** If PROJECT_BRIEF.md is growing past ~500 tokens, compact: merge related decisions, shorten wording. The brief must stay tight.
 
-### 3g. Update STATE.json
+### 3h. Update STATE.json
 
 After each topic:
 - Move the topic from `topics_remaining` to an implicit "completed" status

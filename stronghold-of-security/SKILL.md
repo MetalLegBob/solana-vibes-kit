@@ -206,7 +206,7 @@ Copy the skill and commands to your project:
 ```bash
 # Option 1: Manual copy
 cp -R stronghold-of-security/ your-project/.claude/skills/stronghold-of-security/
-cp -R stronghold-of-security/commands/ your-project/.claude/commands/stronghold-of-security/
+cp -R stronghold-of-security/commands/ your-project/.claude/commands/SOS/
 
 # Option 2: Install script
 ./stronghold-of-security/install.sh your-project/
@@ -214,7 +214,7 @@ cp -R stronghold-of-security/commands/ your-project/.claude/commands/stronghold-
 
 Both the `skills/` and `commands/` directories are required:
 - `skills/stronghold-of-security/` — Skill definition, agents, knowledge base, resources
-- `commands/stronghold-of-security/` — Subcommand orchestration files
+- `commands/SOS/` — Subcommand orchestration files
 
 ---
 

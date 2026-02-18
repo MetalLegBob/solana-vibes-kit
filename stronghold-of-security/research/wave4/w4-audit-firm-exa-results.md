@@ -195,7 +195,7 @@
 - Neodyme: "Solana Consensus - From Forks to Finality" — consensus-level security
 - Neodyme: "Upgrade Authorities" — admin authority management patterns
 
-### Tools to Reference in Fortress
+### Tools to Reference in SOS
 - Sec3 X-ray (50+ vuln types, free plan)
 - Neodyme Riverguard (free mutation testing)
 - OtterSec Verify (program verification)

@@ -200,7 +200,7 @@ Based on 163 audits, 1,733 findings:
 1. **Step 0:** Verify program source matches deployed bytecode (OtterSec Verify / Solana Verified Programs API)
 2. **Step 1:** Run automated static analysis (Sec3 X-ray, Radar, solana-lints)
 3. **Step 1b:** Fuzz with Trident (Ackee) for edge-case discovery
-4. **Step 2:** Manual code review (The Fortress / human auditors)
+4. **Step 2:** Manual code review (Stronghold of Security / human auditors)
 5. **Step 3:** Dynamic testing against deployed program (Neodyme Riverguard)
 6. **Step 4:** PoC development for confirmed findings (Neodyme solana-poc-framework)
 7. **Step 5:** (High-value protocols) Formal verification with Certora SCP

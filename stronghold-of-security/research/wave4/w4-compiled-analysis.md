@@ -139,8 +139,8 @@ Check if pool.total_value_locked accounts for accumulated fees
 ### EP-CANDIDATE-6: Validator Client Behavioral Mismatch (DoS)
 **Source:** Neodyme / Firedancer v0.1 (2 High, Jul 2024)
 **What:** Firedancer (Jump's C validator) had behavioral mismatches with Agave (Rust validator) that could be exploited for remote crash or denial of service. Different validators interpreting the same transactions differently creates consensus-level risks.
-**Why it's new:** This is an infrastructure-level vulnerability class not covered by any current EP. Our KB focuses on smart contract/program-level patterns. Validator-level divergence is relevant for The Fortress only when auditing infrastructure-adjacent code (validator plugins, custom RPC handlers, consensus-sensitive operations).
-**Relevance to Fortress:** Low priority for standard program audits, but worth noting. If a program relies on specific validator behavior that differs between Agave and Firedancer, it could have inconsistent results across the network.
+**Why it's new:** This is an infrastructure-level vulnerability class not covered by any current EP. Our KB focuses on smart contract/program-level patterns. Validator-level divergence is relevant for Stronghold of Security only when auditing infrastructure-adjacent code (validator plugins, custom RPC handlers, consensus-sensitive operations).
+**Relevance to SOS:** Low priority for standard program audits, but worth noting. If a program relies on specific validator behavior that differs between Agave and Firedancer, it could have inconsistent results across the network.
 **Detection:** Flag any program logic that depends on: validator-specific compute metering, transaction ordering assumptions, or edge-case runtime behavior that might differ between implementations.
 
 ---
@@ -194,7 +194,7 @@ Check if pool.total_value_locked accounts for accumulated fees
 ### OtterSec: "Jumping Around in the VM" (Dec 2023)
 **Topic:** VM-level security -- exploitation at the BPF/SBF level.
 **KB gap:** Our entire KB is at the Rust/Anchor abstraction layer. We have zero coverage of VM-level exploitation (jump target manipulation, BPF verifier bypasses, etc.). This is a niche but critical area for infrastructure-level audits.
-**Action:** Low priority for standard program audits. Consider adding a "VM/Runtime Level" category if Fortress expands scope.
+**Action:** Low priority for standard program audits. Consider adding a "VM/Runtime Level" category if SOS expands scope.
 
 ---
 
@@ -205,7 +205,7 @@ Check if pool.total_value_locked accounts for accumulated fees
 - GitHub CI integration with SARIF output
 - Free plan for Solana ecosystem
 - Works for both Anchor and non-Anchor programs
-- **Fortress integration:** Reference SVE IDs in our exploit patterns where they overlap. When Fortress finds an issue, cross-reference with X-ray's classification. Example mapping:
+- **SOS integration:** Reference SVE IDs in our exploit patterns where they overlap. When SOS finds an issue, cross-reference with X-ray's classification. Example mapping:
   - SVE-MissingSignerCheck -> EP-001
   - SVE-MissingOwnerCheck -> EP-002
   - SVE-IntegerOverflow -> EP-015/016
@@ -218,27 +218,27 @@ Check if pool.total_value_locked accounts for accumulated fees
 - Supported by Solana Foundation
 - Uses **mutation-based testing**: simulates mutated (malicious) transactions against deployed programs
 - Does NOT execute attacks; reports findings to developers
-- **Fortress integration:** Complementary approach. Fortress does static code analysis; Riverguard does dynamic mutation testing. Recommendation in audit reports: "Run Riverguard against deployed program to validate findings."
+- **SOS integration:** Complementary approach. SOS does static code analysis; Riverguard does dynamic mutation testing. Recommendation in audit reports: "Run Riverguard against deployed program to validate findings."
 - **Novel approach:** Mutation rules (May 2025 blog) describe specific transaction mutations that expose vulnerabilities. This is the inverse of our EP patterns -- instead of "what does the code look like," it's "what transactions break it."
 
 ### OtterSec Verify (otter-verify)
 - On-chain program verification service
 - Verifies that deployed bytecode matches published source code
-- **Fortress integration:** Before auditing, verify the program's source matches what's deployed. If verification fails, flag as critical risk -- the code being audited may not be what's running.
+- **SOS integration:** Before auditing, verify the program's source matches what's deployed. If verification fails, flag as critical risk -- the code being audited may not be what's running.
 - **Detection step to add:** "Step 0: Verify program source matches deployed bytecode via OtterSec Verify or Solana Verified Programs API."
 
 ### Sec3 IDL Guesser (Apr 2025)
 - Recovers instruction definitions from closed-source Solana program binaries
 - Useful for auditing programs without source code
-- **Fortress integration:** When auditing protocols that CPI into closed-source programs, use IDL Guesser to understand the target program's interface. Important for validating CPI safety (EP-042 to EP-050).
+- **SOS integration:** When auditing protocols that CPI into closed-source programs, use IDL Guesser to understand the target program's interface. Important for validating CPI safety (EP-042 to EP-050).
 
 ### Neodyme solana-poc-framework
 - Framework for creating Proofs of Concept for Solana exploits
-- **Fortress integration:** Recommend in audit reports for PoC creation. When Fortress identifies a vulnerability, the auditor can use this framework to build a concrete exploit demonstration.
+- **SOS integration:** Recommend in audit reports for PoC creation. When SOS identifies a vulnerability, the auditor can use this framework to build a concrete exploit demonstration.
 
 ### Other Notable Tools
 - **Neodyme solana-ctf** -- CTF challenges for training
-- **Neodyme solana-security-txt** -- Standard for embedding security contact info in on-chain programs. Fortress could check for its presence as a best-practice item.
+- **Neodyme solana-security-txt** -- Standard for embedding security contact info in on-chain programs. SOS could check for its presence as a best-practice item.
 
 ---
 
@@ -297,7 +297,7 @@ Check if pool.total_value_locked accounts for accumulated fees
 - [ ] Merge EP-CANDIDATE-4 (Fee routing inversion) into EP-099 as a sub-pattern
 - [ ] Add EP-CANDIDATE-5 (Fee exclusion from pool accounting) as EP-105 or sub-pattern of economic category
 - [ ] Add upgrade authority evaluation checklist to secure-patterns.md
-- [ ] Add "Step 0: Source verification" to the Fortress audit workflow
+- [ ] Add "Step 0: Source verification" to the SOS audit workflow
 - [ ] Update audit-firm-findings.md with new findings from this wave
 
 ### For Wave 5 Deep-Dives (Need Exa fetches)
@@ -310,7 +310,7 @@ Check if pool.total_value_locked accounts for accumulated fees
 
 ### For Architecture Improvements
 - [ ] Add SVE cross-reference field to EP format
-- [ ] Add "Complementary Tools" section to Fortress output (reference X-ray, Riverguard, Verify)
+- [ ] Add "Complementary Tools" section to SOS output (reference X-ray, Riverguard, Verify)
 - [ ] Consider adding `security.txt` presence check as informational finding
 
 ---

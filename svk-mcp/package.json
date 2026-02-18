@@ -1,0 +1,14 @@
+{
+  "name": "svk-mcp",
+  "version": "1.0.0",
+  "description": "SVK MCP Server — exposes SVK artifacts as queryable tools",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.25.0"
+  }
+}

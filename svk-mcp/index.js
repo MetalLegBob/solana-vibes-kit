@@ -6,6 +6,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { handleProjectStatus } from "./tools/status.js";
+import { handleGetDoc, handleGetDecisions } from "./tools/docs.js";
 
 const PROJECT_DIR = process.env.SVK_PROJECT_DIR || process.cwd();
 
@@ -21,6 +22,32 @@ server.tool(
   {},
   async () => {
     const result = await handleProjectStatus(PROJECT_DIR);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: svk_get_doc ---
+server.tool(
+  "svk_get_doc",
+  "Retrieve a GL-generated document by name, or list all available docs. Use when you need architecture docs, data models, security models, or other GL-produced documentation.",
+  { name: z.string().optional().describe("Document name or partial match (e.g., 'architecture', 'data-model'). Omit to list all.") },
+  async ({ name }) => {
+    const result = await handleGetDoc(PROJECT_DIR, { name });
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: svk_get_decisions ---
+server.tool(
+  "svk_get_decisions",
+  "Retrieve architectural decisions captured during GL interview. Use when you need rationale for design choices.",
+  { topic: z.string().optional().describe("Filter by topic (e.g., 'staking', 'auth', 'token'). Omit for all.") },
+  async ({ topic }) => {
+    const result = await handleGetDecisions(PROJECT_DIR, { topic });
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

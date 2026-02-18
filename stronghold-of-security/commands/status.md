@@ -18,8 +18,30 @@ Check the current state of an audit and get guidance on what to do next.
 test -f .audit/STATE.json && echo "AUDIT_EXISTS" || echo "NO_AUDIT"
 ```
 
+Also check for audit history:
+```bash
+test -d .audit-history && ls .audit-history/ 2>/dev/null | wc -l
+```
+
 ### If no audit exists:
 
+If audit history exists but no current audit:
+```markdown
+## No Active Audit
+
+No `.audit/STATE.json` found, but {N} previous audit(s) found in `.audit-history/`.
+
+### Previous Audits:
+{For each directory in .audit-history/, sorted by name (date-based):}
+| # | Directory | Date |
+|---|-----------|------|
+| {N} | {dir_name} | {extracted date} |
+
+Run `/SOS:scan` to begin a new audit. Previous audit context will be
+automatically carried forward via the handover system.
+```
+
+If no audit history either:
 ```markdown
 ## No Stronghold of Security Audit Found
 
@@ -64,11 +86,23 @@ Stronghold of Security — Audit Progress
 
 Model: Phase 1 ran {config.models.phase1} | Phase 4 will use {config.models.investigate}
 Tier: {config.tier} ({phases.scan.loc_estimated} LOC, {phases.scan.files_scanned} files)
+
+{If state has previous_audit field:}
+Chain: Audit #{audit_number} — {N} previous audits in history
+  Previous: #{prev_number} — {prev_date} @ {prev_ref} ({prev_confirmed} confirmed, {prev_potential} potential)
 ```
 
 ## Step 3: Phase-Specific Details
 
 Based on current phase, show additional info:
+
+**If stacking is active:**
+```
+Stacking: Audit #{audit_number} in chain
+  Delta: {delta.modified_files} modified, {delta.new_files} new, {delta.deleted_files} deleted
+  Handover: {handover_generated ? "Generated" : "Skipped (incomplete previous audit)"}
+  Massive rewrite: {massive_rewrite ? "YES — verification agents skipped" : "No"}
+```
 
 **If investigate is in progress:**
 ```

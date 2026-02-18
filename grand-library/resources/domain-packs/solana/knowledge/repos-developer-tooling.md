@@ -9,7 +9,7 @@ last_verified: "2026-02-16"
 
 # Developer Tooling — Forkable Repo Catalogue
 
-> **Verification note:** Fields marked [VERIFY] need live confirmation. Run `gh repo view <org/repo> --json licenseInfo,stargazerCount,forkCount,updatedAt` to verify.
+> **Verification status:** Live-verified on 2026-02-16 via GitHub API and Exa web search. Star/fork counts are approximate (±5%). License information confirmed against GitHub's license detection.
 
 ---
 
@@ -17,22 +17,24 @@ last_verified: "2026-02-16"
 
 ### Bankrun (solana-bankrun)
 
+> **⚠️ DEPRECATED:** README explicitly states "DEPRECATED: use LiteSVM instead." No active development.
+
 - **URL:** https://github.com/kevinheavey/solana-bankrun
 - **Framework:** TypeScript (wraps Rust via NAPI)
-- **License:** MIT
-- **Use cases:** Reusable component, Fork candidate (for custom test harness)
+- **License:** Apache 2.0
+- **Use cases:** Historical reference (deprecated)
 - **Category tags:** Testing, unit testing, integration testing, TypeScript
 
 **Trust signals:**
 - Maintained by Kevin Heavey (prolific Solana contributor, also behind `solders`)
-- ~300+ stars [VERIFY]
-- Active commits, used by multiple production projects
+- ~164 stars, ~16 forks
+- **DEPRECATED** — successor is LiteSVM
 
 **Builder notes:**
-> The go-to for fast Solana program tests in TypeScript. Spins up a lightweight `BanksServer` in-process instead of a full validator — tests run 10-50x faster. API mirrors `@solana/web3.js` patterns so migration is low-friction. Limitation: some syscalls and newer features may lag behind the full validator runtime. CPI works but edge cases around compute budget may differ.
+> Was the go-to for fast Solana program tests in TypeScript. Spun up a lightweight `BanksServer` in-process instead of a full validator. **Now deprecated in favor of LiteSVM.** If you have existing bankrun tests, migrate to LiteSVM. For new projects, start with LiteSVM directly.
 
 **Complexity:** Low — clean API, straightforward to adopt
-**Confidence:** 9/10
+**Confidence:** 6/10 (deprecated)
 **Last verified:** 2026-02-16
 
 ---
@@ -46,16 +48,16 @@ last_verified: "2026-02-16"
 - **Category tags:** Testing, unit testing, integration testing, Rust, SVM
 
 **Trust signals:**
-- Created by former Solana Labs contributors
+- Successor to solana-bankrun (which is now deprecated). Originally created by kevinheavey, now under `LiteSVM` org.
 - Growing rapidly in 2024-2025
 - Community endorsement from Solana core developers
-- ~200+ stars [VERIFY]
+- ~538 stars, ~124 forks
 
 **Builder notes:**
-> The successor philosophy to bankrun for Rust-native testing. Minimal SVM implementation — processes transactions without consensus, gossip, or RPC overhead. Deterministic, fast tests. **Key advantage over bankrun:** Rust-native, no NAPI bridge overhead for Rust program developers. Newer project, so some niche runtime behaviors may differ from mainnet. TS bindings are solid but Rust API is primary.
+> The standard for fast Solana program testing. Minimal SVM implementation — processes transactions without consensus, gossip, or RPC overhead. Deterministic, fast tests. **Key advantage over bankrun:** Rust-native, no NAPI bridge overhead for Rust program developers. TS bindings are solid but Rust API is primary. The recommended testing tool for all new Solana projects.
 
 **Complexity:** Low-Medium — Rust API is ergonomic, TS bindings require understanding NAPI layer
-**Confidence:** 8/10
+**Confidence:** 9/10
 **Last verified:** 2026-02-16
 
 ---
@@ -70,8 +72,9 @@ last_verified: "2026-02-16"
 
 **Trust signals:**
 - Maintained by Ackee Blockchain (established Solana security auditing firm)
-- ~400+ stars [VERIFY]
+- ~357 stars, ~52 forks
 - Used in production audit workflows
+- Backed by Solana Foundation grant.
 - Conference talks and documentation
 
 **Builder notes:**
@@ -87,7 +90,7 @@ last_verified: "2026-02-16"
 
 ### solana-verify
 
-- **URL:** https://github.com/Ellipsis-Labs/solana-verify
+- **URL:** https://github.com/Ellipsis-Labs/solana-verifiable-build
 - **Framework:** Rust (CLI binary)
 - **License:** MIT
 - **Use cases:** Reusable component
@@ -95,9 +98,10 @@ last_verified: "2026-02-16"
 
 **Trust signals:**
 - Maintained by Ellipsis Labs (Phoenix DEX team)
-- ~200+ stars [VERIFY]
+- ~400 stars, ~180 forks
 - Endorsed by Solana Foundation
 - Integrated into Solana Explorer for verified builds
+- **Note:** Repo name is `solana-verifiable-build`, not `solana-verify`. The crate name on crates.io is `solana-verify`. Latest release v0.4.12 (Nov 2025).
 
 **Builder notes:**
 > Critical infrastructure for program verification. Builds your program in a Docker container and compares the hash against what's deployed on-chain. Integrate into your CI/CD pipeline for any production program. Docker-based build ensures reproducibility. Some programs with complex build setups may need verify config tweaks. `solana-verify verify-from-repo` is the main command.
@@ -114,15 +118,15 @@ last_verified: "2026-02-16"
 
 - **URL:** https://github.com/codama-idl/codama
 - **Framework:** TypeScript (core), generates Rust, TypeScript, Python clients
-- **License:** Apache 2.0
+- **License:** MIT (copyright Codama 2025 / Metaplex Foundation 2024)
 - **Use cases:** Reusable component, Fork candidate (for custom code generation)
 - **Category tags:** IDL, client generation, code generation, SDK generation
 
 **Trust signals:**
 - Created by Loris Leiva (Metaplex lead engineer)
 - Generates all official Metaplex client SDKs
-- Migrated from Metaplex Foundation to its own org (`codama-idl`)
-- ~200+ stars across repos [VERIFY]
+- Evolved from `metaplex-foundation/kinobi` (155 stars, still exists). The `codama-idl` org is the new canonical home.
+- ~411 stars, ~72 forks. 865 commits.
 - Active development
 
 **Builder notes:**
@@ -145,7 +149,7 @@ last_verified: "2026-02-16"
 **Trust signals:**
 - Metaplex Foundation
 - Used to generate IDLs for all Metaplex native programs
-- ~100+ stars [VERIFY]
+- ~213 stars, ~42 forks. Latest release v0.4.8 (Feb 2026). 1.7M+ crates.io downloads.
 - Active maintenance
 
 **Builder notes:**
@@ -161,17 +165,18 @@ last_verified: "2026-02-16"
 
 ### Anchor Framework
 
-- **URL:** https://github.com/coral-xyz/anchor
+- **URL:** https://github.com/solana-foundation/anchor (redirects from coral-xyz/anchor)
 - **Framework:** Rust + TypeScript
 - **License:** Apache 2.0
 - **Use cases:** Reusable component, Reference implementation, Fork candidate
 - **Category tags:** Framework, scaffolding, Rust, TypeScript, IDL, testing, CLI
 
 **Trust signals:**
-- Maintained by Coral (Armani Ferrante and team)
-- ~3,400+ stars, ~1,000+ forks [VERIFY]
+- Maintained by Solana Foundation (transferred from Coral/coral-xyz). TS packages migrating from `@coral-xyz` to `@anchor-lang`.
+- ~4,951 stars, ~1,849 forks. 320 contributors, 51 releases.
 - The most widely used Solana development framework
 - Daily commits, massive community, ecosystem grants
+- **⚠️ Security advisory (Feb 2026):** CPI Return Data Spoofing in `Return<T>::get()` — codegen discards program ID from `get_return_data()`, allowing malicious CPI callee to spoof return data. CVSSv3 7.5 (HIGH). Check for patches in latest version.
 
 **Builder notes:**
 > The "Rails of Solana." `anchor init` scaffolds a full project. The macro system (`#[program]`, `#[derive(Accounts)]`, constraints) drastically reduces boilerplate. Huge community, most tutorials assume Anchor, automatic serialization. Adds ~20-30KB to program size (optimized in recent versions). The macro magic can obscure what's happening at runtime — dangerous if you don't understand the underlying model. Use Anchor for 90% of programs, go native only when you need absolute minimal size or full control.
@@ -184,23 +189,22 @@ last_verified: "2026-02-16"
 
 ### Poseidon (TypeScript-to-Anchor)
 
-- **URL:** https://github.com/turbin3/poseidon
+- **URL:** https://github.com/Turbin3/poseidon
 - **Framework:** TypeScript -> Rust/Anchor transpiler
-- **License:** MIT [VERIFY]
+- **License:** No license file detected on GitHub — **significant concern for inclusion**
 - **Use cases:** Reference implementation
 - **Category tags:** Scaffolding, transpiler, TypeScript, Anchor, education
 
 **Trust signals:**
-- Built by Turbin3 (Solana developer education org)
-- ~100+ stars [VERIFY]
-- Active development through 2024-2025
-- Used in their educational programs
+- Built by Turbin3 (Solana developer education org — note casing: capital T, number 3)
+- ~154 stars, ~33 forks. 168 commits. No releases published.
+- **⚠️ STALE:** Last activity May 2025 (~9 months ago). No published releases. No license file.
 
 **Builder notes:**
 > Write Solana programs in TypeScript, transpiles to Anchor Rust. Great for TS developers who want to write programs without learning Rust. Good for learning and prototyping — for production, graduate to Anchor directly. Same fundamental limitations as all transpilers: subset of TS, generated code may not be optimal, debugging across transpilation boundary is hard.
 
 **Complexity:** Medium — low barrier to write, understanding output requires Anchor knowledge
-**Confidence:** 7/10
+**Confidence:** 4/10 (stale, no license)
 **Last verified:** 2026-02-16
 
 ---
@@ -214,15 +218,16 @@ last_verified: "2026-02-16"
 - **Category tags:** Reference programs, tokens, governance, staking
 
 **Trust signals:**
-- Official Solana Labs — ~3,500+ stars, ~2,000+ forks
+- Official Solana Labs — ~4,176 stars, ~2,389 forks
 - Core infrastructure used by the entire ecosystem
 - Battle-tested programs handling billions of dollars
+- **⚠️ ARCHIVED:** Entire repo archived March 2025. Individual programs migrated to separate repos under various orgs (solana-program, Mythic-Project, etc.).
 
 **Builder notes:**
-> The most important reference codebase in Solana development. Every program is production-proven. Token program teaches account model fundamentals. Token-2022 teaches extension architecture. Governance teaches complex multi-instruction workflows. Stake Pool and Governance are commonly forked. Read the Token program source before writing any Solana program. The test suites are excellent references.
+> The most important reference codebase in Solana development. Every program is production-proven. Token program teaches account model fundamentals. Token-2022 teaches extension architecture. Governance teaches complex multi-instruction workflows. **Note: repo is archived.** Individual programs now live in separate repos. The code remains an excellent reference but verify you're using the latest migrated versions.
 
 **Complexity:** Medium-High — individual programs range from simple (Memo) to very complex (Token-2022)
-**Confidence:** 9/10
+**Confidence:** 8/10
 **Last verified:** 2026-02-16
 
 ---
@@ -231,16 +236,16 @@ last_verified: "2026-02-16"
 
 ### Solana Explorer (Source)
 
-- **URL:** https://github.com/solana-labs/explorer
+- **URL:** https://github.com/solana-foundation/explorer (moved from solana-labs/explorer)
 - **Framework:** Next.js, TypeScript
-- **License:** Apache 2.0
+- **License:** MIT
 - **Use cases:** Fork candidate, Reference implementation
 - **Category tags:** Debugging, explorer, visualization
 
 **Trust signals:**
-- Official Solana Labs
+- Official Solana Foundation (moved from solana-labs)
 - Production deployment at explorer.solana.com
-- Well-maintained
+- ~610 stars, ~530 forks. 2,664 commits. Actively maintained.
 
 **Builder notes:**
 > Fork this for custom block explorers or internal dashboards. The transaction parsing, account rendering, and program log display are production-proven. The instruction decoding patterns are particularly useful — they show how to parse and display arbitrary Solana program interactions. Large Next.js app — extracting individual components requires understanding the full architecture.
@@ -254,20 +259,22 @@ last_verified: "2026-02-16"
 ## Builder Recommendations
 
 **Starting a new Solana program:**
-`anchor init` for the project scaffold. Use Bankrun or LiteSVM for fast testing. Add Trident for fuzz testing before audit.
+`anchor init` for the project scaffold. Use LiteSVM for fast testing (bankrun is deprecated). Add Trident for fuzz testing before audit.
 
 **Generating client SDKs:**
 Use Anchor's built-in IDL for basic clients. Graduate to Codama for production-quality SDK generation.
 
 **Native Rust programs (no Anchor):**
-Use Shank for IDL extraction. Study SPL programs as reference. Use LiteSVM for Rust-native testing.
+Use Shank for IDL extraction. Study SPL programs as reference (archived but code is still excellent). Use LiteSVM for Rust-native testing.
 
 **Verifying deployments:**
-Integrate solana-verify into CI/CD. Essential for trust and transparency.
+Integrate solana-verify into CI/CD. Essential for trust and transparency. Note: repo name is `solana-verifiable-build`.
 
 ## License Summary
 
 | License | Repos | Fork-Friendly? |
 |---|---|---|
-| Apache 2.0 | Anchor, SPL, Codama, Shank, LiteSVM, Explorer | **Yes** |
-| MIT | Bankrun, Trident, solana-verify, Poseidon | **Yes** |
+| Apache 2.0 | Anchor, SPL, Shank, LiteSVM | **Yes** |
+| MIT | Trident, solana-verify, Codama, Explorer | **Yes** |
+| No license | Poseidon | **No** — cannot fork without permission |
+| Deprecated | Bankrun | N/A — use LiteSVM instead |

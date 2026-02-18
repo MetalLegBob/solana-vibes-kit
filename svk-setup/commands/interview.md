@@ -29,10 +29,25 @@ Check if `.svk/SETUP_PROFILE.json` already exists.
 **If it exists:** Ask the user:
 "I found an existing setup profile. Want to start fresh with a new interview, or keep the existing profile and skip to recommendations?"
 
-**If it doesn't exist:** Create the `.svk/` directory and proceed.
+**If it doesn't exist:** Create the `.svk/` directory and initialize state tracking.
 
 ```bash
 mkdir -p .svk
+```
+
+Write `.svk/STATE.json`:
+```json
+{
+  "skill": "svk-setup",
+  "version": "1.0.0",
+  "updated": "{ISO-8601}",
+  "phases": {
+    "interview": { "status": "in_progress" },
+    "recommend": { "status": "pending" },
+    "install": { "status": "pending" },
+    "reference": { "status": "pending" }
+  }
+}
 ```
 
 ---
@@ -193,6 +208,8 @@ Write `.svk/SETUP_PROFILE.json`:
   }
 }
 ```
+
+Update `.svk/STATE.json` — set `phases.interview.status` to `"complete"` and `phases.recommend.status` to `"pending"`. Update the `updated` timestamp.
 
 ---
 

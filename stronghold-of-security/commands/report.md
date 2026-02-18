@@ -17,7 +17,7 @@ Generate the comprehensive audit report by synthesizing all findings with combin
 
 ## Prerequisites
 
-1. Read `.audit/STATE.json` — check that `phases.investigate.status === "completed"`
+1. Read `.audit/STATE.json` — check that `phases.investigate.status === "complete"`
 2. Verify `.audit/findings/` contains investigation results
 
 If prerequisites are missing:
@@ -162,7 +162,7 @@ Update `.audit/STATE.json`:
 {
   "phases": {
     "report": {
-      "status": "completed",
+      "status": "complete",
       "completed_at": "{ISO-8601}",
       "report_file": ".audit/FINAL_REPORT.md"
     }

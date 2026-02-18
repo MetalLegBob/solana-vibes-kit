@@ -17,7 +17,7 @@ function getCurrentPhase(state) {
     if (s === "in_progress") {
       return { phase: name, status: "in_progress" };
     }
-    if (s === "completed" || s === "complete") {
+    if (s === "complete") {
       currentPhase = name;
       currentStatus = s;
     }
@@ -73,7 +73,7 @@ function getNextStep(skill, phase, status) {
     return null;
   }
 
-  if (status === "completed" || status === "complete") {
+  if (status === "complete") {
     if (skill === "grand-library") {
       const next = { survey: "/GL:interview", interview: "/GL:draft", draft: "/GL:reconcile" };
       return next[phase] ? `Next: /clear then ${next[phase]}` : null;

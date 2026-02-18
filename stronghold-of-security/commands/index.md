@@ -188,7 +188,7 @@ If `.audit/STATE.json` exists, update it:
 {
   "phases": {
     "index": {
-      "status": "completed",
+      "status": "complete",
       "completed_at": "{ISO-8601}",
       "files_indexed": "{N}",
       "total_loc": "{N}"

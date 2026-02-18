@@ -17,7 +17,7 @@ Investigate each attack hypothesis with dedicated agents, then verify coverage a
 
 ## Prerequisites
 
-1. Read `.audit/STATE.json` — check that `phases.strategize.status === "completed"`
+1. Read `.audit/STATE.json` — check that `phases.strategize.status === "complete"`
 2. Verify `.audit/STRATEGIES.md` exists
 3. Verify `.audit/ARCHITECTURE.md` exists
 
@@ -233,8 +233,8 @@ Wait for each batch to complete before starting the next.
       "batches_completed": {N},
       "batches_total": {N},
       "strategies": {
-        "H001": "completed",
-        "H002": "completed",
+        "H001": "complete",
+        "H002": "complete",
         "H003": "in_progress",
         ...
       }
@@ -356,7 +356,7 @@ Update `.audit/STATE.json`:
 {
   "phases": {
     "investigate": {
-      "status": "completed",
+      "status": "complete",
       "completed_at": "{ISO-8601}",
       "total_strategies": {N},
       "supplemental_strategies": {N},

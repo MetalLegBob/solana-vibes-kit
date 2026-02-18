@@ -19,7 +19,7 @@ Deploy parallel context auditors to build deep security understanding of the cod
 
 Before starting, verify the scan phase is complete:
 
-1. Read `.audit/STATE.json` — check that `phases.scan.status === "completed"`
+1. Read `.audit/STATE.json` — check that `phases.scan.status === "complete"`
 2. Verify `.audit/KB_MANIFEST.md` exists
 3. Verify `.audit/HOT_SPOTS.md` exists
 
@@ -287,15 +287,15 @@ Update `.audit/STATE.json`:
 {
   "phases": {
     "analyze": {
-      "status": "completed",
+      "status": "complete",
       "completed_at": "{ISO-8601}",
       "agents": {
-        "01_access_control": "completed",
-        "02_arithmetic": "completed",
+        "01_access_control": "complete",
+        "02_arithmetic": "complete",
         ...
       },
       "verification_agents": {
-        "01_access_control_verification": "completed",
+        "01_access_control_verification": "complete",
         ...
       },
       "total_output_kb": {N},

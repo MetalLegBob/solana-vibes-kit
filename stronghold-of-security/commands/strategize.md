@@ -18,7 +18,7 @@ Merge all context auditor findings into a unified architecture document, then ge
 
 ## Prerequisites
 
-1. Read `.audit/STATE.json` — check that `phases.analyze.status === "completed"`
+1. Read `.audit/STATE.json` — check that `phases.analyze.status === "complete"`
 2. Verify `.audit/context/` contains context files
 
 If prerequisites are missing:
@@ -227,7 +227,7 @@ Update `.audit/STATE.json`:
 {
   "phases": {
     "strategize": {
-      "status": "completed",
+      "status": "complete",
       "completed_at": "{ISO-8601}",
       "strategies_generated": {N},
       "tier_1_count": {N},

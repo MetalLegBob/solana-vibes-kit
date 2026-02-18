@@ -48,7 +48,7 @@ test -f .audit/STATE.json && echo "PREVIOUS_AUDIT_EXISTS" || echo "NO_PREVIOUS_A
 
 ### Step 2: Validate Previous Audit is Complete
 
-Read `.audit/STATE.json`. Check that `phases.report.status === "completed"`.
+Read `.audit/STATE.json`. Check that `phases.report.status === "complete"`.
 
 If the previous audit is **not** complete (e.g., abandoned mid-pipeline):
 ```
@@ -73,7 +73,7 @@ Get the git ref at the time of the previous audit:
 git log --format="%H" -1 --before="{started_at}" 2>/dev/null || git rev-parse HEAD
 ```
 
-If `phases.report.status === "completed"`, also extract findings summary from `.audit/FINAL_REPORT.md`:
+If `phases.report.status === "complete"`, also extract findings summary from `.audit/FINAL_REPORT.md`:
 - Count of CONFIRMED findings
 - Count of POTENTIAL findings
 
@@ -125,7 +125,7 @@ Calculate massive rewrite detection:
 
 ### Step 6: Generate HANDOVER.md
 
-**Only if previous audit was complete** (had `phases.report.status === "completed"`):
+**Only if previous audit was complete** (had `phases.report.status === "complete"`):
 
 Create a fresh `.audit/` directory:
 ```bash
@@ -518,7 +518,7 @@ Write `.audit/STATE.json`:
   },
   "phases": {
     "scan": {
-      "status": "completed",
+      "status": "complete",
       "completed_at": "{ISO-8601}",
       "files_scanned": {N},
       "loc_estimated": {N},

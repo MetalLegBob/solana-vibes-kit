@@ -2,6 +2,21 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
+## v1.1.0 — 2026-02-18
+
+### Awareness Layer (Hook + MCP)
+- SessionStart hook that injects SVK project status on new sessions — shows in-progress audits, doc generation status, and next steps (zero cost when no SVK state exists)
+- SVK MCP server with 6 tools: `svk_project_status`, `svk_get_doc`, `svk_get_decisions`, `svk_get_audit`, `svk_search`, `svk_suggest`
+- Standalone install script at `svk-mcp/install.sh`
+- Automatic installation via `/SVK-setup:install` (Step 5.5)
+
+### Skill Foundation
+- Added Artifact Convention section — defines STATE.json discovery protocol for automatic hook/MCP integration
+- Added MCP Visibility section — documents suggestion rule schema for new skills
+- Added artifact convention item to Quick-Start Checklist
+
+---
+
 ## v1.0.0 — 2026-02-18
 
 Initial unified release. All skills reset to shared v1.0.0 versioning.

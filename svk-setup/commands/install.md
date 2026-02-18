@@ -279,6 +279,92 @@ Update `.svk/SETUP_INSTALLED.json` with `completed` timestamp.
 
 ---
 
+## Step 5.5: SVK Infrastructure — Hook + MCP Server
+
+After all tool categories are installed, set up the SVK awareness layer. This runs automatically (no user choice needed — it's part of SVK itself).
+
+### 5.5a: Install SessionStart Hook
+
+1. Read the SVK repo path from `.claude/svk-meta.json` (`svk_repo` field)
+2. Copy the hook script:
+   ```bash
+   mkdir -p .claude/hooks
+   cp "{svk_repo}/.claude/hooks/svk-session-start.sh" .claude/hooks/svk-session-start.sh
+   chmod +x .claude/hooks/svk-session-start.sh
+   ```
+3. Check if `.claude/settings.json` exists. If so, read it and merge the hooks config. If not, create it with:
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [
+         {
+           "matcher": "startup",
+           "hooks": [
+             {
+               "type": "command",
+               "command": ".claude/hooks/svk-session-start.sh",
+               "timeout": 5
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+   When merging, add the SVK hook entry to the existing `SessionStart` array. Do not overwrite existing hooks.
+4. Verify the hook script exists and is executable:
+   ```bash
+   test -x .claude/hooks/svk-session-start.sh && echo "✓ SVK SessionStart hook installed"
+   ```
+
+### 5.5b: Install SVK MCP Server
+
+1. Read the SVK repo path from `.claude/svk-meta.json`
+2. Install MCP server dependencies (if not already done):
+   ```bash
+   cd "{svk_repo}/svk-mcp" && npm install --production && cd -
+   ```
+3. Add the SVK MCP server to the project's MCP config. Check if `.mcp.json` exists in the project root:
+   - If yes, read it and add the `svk` server entry
+   - If no, create `.mcp.json` with:
+   ```json
+   {
+     "mcpServers": {
+       "svk": {
+         "command": "node",
+         "args": ["{svk_repo}/svk-mcp/index.js"],
+         "env": {
+           "SVK_PROJECT_DIR": "."
+         }
+       }
+     }
+   }
+   ```
+4. Report result:
+   ```
+   ✓ SVK MCP server configured (6 tools: status, docs, decisions, audit, search, suggest)
+   ```
+
+### Track Result
+
+Update `.svk/SETUP_INSTALLED.json` with:
+```json
+{
+  "svk-hook": {
+    "status": "installed",
+    "category": "svk-infrastructure",
+    "installed_at": "{ISO timestamp}"
+  },
+  "svk-mcp": {
+    "status": "installed",
+    "category": "svk-infrastructure",
+    "installed_at": "{ISO timestamp}"
+  }
+}
+```
+
+---
+
 ## Step 6: Transition
 
 ```markdown

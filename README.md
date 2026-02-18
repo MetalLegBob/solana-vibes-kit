@@ -44,6 +44,28 @@ A comprehensive adversarial security audit system for Solana/Anchor smart contra
 
 Check for and install SVK updates. Compares your installed version against the latest release and selectively reinstalls only the skills that changed.
 
+## Awareness Layer (Hook + MCP)
+
+SVK includes a project awareness layer that makes skill artifacts visible across sessions and tools:
+
+- **SessionStart Hook** — Injects a brief SVK project status summary when you start a new Claude Code session. Shows in-progress audits, documentation status, and next steps. Zero cost when no SVK state exists.
+- **SVK MCP Server** — Exposes 6 tools for querying SVK artifacts:
+  - `svk_project_status` — Current state of all active skills
+  - `svk_get_doc` — Retrieve GL-generated documentation
+  - `svk_get_decisions` — Retrieve architectural decisions
+  - `svk_get_audit` — Retrieve SOS audit findings and reports
+  - `svk_search` — Full-text search across all SVK artifacts
+  - `svk_suggest` — Get recommendations for what to run next
+
+### Manual Installation
+
+The awareness layer is installed automatically during `/SVK-setup:install`. For manual installation:
+
+```bash
+cd /path/to/SVK
+./svk-mcp/install.sh /path/to/your/project
+```
+
 ## Installation
 
 These skills are designed for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).

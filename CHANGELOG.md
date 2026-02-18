@@ -6,7 +6,8 @@ All notable changes to the Security Vulnerability Kit are documented here.
 
 ### Awareness Layer (Hook + MCP)
 - SessionStart hook that injects SVK project status on new sessions — shows in-progress audits, doc generation status, and next steps (zero cost when no SVK state exists)
-- SVK MCP server with 6 tools: `svk_project_status`, `svk_get_doc`, `svk_get_decisions`, `svk_get_audit`, `svk_search`, `svk_suggest`
+- SVK MCP server with 8 tools: `svk_project_status`, `svk_get_doc`, `svk_get_decisions`, `svk_get_audit`, `svk_search`, `svk_suggest`, `svk_list_knowledge`, `svk_read_knowledge`
+- Knowledge access layer: `svk_list_knowledge` catalogs SVK's built-in knowledge bases (SOS exploit patterns, GL domain packs, SVK core docs) and `svk_read_knowledge` reads specific files with path traversal protection
 - Standalone install script at `svk-mcp/install.sh`
 - Automatic installation via `/SVK-setup:install` (Step 5.5)
 

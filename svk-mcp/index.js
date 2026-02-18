@@ -8,6 +8,7 @@ import { z } from "zod";
 import { handleProjectStatus } from "./tools/status.js";
 import { handleGetDoc, handleGetDecisions } from "./tools/docs.js";
 import { handleGetAudit } from "./tools/audit.js";
+import { handleSearch } from "./tools/search.js";
 
 const PROJECT_DIR = process.env.SVK_PROJECT_DIR || process.cwd();
 
@@ -67,6 +68,22 @@ server.tool(
   },
   async ({ type, subsystem, severity, audit }) => {
     const result = await handleGetAudit(PROJECT_DIR, { type, subsystem, severity, audit });
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: svk_search ---
+server.tool(
+  "svk_search",
+  "Full-text search across all SVK artifacts — docs, audit findings, decisions, knowledge bases. Use when you need to find specific information across all SVK outputs.",
+  {
+    query: z.string().describe("Search string or pattern."),
+    scope: z.enum(["docs", "audit", "decisions", "all"]).optional().describe("Limit to specific artifact types. Defaults to 'all'."),
+  },
+  async ({ query, scope }) => {
+    const result = await handleSearch(PROJECT_DIR, { query, scope });
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

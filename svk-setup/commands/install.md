@@ -18,9 +18,10 @@ You are walking the user through installing each recommended tool, one category 
 ## What This Phase Does
 
 1. Load recommendations from `.svk/SETUP_RECOMMENDATIONS.json`
-2. Walk through each tool category in order
-3. For each tool: explain → ask install/skip → install → verify
-4. Track results in `.svk/SETUP_INSTALLED.json`
+2. Ask the user to choose an install mode (Express or Guided)
+3. Walk through each tool category in order
+4. For each tool: explain → ask install/skip (guided only) → install → verify
+5. Track results in `.svk/SETUP_INSTALLED.json`
 
 ---
 
@@ -37,7 +38,46 @@ If `.svk/SETUP_RECOMMENDATIONS.json` doesn't exist:
 
 ---
 
-## Step 2: Initialize Tracking
+## Step 2: Choose Install Mode
+
+Before starting, explain what's about to happen and let the user choose how much hand-holding they want.
+
+**Say this first:**
+```markdown
+## How do you want to install?
+
+SVK Setup is about to download and install tools from the internet — MCPs, plugins, CLI packages, and skill files. Nothing runs without your knowledge.
+```
+
+**Then ask with AskUserQuestion:**
+```
+question: "How would you like to proceed?"
+header: "Install mode"
+options:
+  - label: "Express (Recommended)"
+    description: "Install all recommended tools automatically. I'll only pause for API keys."
+  - label: "Guided"
+    description: "Ask me about each tool one at a time before installing."
+```
+
+**Save the choice** to a variable for use throughout this phase. Record it in the tracking file too.
+
+### Mode behaviors:
+
+| Behavior | Express | Guided |
+|----------|---------|--------|
+| Per-tool "Install X?" prompt | **Skipped** — auto-install | **Shown** — ask each time |
+| API key prompts | **Still shown** — requires user input | **Still shown** |
+| Category announcements | **Still shown** — so user can follow along | **Still shown** |
+| Tool explanations | **Skipped** — just show name + one-liner | **Full** — depth per profile |
+| Verify each install | **Yes** | **Yes** |
+| Skip tracking | All marked `installed` unless they fail | Per user choice |
+
+> **Design note:** Express mode does NOT skip API key prompts. Those require user action (pasting a key or choosing to skip). Everything else is automated.
+
+---
+
+## Step 3: Initialize Tracking
 
 Create or update `.svk/SETUP_INSTALLED.json`:
 
@@ -45,6 +85,7 @@ Create or update `.svk/SETUP_INSTALLED.json`:
 {
   "version": "1.0.0",
   "started": "{ISO timestamp}",
+  "install_mode": "express | guided",
   "completed": null,
   "tools": {}
 }
@@ -52,7 +93,7 @@ Create or update `.svk/SETUP_INSTALLED.json`:
 
 ---
 
-## Step 3: Category-by-Category Walkthrough
+## Step 4: Category-by-Category Walkthrough
 
 Process categories in this order:
 1. Dev Workflow (GSD + Superpowers)
@@ -79,9 +120,11 @@ Process categories in this order:
 
 **Skip** if the tool is not in the user's recommendation list (was deselected or is in a different choice group).
 
-#### 3a. Explain
+#### 4a. Explain
 
-Adapt explanation depth to profile:
+**Express mode:** Show name + one-liner only, regardless of profile.
+
+**Guided mode:** Adapt explanation depth to profile:
 
 | Profile | Depth |
 |---------|-------|
@@ -89,9 +132,11 @@ Adapt explanation depth to profile:
 | Intermediate | 1-2 sentence description |
 | Advanced | Name + one-liner only |
 
-#### 3b. Ask Install or Skip
+#### 4b. Ask Install or Skip
 
-Use AskUserQuestion:
+**Express mode:** Skip this step entirely. Proceed directly to install.
+
+**Guided mode:** Use AskUserQuestion:
 
 ```
 question: "Install {tool_name}?"
@@ -114,7 +159,7 @@ options:
 
 If skipped, record and move on. Don't push.
 
-#### 3c. Install
+#### 4c. Install
 
 Execute the installation based on `install_method`:
 
@@ -137,7 +182,7 @@ Tell the user: "Install {tool_name} from the Claude Code plugin marketplace. You
 **Skill (`skill`):**
 Copy skill files to `.claude/skills/` and `.claude/commands/`.
 
-#### 3d. API Key Handling
+#### 4d. API Key Handling
 
 When a tool requires an API key (`requires_api_key: true`):
 
@@ -155,7 +200,7 @@ When a tool requires an API key (`requires_api_key: true`):
 3. If provided, write it to the appropriate config location
 4. If skipped, mark the tool as `installed_without_key` — it's configured but won't work until the key is added
 
-#### 3e. Verify
+#### 4e. Verify
 
 After installation, run a quick health check:
 
@@ -177,7 +222,7 @@ or
 ✗ {tool_name} installation failed — {error}. You can try again later.
 ```
 
-#### 3f. Track Result
+#### 4f. Track Result
 
 Update `.svk/SETUP_INSTALLED.json`:
 
@@ -206,7 +251,7 @@ After each category:
 
 ---
 
-## Step 4: Installation Summary
+## Step 5: Installation Summary
 
 After all categories:
 
@@ -234,7 +279,7 @@ Update `.svk/SETUP_INSTALLED.json` with `completed` timestamp.
 
 ---
 
-## Step 5: Transition
+## Step 6: Transition
 
 ```markdown
 Ready to generate your personalized reference document?
@@ -245,7 +290,7 @@ Run `/SVK:setup:reference` or say "continue".
 
 ## Installation Principles
 
-1. **One at a time.** Don't batch installs. Let the user see each one.
+1. **One at a time.** Don't batch installs. Let the user see each one proceed (even in express mode — show progress, just don't ask).
 2. **Verify every install.** Don't assume success. Check.
 3. **Never store API keys in plain text files committed to git.** Use MCP config or environment variables.
 4. **Handle failures gracefully.** If one tool fails, continue with the next. Don't abort the whole walkthrough.

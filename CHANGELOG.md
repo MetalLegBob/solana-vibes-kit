@@ -10,11 +10,6 @@ All notable changes to the Security Vulnerability Kit are documented here.
 - Standalone install script at `svk-mcp/install.sh`
 - Automatic installation via `/SVK-setup:install` (Step 5.5)
 
-### Skill Foundation
-- Added Artifact Convention section — defines STATE.json discovery protocol for automatic hook/MCP integration
-- Added MCP Visibility section — documents suggestion rule schema for new skills
-- Added artifact convention item to Quick-Start Checklist
-
 ---
 
 ## v1.0.0 — 2026-02-18

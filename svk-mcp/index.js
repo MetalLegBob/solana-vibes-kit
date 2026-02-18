@@ -7,6 +7,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { handleProjectStatus } from "./tools/status.js";
 import { handleGetDoc, handleGetDecisions } from "./tools/docs.js";
+import { handleGetAudit } from "./tools/audit.js";
 
 const PROJECT_DIR = process.env.SVK_PROJECT_DIR || process.cwd();
 
@@ -48,6 +49,24 @@ server.tool(
   { topic: z.string().optional().describe("Filter by topic (e.g., 'staking', 'auth', 'token'). Omit for all.") },
   async ({ topic }) => {
     const result = await handleGetDecisions(PROJECT_DIR, { topic });
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: svk_get_audit ---
+server.tool(
+  "svk_get_audit",
+  "Retrieve SOS audit findings, reports, architecture docs, or strategies. Use when you need security audit results or want to check for unresolved findings.",
+  {
+    type: z.enum(["report", "findings", "architecture", "strategies"]).optional().describe("What to retrieve. Defaults to 'report'."),
+    subsystem: z.string().optional().describe("Filter findings by subsystem (e.g., 'tax-program', 'staking')."),
+    severity: z.string().optional().describe("Filter findings by severity (e.g., 'critical', 'high')."),
+    audit: z.string().optional().describe("'current' (default), 'previous', or a specific archive path."),
+  },
+  async ({ type, subsystem, severity, audit }) => {
+    const result = await handleGetAudit(PROJECT_DIR, { type, subsystem, severity, audit });
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

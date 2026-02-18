@@ -480,7 +480,7 @@ This automated security audit represents a comprehensive starting point for secu
 | Field | Value |
 |-------|-------|
 | Report Generated | {TIMESTAMP} |
-| Stronghold of Security Version | 2.1.0 |
+| Stronghold of Security Version | 1.0.0 |
 | Audit Number | #{N} |
 | Previous Audits | {N} |
 | Total Agent Invocations | {N} |

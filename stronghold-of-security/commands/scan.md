@@ -468,7 +468,7 @@ mkdir -p .audit/{context,findings}
 Write `.audit/STATE.json`:
 ```json
 {
-  "version": "2.1.0",
+  "version": "1.0.0",
   "audit_id": "{generated-uuid}",
   "audit_number": {N},
   "started_at": "{ISO-8601}",

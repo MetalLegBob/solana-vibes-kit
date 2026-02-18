@@ -39,7 +39,7 @@ version: "1.0.0"
 Domain packs extend the topic tree with domain-specific branches and provide
 pre-researched knowledge files. See design doc for domain pack architecture.
 
-### Solana Pack (v2.1.0)
+### Solana Pack (v1.0.0)
 
 **Activates when:** `Cargo.toml` contains `anchor-lang` or `solana-program`, `Anchor.toml` present, or user mentions Solana/Anchor.
 

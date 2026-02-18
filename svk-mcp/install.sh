@@ -53,10 +53,14 @@ with open('$MCP_CONFIG', 'w') as f:
   fi
 fi
 
-# Copy hook script
+# Copy hook script (skip if source and target are the same file, e.g. self-install)
 mkdir -p "$TARGET/.claude/hooks"
-cp "$SCRIPT_DIR/../.claude/hooks/svk-session-start.sh" "$TARGET/.claude/hooks/svk-session-start.sh"
-chmod +x "$TARGET/.claude/hooks/svk-session-start.sh"
+HOOK_SRC="$(cd "$SCRIPT_DIR/../.claude/hooks" && pwd)/svk-session-start.sh"
+HOOK_DST="$(cd "$TARGET/.claude/hooks" && pwd)/svk-session-start.sh"
+if [ "$HOOK_SRC" != "$HOOK_DST" ]; then
+  cp "$HOOK_SRC" "$HOOK_DST"
+fi
+chmod +x "$HOOK_DST"
 
 # Create or update .claude/settings.json with hook config
 SETTINGS="$TARGET/.claude/settings.json"

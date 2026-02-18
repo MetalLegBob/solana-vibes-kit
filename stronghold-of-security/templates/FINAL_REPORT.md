@@ -415,16 +415,79 @@ This automated security audit represents a comprehensive starting point for secu
 
 ---
 
+## Audit Lineage
+
+> **History:** This audit is part of a chain of security reviews tracking this codebase over time.
+
+| # | Date | Git Ref | Confirmed | Potential | Files Scanned | Notes |
+|---|------|---------|-----------|-----------|---------------|-------|
+| 1 | {date} | `{ref}` | {N} | {N} | {N} | Initial audit |
+| 2 | {date} | `{ref}` | {N} | {N} | {N} | {N} files changed |
+| {current} | {date} | `{ref}` | {N} | {N} | {N} | Current audit |
+
+---
+
+## Finding Evolution
+
+> **Tracking:** How findings have changed across audits.
+
+### Evolution Summary
+
+| Classification | Count | Description |
+|----------------|-------|-------------|
+| NEW | {N} | First seen in this audit |
+| RECURRENT | {N} | Present in previous audit(s), still present |
+| REGRESSION | {N} | Previously fixed, now broken again |
+| RESOLVED | {N} | Was in previous audit, no longer present |
+
+### New Findings
+
+| ID | Title | Severity |
+|----|-------|----------|
+| {ID} | {Title} | {Severity} |
+
+### Recurrent Findings
+
+> **Attention:** These findings have persisted across multiple audits.
+
+| ID | Title | Severity | First Seen | Audits Present |
+|----|-------|----------|------------|----------------|
+| {ID} | {Title} | {Severity} | Audit #{N} ({date}) | {N} audits |
+
+{For findings surviving 2+ audits:}
+> **{ID}: {Title}** has persisted across {N} audits without resolution. Consider prioritizing this fix.
+
+### Regressions
+
+> **ESCALATED:** These findings were previously fixed but have reappeared.
+
+| ID | Title | Original Severity | Escalated Severity | Previously Fixed In |
+|----|-------|-------------------|-------------------|-------------------|
+| {ID} | {Title} | {Original} | {Escalated} | Audit #{N} ({date}) |
+
+### Resolved Findings
+
+> **Progress:** These findings from previous audits are no longer present.
+
+| ID | Title | Original Severity | Resolution |
+|----|-------|-------------------|------------|
+| {ID} | {Title} | {Severity} | {Fixed in code / Removed with deleted file} |
+
+---
+
 ## Report Metadata
 
 | Field | Value |
 |-------|-------|
 | Report Generated | {TIMESTAMP} |
-| Stronghold of Security Version | 1.0.0 |
+| Stronghold of Security Version | 2.1.0 |
+| Audit Number | #{N} |
+| Previous Audits | {N} |
 | Total Agent Invocations | {N} |
 | Analysis Duration | {TIME} |
 | Context Files Generated | {N} |
 | Strategies Investigated | {N} |
+| Verification Agents | {N} |
 
 ---
 

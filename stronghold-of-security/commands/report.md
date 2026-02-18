@@ -49,6 +49,9 @@ The final synthesizer needs:
    - Find and read `severity-calibration.md` from the skill's knowledge base
    - Find and read `common-false-positives.md` from the skill's knowledge base
    - Find and read `PATTERNS_INDEX.md` for cross-referencing
+6. **Handover document (stacked audits):** If `.audit/HANDOVER.md` exists, read:
+   - Audit Lineage section (between `<!-- AUDIT_LINEAGE_START -->` and `<!-- AUDIT_LINEAGE_END -->`)
+   - Previous Findings Digest section (between `<!-- FINDINGS_DIGEST_START -->` and `<!-- FINDINGS_DIGEST_END -->`)
 
 ```bash
 find ~/.claude -name "severity-calibration.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
@@ -98,6 +101,32 @@ Task(
     {common-false-positives.md path} — False positive patterns
     {PATTERNS_INDEX.md path} — Master EP catalog for cross-referencing
 
+    {If .audit/HANDOVER.md exists:}
+    === STEP 4: AUDIT EVOLUTION (stacked audits only) ===
+    Read .audit/HANDOVER.md and extract:
+    - Audit Lineage section (<!-- AUDIT_LINEAGE_START --> markers)
+    - Previous Findings Digest (<!-- FINDINGS_DIGEST_START --> markers)
+
+    Use this to generate two new report sections:
+
+    **Audit Lineage:** Full chain of previous audits with summary stats.
+    Include in the report metadata section.
+
+    **Finding Evolution:** For EACH finding in this audit, classify it:
+    - NEW — First seen in this audit. Not present in any previous audit.
+    - RECURRENT — Was present in a previous audit AND is still present.
+      Flag prominently if it has survived 2+ audits.
+    - REGRESSION — Was in a previous audit, was marked as fixed/resolved
+      in an intermediate audit, and is now back. ESCALATE severity.
+    - RESOLVED — Was in the previous audit but is no longer present
+      (either explicitly fixed or the code was deleted/rewritten).
+
+    For RESOLVED findings, list them in a separate section so users can
+    see their fix progress.
+
+    For RECURRENT findings surviving 2+ audits, add a prominent warning:
+    "⚠ This finding has persisted across {N} audits without resolution."
+
     === OUTPUT ===
     Write the final report to .audit/FINAL_REPORT.md
   "
@@ -119,6 +148,10 @@ After the synthesizer returns, verify:
    - Attack Trees
    - Severity Re-Calibration
    - Recommendations
+3. If stacked audit, verify it also contains:
+   - Audit Lineage section
+   - Finding Evolution section
+   - RESOLVED findings list
 
 ---
 

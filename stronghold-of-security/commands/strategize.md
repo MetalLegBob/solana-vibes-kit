@@ -44,9 +44,13 @@ For each file in `.audit/context/NN-*.md`:
 3. If markers are not found, fall back to reading the first 200 lines of the file (graceful degradation)
 4. Collect all summaries
 
+**Stacked audits:** Also read `.audit/context/NN-*-verification.md` files (verification agent outputs). These contain verification summaries for unchanged code. Include them in the synthesis alongside primary auditor summaries.
+
 This should yield ~8KB per agent x 8-9 agents = ~64-72KB of concentrated security context.
 
 ### Step 2: Synthesize Architecture Document
+
+**Stacked audits:** Read the Architecture Snapshot from `.audit/HANDOVER.md` (between `<!-- ARCHITECTURE_SNAPSHOT_START -->` and `<!-- ARCHITECTURE_SNAPSHOT_END -->` markers). Use this as a starting reference, but verify all assertions against current analysis. Note where previous architectural understanding has been confirmed or invalidated by changes.
 
 With all condensed summaries loaded, perform synthesis:
 
@@ -115,6 +119,22 @@ find ~/.claude -name "bug-bounty-findings.md" -path "*/stronghold-of-security/kn
 
 **Context budget:** This index-first approach loads ~50-100KB instead of ~300KB+ (monolithic files). Read PATTERNS_INDEX.md first, then selectively load individual pattern files.
 
+### Step 1b: Load Handover Context (Stacked Audits Only)
+
+**When:** Only if `.audit/HANDOVER.md` exists.
+
+Read `.audit/HANDOVER.md` and extract:
+
+1. **False Positive Log** (between `<!-- FALSE_POSITIVE_LOG_START -->` and `<!-- FALSE_POSITIVE_LOG_END -->`):
+   - These are hypotheses that were investigated and dismissed in the previous audit
+   - They target UNCHANGED files only (entries for MODIFIED files were already filtered during handover generation)
+
+2. **Findings Digest** (between `<!-- FINDINGS_DIGEST_START -->` and `<!-- FINDINGS_DIGEST_END -->`):
+   - Previous CONFIRMED and POTENTIAL findings with relevance tags
+
+3. **Architecture Snapshot** (between `<!-- ARCHITECTURE_SNAPSHOT_START -->` and `<!-- ARCHITECTURE_SNAPSHOT_END -->`):
+   - Key trust boundaries and invariants from previous audit
+
 ### Step 2: Generate Attack Hypotheses
 
 Read `.audit/ARCHITECTURE.md` for the architectural understanding.
@@ -130,6 +150,28 @@ Read `.audit/ARCHITECTURE.md` for the architectural understanding.
 - Unusual architectural patterns
 - Creative "what if" scenarios
 - Emergent behaviors from instruction combinations
+
+**Stacked audit behavioral rules:**
+
+When generating hypotheses for a stacked audit, apply these rules:
+
+1. **Do NOT regenerate hypotheses that match entries in the False Positive Log targeting UNCHANGED code.** These were already investigated and dismissed — they are confirmed dead ends. Skip them.
+
+2. **DO regenerate hypotheses on MODIFIED code even if they match previous false positives.** The code changed, so the previous dismissal is void. The false positive log already filtered out MODIFIED-file entries during handover generation, so any remaining entries are safe to skip.
+
+3. **Previous CONFIRMED findings on MODIFIED code (tagged RECHECK) become automatic Tier 1 hypotheses.** Frame them as: "Did the fix for {finding_title} actually work? Verify that {finding_id} at `{file}` is now properly addressed." These are the highest priority.
+
+4. **Previous CONFIRMED findings on UNCHANGED code (tagged VERIFY) do NOT need new hypotheses.** The verification agents already checked these. Reference the verification agent output instead.
+
+5. **The 20%+ novel hypothesis requirement still applies** to newly generated strategies. This ensures fresh creative thinking even on repeat audits.
+
+6. **Net effect:** Significant token savings by avoiding known dead ends on unchanged code, while maintaining full thoroughness on changed and new code.
+
+**Tracking:** In the generated STRATEGIES.md, tag each hypothesis with its origin:
+- `Origin: Novel` — new hypothesis not from previous audit
+- `Origin: RECHECK ({previous_finding_id})` — re-investigation of previous finding on modified code
+- `Origin: KB ({EP-XXX})` — from knowledge base exploit pattern
+- `Origin: Playbook` — from protocol playbook
 
 ### Step 3: Document Each Strategy
 

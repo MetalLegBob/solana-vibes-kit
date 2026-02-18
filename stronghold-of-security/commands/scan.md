@@ -31,6 +31,168 @@ If no arguments provided, use auto-detection for all settings.
 
 ---
 
+## Phase -1: Archive Detection & Handover Generation
+
+**When:** Always runs first, before any codebase analysis.
+**Goal:** Check for a previous completed audit. If found, archive it and generate a handover document.
+
+### Step 1: Check for Previous Audit
+
+```bash
+test -f .audit/STATE.json && echo "PREVIOUS_AUDIT_EXISTS" || echo "NO_PREVIOUS_AUDIT"
+```
+
+**If NO_PREVIOUS_AUDIT:** Skip to Phase 0. First-time users see zero behavior change.
+
+**If PREVIOUS_AUDIT_EXISTS:**
+
+### Step 2: Validate Previous Audit is Complete
+
+Read `.audit/STATE.json`. Check that `phases.report.status === "completed"`.
+
+If the previous audit is **not** complete (e.g., abandoned mid-pipeline):
+```
+⚠ Incomplete audit detected in .audit/ (stopped at {last_completed_phase}).
+This audit will be archived as-is. Findings from incomplete audits are not
+carried forward in the handover.
+```
+Archive it anyway but skip handover generation (no FINAL_REPORT.md to extract findings from).
+
+### Step 3: Read Previous Audit Metadata
+
+From the previous `.audit/STATE.json`, extract:
+- `audit_id`
+- `started_at`
+- `config.tier`
+- `phases.scan.files_scanned`
+- `phases.scan.loc_estimated`
+
+Get the git ref at the time of the previous audit:
+```bash
+# Get the commit hash from when the audit was created
+git log --format="%H" -1 --before="{started_at}" 2>/dev/null || git rev-parse HEAD
+```
+
+If `phases.report.status === "completed"`, also extract findings summary from `.audit/FINAL_REPORT.md`:
+- Count of CONFIRMED findings
+- Count of POTENTIAL findings
+
+### Step 4: Archive the Previous Audit
+
+```bash
+# Generate archive directory name: YYYY-MM-DD-<short-hash>
+PREV_DATE=$(date -j -f "%Y-%m-%dT%H:%M:%S" "{started_at}" "+%Y-%m-%d" 2>/dev/null || echo "{started_at_date_part}")
+SHORT_HASH=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
+ARCHIVE_DIR=".audit-history/${PREV_DATE}-${SHORT_HASH}"
+
+mkdir -p .audit-history
+mv .audit "$ARCHIVE_DIR"
+```
+
+Report to user:
+```
+Previous Audit Archived
+  Moved .audit/ → ${ARCHIVE_DIR}
+```
+
+### Step 5: Compute Delta
+
+```bash
+# Get previous audit's git ref
+PREV_REF="{git_ref_from_step_3}"
+
+# Compute what changed
+git diff --name-status "${PREV_REF}..HEAD" -- '*.rs' 2>/dev/null
+```
+
+Parse the git diff output to categorize each file:
+- `A` (added) → `NEW`
+- `M` (modified) → `MODIFIED`
+- `D` (deleted) → `DELETED`
+- Files in the previous INDEX.md that don't appear in the diff → `UNCHANGED`
+
+For MODIFIED files, estimate magnitude:
+```bash
+# For each modified file, count changed lines
+git diff --stat "${PREV_REF}..HEAD" -- "{file}" 2>/dev/null
+```
+- `minor`: < 10 lines changed
+- `major`: >= 10 lines changed
+
+Calculate massive rewrite detection:
+- Count total source files (from previous INDEX.md or current filesystem)
+- If MODIFIED + NEW > 70% of total files → flag as massive rewrite
+
+### Step 6: Generate HANDOVER.md
+
+**Only if previous audit was complete** (had `phases.report.status === "completed"`):
+
+Create a fresh `.audit/` directory:
+```bash
+mkdir -p .audit/{context,findings}
+```
+
+Read the HANDOVER.md template from the skill:
+```bash
+find ~/.claude -name "HANDOVER.md" -path "*/stronghold-of-security/templates/*" 2>/dev/null | head -1
+```
+
+Generate `.audit/HANDOVER.md` by filling the template with:
+
+**Delta Summary section:**
+- Build the file status table from Step 5 results
+
+**Previous Findings Digest section:**
+- Read `{ARCHIVE_DIR}/FINAL_REPORT.md`
+- Extract all CONFIRMED and POTENTIAL findings
+- For each finding, check its file against the delta:
+  - File is MODIFIED → tag: `RECHECK`
+  - File is UNCHANGED → tag: `VERIFY`
+  - File is DELETED → tag: `RESOLVED_BY_REMOVAL`
+
+**Previous False Positive Log section:**
+- Read `{ARCHIVE_DIR}/STRATEGIES.md`
+- Read all `{ARCHIVE_DIR}/findings/*.md` files
+- Collect hypotheses where the finding status is `NOT VULNERABLE` or `NOT_VULNERABLE`
+- For each, check the target file against the delta:
+  - File is UNCHANGED → retain (include in log)
+  - File is MODIFIED or DELETED → drop (dismissal no longer applies)
+- Write one-line compressed entries: hypothesis ID, description, file, dismissal reason
+
+**Architecture Snapshot section:**
+- Read `{ARCHIVE_DIR}/ARCHITECTURE.md`
+- Extract and condense:
+  - Trust boundaries (from Trust Model section)
+  - Top 5-10 invariants (from Key Mechanisms / Critical Invariants sections)
+  - Key data flow assertions (from Data Flow Diagram / State Management sections)
+- Target: ~1-2K tokens for this section
+
+**Audit Lineage section:**
+- If the archived audit's STATE.json has a `previous_audit` field, follow the chain to build full lineage
+- Add one row per previous audit: number, date, git ref, confirmed count, potential count, files scanned
+- Add the current audit as the latest entry (with "—" for counts since it hasn't run yet)
+
+### Step 7: Display Handover Summary
+
+After normal pre-flight info, display:
+
+```markdown
+Previous Audit Detected
+  Audit #{N} — {date} @ commit {short_hash}
+  Found: {confirmed} confirmed, {potential} potential, {files_scanned} files scanned
+  Since then: {N_MODIFIED} files modified, {N_NEW} new files, {N_DELETED} deleted
+  Handover generated → .audit/HANDOVER.md
+```
+
+If massive rewrite detected:
+```markdown
+⚠ Massive Rewrite Detected (>{percent}% files changed)
+  Verification agents will be skipped for this audit.
+  Previous findings carried forward for evolution tracking only.
+```
+
+---
+
 ## Phase 0: Pre-Flight Analysis
 
 ### Step 1: Analyze Codebase
@@ -306,10 +468,35 @@ mkdir -p .audit/{context,findings}
 Write `.audit/STATE.json`:
 ```json
 {
-  "version": "2.0.0",
+  "version": "2.1.0",
   "audit_id": "{generated-uuid}",
+  "audit_number": {N},
   "started_at": "{ISO-8601}",
   "last_updated": "{ISO-8601}",
+  "git_ref": "{current HEAD hash}",
+  "previous_audit": {
+    "path": ".audit-history/{YYYY-MM-DD}-{short-hash}",
+    "audit_id": "{previous audit_id}",
+    "git_ref": "{previous git ref}",
+    "date": "{previous date}",
+    "complete": true,
+    "summary": {
+      "confirmed": {N},
+      "potential": {N},
+      "files_scanned": {N}
+    }
+  },
+  "stacking": {
+    "is_stacked": true,
+    "handover_generated": true,
+    "massive_rewrite": false,
+    "delta": {
+      "new_files": {N},
+      "modified_files": {N},
+      "unchanged_files": {N},
+      "deleted_files": {N}
+    }
+  },
   "config": {
     "tier": "{tier}",
     "batch_size": {N},
@@ -343,6 +530,11 @@ Write `.audit/STATE.json`:
     "report": { "status": "pending" }
   }
 }
+```
+
+**Notes on stacking fields:**
+- When `previous_audit` is `null` (first audit), omit the field entirely. Same for `stacking` — omit when not a stacked audit.
+- `audit_number`: If previous audit has an `audit_number`, increment by 1. If there's a previous audit but no `audit_number`, set to 2. If no previous audit, set to 1.
 ```
 
 ### Initialize PROGRESS.md
@@ -403,6 +595,13 @@ After all Phase 0 + 0.5 work is done, present this to the user:
 - **Model:** Haiku (indexer)
 - **Agents spawned:** 1 indexer
 - **Estimated tokens:** ~{indexer_estimate}K input
+
+{If stacked audit:}
+### Audit Stacking:
+- Previous audit: #{prev_number} ({prev_date} @ {prev_ref})
+- Delta: {N} modified, {N} new, {N} deleted, {N} unchanged files
+- Handover: `.audit/HANDOVER.md` ({N} previous findings carried forward)
+- Lineage: {N} audits in chain
 
 ### Next Step:
 Run **`/clear`** then **`/SOS:analyze`** to deploy {N} parallel context auditors.

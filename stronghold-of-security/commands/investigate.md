@@ -62,6 +62,8 @@ Read `.audit/STATE.json` for:
 - `config.models.investigate` — model for Tier 1+2 investigators (default: sonnet)
 - `config.models.investigate_tier3` — model for Tier 3 investigators (default: haiku)
 - `config.models.coverage` — model for coverage verification agent (default: sonnet)
+- `stacking.is_stacked` — whether this is a stacked audit
+- `previous_audit.path` — path to archived audit (for loading previous finding files)
 
 Read `.audit/STRATEGIES.md` and parse all strategies.
 
@@ -153,6 +155,17 @@ Task(
     3. Check .audit/findings/ for completed investigations.
        If a prior finding covers your hypothesis's code path,
        reference it rather than re-analyzing. Focus on what's NEW.
+
+    {If this hypothesis has Origin: RECHECK ({previous_finding_id}):}
+    === STEP 2b: READ PREVIOUS FINDING (RECHECK only) ===
+    This hypothesis is a re-investigation of a finding from a previous audit.
+    Read the previous finding file for context:
+    {previous_audit.path}/findings/{previous_finding_id}.md
+
+    This tells you what was found last time at this location and why it was
+    flagged. Your job: determine if the issue is FIXED, WORSE, or DIFFERENT
+    given the code changes since then. The code HAS changed (that's why this
+    is a RECHECK) — so read the current code carefully and compare.
 
     === STEP 3: READ KNOWLEDGE BASE ===
     {List of relevant KB file paths from KB_MANIFEST Phase 4 section}

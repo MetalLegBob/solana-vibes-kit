@@ -41,6 +41,9 @@ Read `.audit/STATE.json` to get:
 - `config.protocol_types` — for economic model agent
 - `config.models.phase1` — model for context auditor agents (opus or sonnet)
 - `config.models.quality_gate` — model for quality gate validation (haiku)
+- `stacking.is_stacked` — whether this is a stacked audit
+- `stacking.massive_rewrite` — if true, skip verification agents
+- `stacking.handover_generated` — whether HANDOVER.md exists
 
 Read `.audit/KB_MANIFEST.md` to get:
 - Phase 1 agent KB file list (which knowledge base files each agent loads)
@@ -56,6 +59,14 @@ find ~/.claude -name "focus-areas.md" -path "*/stronghold-of-security/resources/
 ```
 
 Store these paths as `AUDITOR_PATH`, `ECON_AGENT_PATH`, `FOCUS_AREAS_PATH`.
+
+If `stacking.is_stacked === true`:
+```bash
+find ~/.claude -name "verification-agent.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
+```
+Store as `VERIFICATION_AGENT_PATH`.
+
+Also read `.audit/HANDOVER.md` and extract the list of RECHECK findings (from the Findings Digest section) grouped by focus area, for injection into primary auditor prompts.
 
 Also read `.audit/KB_MANIFEST.md` to get the Phase 1 KB file list (paths only — don't read the KB files yourself, agents will read them).
 
@@ -143,6 +154,15 @@ Task(
     Read .audit/HOT_SPOTS.md — find entries tagged with your focus area.
     Analyze hot-spotted locations FIRST with extra scrutiny.
 
+    {If stacking.is_stacked AND this focus area has RECHECK findings:}
+    === STEP 6: PREVIOUS FINDINGS TO RECHECK ===
+    The following findings from the previous audit are in files that have
+    MODIFIED since then. They are high-priority investigation targets —
+    determine if the change fixed them, made them worse, or is unrelated:
+
+    {List of RECHECK findings for this focus area from HANDOVER.md,
+     each with: finding ID, title, severity, file, one-line description}
+
     === YOUR ASSIGNMENT ===
     FOCUS: {focus_area_name}
     OUTPUT FILE: {output_file_path}
@@ -204,6 +224,62 @@ Report progress after each batch: "Batch {N}/2 complete. {files_created}/{total}
 
 After all batches: "{N}/{total} context auditors completed successfully."
 
+### Step 4b: Spawn Verification Agents (Stacked Audits Only)
+
+**When:** Only if `stacking.is_stacked === true` AND `stacking.massive_rewrite === false`.
+
+**Skip if:** Not a stacked audit, or massive rewrite detected (>70% files changed).
+
+Verification agents run on **Sonnet** and verify that previous audit conclusions still hold for unchanged code. They run in parallel, separate from primary auditors — this keeps verification work out of primary auditor context windows.
+
+**One verification agent per focus area with unchanged files:**
+
+For each focus area where the previous audit had context analysis and the current audit has UNCHANGED files tagged with that focus:
+
+1. Read the previous audit's context file from the archive:
+   `{stacking.previous_audit.path}/context/NN-{focus-area}.md`
+   Extract the CONDENSED SUMMARY section only.
+
+2. Read the Delta Summary from `.audit/HANDOVER.md`
+
+3. Spawn a verification agent:
+
+```
+Task(
+  subagent_type="general-purpose",
+  model="sonnet",
+  prompt="
+    You are a verification agent for Stronghold of Security stacked audit.
+
+    === STEP 1: READ YOUR INSTRUCTIONS ===
+    Read this file: {VERIFICATION_AGENT_PATH}
+
+    === STEP 2: READ PREVIOUS SUMMARY ===
+    Here is the condensed summary from the previous audit for your focus area:
+    {Paste the extracted CONDENSED SUMMARY content — this is small, ~1-2K tokens}
+
+    === STEP 3: READ DELTA SUMMARY ===
+    Read .audit/HANDOVER.md — extract the Delta Summary section
+    (between <!-- DELTA_SUMMARY_START --> and <!-- DELTA_SUMMARY_END -->).
+
+    === YOUR ASSIGNMENT ===
+    FOCUS AREA: {focus_area_name}
+    OUTPUT FILE: .audit/context/NN-{focus-area}-verification.md
+
+    Verify previous conclusions still hold given changes elsewhere.
+  "
+)
+```
+
+**Batch all verification agents together** (they're lightweight — ~1-2K tokens input each). Spawn all in a single batch.
+
+After verification agents complete, verify output files exist:
+```bash
+ls -la .audit/context/*-verification.md 2>/dev/null | wc -l
+```
+
+Report: "{N} verification agents completed."
+
 ### Step 5: Update State
 
 Update `.audit/STATE.json`:
@@ -216,6 +292,10 @@ Update `.audit/STATE.json`:
       "agents": {
         "01_access_control": "completed",
         "02_arithmetic": "completed",
+        ...
+      },
+      "verification_agents": {
+        "01_access_control_verification": "completed",
         ...
       },
       "total_output_kb": {N},
@@ -288,9 +368,14 @@ After Phase 1 + 1.5 is done, present to the user:
 - **Condensed Summary** (~8KB) — Key findings, invariants, risks, and cross-focus handoffs
 - **Full Analysis** (remaining) — Complete deep analysis for Phase 4 investigators
 
+{If stacked audit:}
+### Verification Agents:
+- **Agents completed:** {N} verification agents on unchanged code
+- **Status:** {N} verified, {N} needs recheck, {N} concerns found
+
 ### Phase Stats:
 - **Model:** {config.models.phase1} (context auditors), {config.models.quality_gate} (quality gate)
-- **Agents spawned:** {N} auditors + 1 quality gate validator
+- **Agents spawned:** {N} auditors + {N} verification agents + 1 quality gate validator
 - **Estimated tokens:** ~{agents × avg_estimate}K input across all batches
 
 ### Next Step:

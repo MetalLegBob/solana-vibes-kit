@@ -40,6 +40,10 @@ A comprehensive adversarial security audit system for Solana/Anchor smart contra
 - Attack trees, combination matrix analysis, and severity re-calibration
 - Condensed summary system for efficient cross-phase synthesis
 
+### [SVK Update](svk-update/)
+
+Check for and install SVK updates. Compares your installed version against the latest release and selectively reinstalls only the skills that changed.
+
 ## Installation
 
 These skills are designed for [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
@@ -53,7 +57,18 @@ cd grand-library && ./install.sh /path/to/your-project
 
 # Install Stronghold of Security
 cd stronghold-of-security && ./install.sh /path/to/your-project
+
+# Install SVK Update
+cd svk-update && ./install.sh /path/to/your-project
 ```
+
+## Updating
+
+SVK uses unified versioning — all skills share one version number.
+
+When you use any SVK skill, it automatically checks for updates once per session. If a new version is available, you'll see a notification with the option to update immediately or later.
+
+To manually check for updates, run `/SVK:update` in any project where SVK is installed.
 
 ## License
 

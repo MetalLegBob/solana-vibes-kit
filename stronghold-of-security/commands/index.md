@@ -52,6 +52,14 @@ Task(
     - Pattern: 'programs/**/*.rs'
     - Also check: 'src/**/*.rs' (if no programs/ directory)
 
+    === STEP 1.5: CHECK FOR HANDOVER (stacked audit) ===
+    Check if .audit/HANDOVER.md exists:
+    - If YES: Read the Delta Summary section (between
+      <!-- DELTA_SUMMARY_START --> and <!-- DELTA_SUMMARY_END --> markers).
+      Extract the file status table. You will use this to add a
+      delta_status column to INDEX.md.
+    - If NO: This is a fresh audit. Skip this step.
+
     === STEP 2: FOR EACH FILE, EXTRACT METADATA ===
     Read each file and extract:
     1. LOC (line count)
@@ -111,6 +119,7 @@ Task(
 
     ### {program_name}/src/{path/to/file.rs}
     - LOC: {N}
+    - Delta: {NEW / MODIFIED / UNCHANGED / DELETED}  ← only present in stacked audits
     - Structs: {comma-separated list}
     - Functions: {comma-separated list}
     - External calls: {comma-separated list or 'none'}
@@ -122,30 +131,32 @@ Task(
     ## Focus Area File Map
 
     ### Access Control & Account Validation
-    | File | LOC | Risk Markers | Key Functions |
-    |------|-----|-------------|---------------|
-    | {path} | {N} | {summary} | {top 3 functions} |
+    | File | LOC | Delta | Risk Markers | Key Functions |
+    |------|-----|-------|-------------|---------------|
+    | {path} | {N} | {NEW/MOD/—} | {summary} | {top 3 functions} |
 
     ### Arithmetic Safety
-    {same table format}
+    {same table format with Delta column}
 
     ### State Machine & Error Handling
-    {same table format}
+    {same table format with Delta column}
 
     ### CPI & External Calls
-    {same table format}
+    {same table format with Delta column}
 
     ### Token & Economic
-    {same table format}
+    {same table format with Delta column}
 
     ### Oracle & External Data
-    {same table format}
+    {same table format with Delta column}
 
     ### Upgrade & Admin
-    {same table format}
+    {same table format with Delta column}
 
     ### Timing & Ordering
-    {same table format}
+    {same table format with Delta column}
+
+    Use `—` for the Delta column when this is not a stacked audit.
 
     === IMPORTANT ===
     - Process files in batches if there are many (read 10-15 at a time)

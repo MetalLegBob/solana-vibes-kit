@@ -9,6 +9,7 @@ import { handleProjectStatus } from "./tools/status.js";
 import { handleGetDoc, handleGetDecisions } from "./tools/docs.js";
 import { handleGetAudit } from "./tools/audit.js";
 import { handleSearch } from "./tools/search.js";
+import { handleSuggest } from "./tools/suggest.js";
 
 const PROJECT_DIR = process.env.SVK_PROJECT_DIR || process.cwd();
 
@@ -84,6 +85,19 @@ server.tool(
   },
   async ({ query, scope }) => {
     const result = await handleSearch(PROJECT_DIR, { query, scope });
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: svk_suggest ---
+server.tool(
+  "svk_suggest",
+  "Analyze current project state and suggest which SVK skills would be most valuable to run next. Use when starting a new phase of work or deciding what to do next.",
+  {},
+  async () => {
+    const result = await handleSuggest(PROJECT_DIR);
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

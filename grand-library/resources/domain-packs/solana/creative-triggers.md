@@ -19,6 +19,10 @@ Domain-specific signals that suggest additional documents during the interview p
 | Permissioned instructions | Access Control Matrix | Role-based access needs explicit documentation |
 | Multiple token types | Token Interaction Matrix | How different tokens interact within the system |
 | Time-dependent logic | Clock & Slot Dependency Analysis | Solana clock quirks need documented assumptions |
+| AI agent with wallet access | Agent Security Policy | Autonomous agents need spending limits, approval flows, and revocation procedures |
+| x402 or API monetization | Payment Flow Specification | x402 payment flows need documented facilitator architecture and replay protection |
+| MCP server integration | MCP Tool Inventory | MCP tools exposed to AI need documented capabilities and access boundaries |
+| Agent-to-agent transactions | Agent Commerce Model | Multi-agent payment flows need escrow patterns and dispute resolution |
 
 ---
 
@@ -57,3 +61,8 @@ If yes, load the matching `repos-*.md` catalogue file, run a live research check
 | Custom indexing | repos-infrastructure | "Index on-chain data", "Geyser plugin", "real-time streaming" |
 | Transaction submission infra | repos-infrastructure | "Reliable landing", "bundle submission", "MEV protection" |
 | Scheduled automation | repos-infrastructure | "Cron job on-chain", "automated execution", "keeper bot" |
+| AI agent or autonomous bot | repos-ai-agents | "AI agent", "autonomous trading", "agent wallet", "agentic" |
+| x402 or agent payments | repos-ai-agents | "x402", "agent payments", "machine-to-machine payments", "USDC micropayments" |
+| MCP server for Solana | repos-ai-agents | "MCP server", "Model Context Protocol", "AI tools for Solana" |
+| AI-assisted Solana dev | repos-ai-agents | "AI code generation", "Solana MCP", "Cursor + Solana" |
+| Decentralized GPU or inference | repos-ai-agents | "GPU compute", "DePIN", "io.net", "decentralized inference" |

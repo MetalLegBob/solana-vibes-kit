@@ -2,10 +2,10 @@
 pack: solana
 version: "2.1.0"
 description: >
-  Comprehensive Solana domain pack for Grand Library. 85 knowledge files across
-  18 categories covering the full builder journey — architecture, DeFi, transactions,
+  Comprehensive Solana domain pack for Grand Library. 93 knowledge files across
+  19 categories covering the full builder journey — architecture, DeFi, transactions,
   dev workflow, infrastructure, frontend, NFTs, tokenomics, governance, cross-chain,
-  data, compliance, RWA, social, optimization, and emerging patterns.
+  data, compliance, RWA, social, optimization, emerging patterns, and AI & agents.
   5 topic trees for interview extensions.
 domains:
   - solana
@@ -22,7 +22,7 @@ signals:
 
 # Solana Domain Pack
 
-**85 knowledge files** | **5 topic trees** | **18 categories** | **Avg confidence: 8.2/10**
+**93 knowledge files** | **5 topic trees** | **19 categories** | **Avg confidence: 8.1/10**
 
 ## Coverage
 
@@ -140,12 +140,25 @@ signals:
 | Helius DAS & webhooks | helius-webhooks-das.md | 8/10 |
 | Transaction parsing | transaction-parsing.md | 8/10 |
 
-### Emerging (3 files)
+### AI & Agents (8 files + 1 repo catalogue)
+
+| Topic | Knowledge File | Confidence |
+|-------|---------------|-----------|
+| AI agents on Solana | ai-agents-solana.md | 8/10 |
+| x402 payment protocol | x402-payment-protocol.md | 8/10 |
+| Agentic wallet architecture | agentic-wallet-architecture.md | 8/10 |
+| MCP Solana integration | mcp-solana-integration.md | 8/10 |
+| DePIN & AI compute | depin-ai-compute.md | 7/10 |
+| Agent-to-agent commerce | agent-to-agent-commerce.md | 7/10 |
+| AI-assisted Solana dev | ai-assisted-solana-dev.md | 8/10 |
+| Autonomous agent ecosystem | autonomous-agent-ecosystem.md | 7/10 |
+| Repo catalogue: AI agents | repos-ai-agents.md | 7/10 |
+
+### Emerging (2 files)
 
 | Topic | Knowledge File | Confidence |
 |-------|---------------|-----------|
 | Blinks & Actions | blinks-and-actions.md | 8/10 |
-| AI agents | ai-agents-solana.md | 8/10 |
 | Solana Pay | solana-pay-integration.md | 9/10 |
 
 ### Tokenomics Deep Dives (6 files)

@@ -25,6 +25,16 @@ Decision-support knowledge for Solana program development.
 - Post-mortem analyses — Wormhole, Mango, Cashio, Crema incidents
 - Common vulnerability patterns and mitigations
 
+**AI & Agents**
+- AI agents on Solana — frameworks (Solana Agent Kit, GOAT, AgentKit), security patterns, production use cases
+- x402 payment protocol — HTTP 402 for machine-to-machine USDC payments, facilitator pattern, server/client implementation
+- Agentic wallet architecture — Coinbase Agentic Wallets, dual-key/TEE patterns, Turnkey, Squads, policy engines
+- MCP Solana integration — Model Context Protocol servers for AI-assisted dev and agent tooling
+- DePIN & AI compute — decentralized GPU networks (io.net, Render, Nosana) for inference and training
+- Agent-to-agent commerce — agent identity, service discovery, escrow, multi-agent coordination
+- AI-assisted Solana development — MCP in IDEs, AI code generation, test generation, debugging
+- Autonomous agent ecosystem — OpenClaw/Clawdbot, security lessons, crypto implications
+
 ## Sources
 
 Knowledge synthesized from: Solana official docs, Anchor book, Trail of Bits audits, OtterSec reports, Neodyme findings, Helius/Jito/Marinade engineering blogs, Solana StackExchange, and academic research.

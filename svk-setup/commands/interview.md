@@ -1,5 +1,5 @@
 ---
-name: SVK:setup:interview
+name: SVK-setup:interview
 description: "Phase 1: Short conversational interview to build a user profile that drives all subsequent recommendations"
 allowed-tools:
   - Read

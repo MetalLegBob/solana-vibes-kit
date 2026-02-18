@@ -1,11 +1,11 @@
 ---
-name: grand-library
+name: GL
 version: "1.0.0"
 description: >
   Grand Library: Full-stack documentation skill that transforms project ideas into
   comprehensive specification suites. Guides greenfield projects from idea to spec,
   or analyzes existing codebases to fill documentation gaps.
-  Run /grand-library for a getting-started guide, or /GL:survey to begin.
+  Run /GL for a getting-started guide, or /GL:survey to begin.
 user-invocable: true
 allowed-tools:
   - Read

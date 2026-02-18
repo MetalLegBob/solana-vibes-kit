@@ -1,9 +1,9 @@
 ---
-name: stronghold-of-security
+name: SOS
 version: "3.0.0"
 description: >
   Stronghold of Security: Comprehensive adversarial security audit for Solana/Anchor smart contracts.
-  Run /stronghold-of-security for a getting-started guide, or /SOS:scan to begin an audit.
+  Run /SOS for a getting-started guide, or /SOS:scan to begin an audit.
 user-invocable: true
 allowed-tools:
   - Read
@@ -86,7 +86,7 @@ This begins the audit by analyzing your codebase and generating a hot-spots map.
 
 | Command | Description |
 |---------|-------------|
-| `/stronghold-of-security` | This help guide |
+| `/SOS` | This help guide |
 | `/SOS:scan` | Scan codebase, detect config, generate KB manifest, build index, run static pre-scan |
 | `/SOS:index` | Build codebase INDEX.md with per-file metadata and focus relevance |
 | `/SOS:analyze` | Deploy 8-9 parallel context auditors + quality gate |

@@ -1,5 +1,5 @@
 ---
-name: SVK:setup:reference
+name: SVK-setup:reference
 description: "Phase 4: Generate a personalized reference document summarizing the user's setup"
 allowed-tools:
   - Read

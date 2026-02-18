@@ -1,12 +1,12 @@
 ---
-name: svk-setup
+name: SVK-setup
 version: "1.0.0"
 description: >
   SVK Setup: Guided onboarding skill that interviews users about their experience
   and project scope, recommends tools from a tiered catalog (MCPs, plugins, skills),
   walks through installation, and generates a personalized reference document.
   The first thing a new SVK user runs.
-  Run /svk-setup for the full guided flow, or /SVK:setup:interview to begin.
+  Run /SVK-setup for the full guided flow, or /SVK-setup:interview to begin.
 user-invocable: true
 allowed-tools:
   - Read
@@ -33,7 +33,7 @@ SVK Setup runs as a 4-phase guided flow. The full command runs all phases in seq
 ### Quick Start
 
 ```
-/svk-setup
+/SVK-setup
 ```
 
 This begins with a short interview about your experience and project, then recommends tools, walks through installation, and generates a reference doc. Follow the prompts.
@@ -45,14 +45,14 @@ This begins with a short interview about your experience and project, then recom
 │                         SVK SETUP v1.0                              │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                     │
-│  /SVK:setup:interview    Phase 1 — User Interview                  │
+│  /SVK-setup:interview    Phase 1 — User Interview                  │
 │  ═══════════════════     5-7 questions, one at a time               │
 │  Experience gauging: git, Solana, Claude Code                       │
 │  Project scoping: new/existing, type, frontend/backend, team       │
 │  Output: .svk/SETUP_PROFILE.json                                    │
 │                          │                                          │
 │                          ▼                                          │
-│  /SVK:setup:recommend    Phase 2 — Tiered Recommendations          │
+│  /SVK-setup:recommend    Phase 2 — Tiered Recommendations          │
 │  ═══════════════════     Three tiers based on profile               │
 │  Essential: always recommended (GSD, Superpowers, Safety Net, etc) │
 │  Recommended: profile-dependent (Trail of Bits, Context7, etc)     │
@@ -60,7 +60,7 @@ This begins with a short interview about your experience and project, then recom
 │  Output: .svk/SETUP_RECOMMENDATIONS.json                           │
 │                          │                                          │
 │                          ▼                                          │
-│  /SVK:setup:install      Phase 3 — Installation Walkthrough        │
+│  /SVK-setup:install      Phase 3 — Installation Walkthrough        │
 │  ═══════════════════     One category at a time                     │
 │  Explain → choose → install → verify per tool                      │
 │  Category order: Workflow → Safety → Solana → Search → Memory →    │
@@ -68,7 +68,7 @@ This begins with a short interview about your experience and project, then recom
 │  Output: .svk/SETUP_INSTALLED.json                                  │
 │                          │                                          │
 │                          ▼                                          │
-│  /SVK:setup:reference    Phase 4 — Reference Document              │
+│  /SVK-setup:reference    Phase 4 — Reference Document              │
 │  ═══════════════════     Personalized setup reference               │
 │  Getting started, installed tools, skipped tools, quick reference  │
 │  Output: docs/svk-setup-reference.md                                │
@@ -78,13 +78,13 @@ This begins with a short interview about your experience and project, then recom
 
 ### Typical Workflow
 
-For first-time users, just run `/svk-setup` and follow the prompts. The full flow takes 10-20 minutes depending on how many tools you install.
+For first-time users, just run `/SVK-setup` and follow the prompts. The full flow takes 10-20 minutes depending on how many tools you install.
 
 To re-run individual phases later:
-- **`/SVK:setup:interview`** — Re-do the interview (resets profile)
-- **`/SVK:setup:recommend`** — Re-generate recommendations from existing profile
-- **`/SVK:setup:install`** — Install additional tools
-- **`/SVK:setup:reference`** — Re-generate the reference document
+- **`/SVK-setup:interview`** — Re-do the interview (resets profile)
+- **`/SVK-setup:recommend`** — Re-generate recommendations from existing profile
+- **`/SVK-setup:install`** — Install additional tools
+- **`/SVK-setup:reference`** — Re-generate the reference document
 
 ---
 

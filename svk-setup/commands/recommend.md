@@ -1,5 +1,5 @@
 ---
-name: SVK:setup:recommend
+name: SVK-setup:recommend
 description: "Phase 2: Build and present tiered tool recommendations based on the user profile"
 allowed-tools:
   - Read

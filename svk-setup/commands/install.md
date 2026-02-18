@@ -1,5 +1,5 @@
 ---
-name: SVK:setup:install
+name: SVK-setup:install
 description: "Phase 3: Walk through installation of recommended tools one category at a time"
 allowed-tools:
   - Read

@@ -3,23 +3,27 @@
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
-const AUDIT_DIR = ".audit";
-const HISTORY_DIR = ".audit-history";
+const AUDIT_DIRS = {
+  sos: { audit: ".audit", history: ".audit-history" },
+  db:  { audit: ".bulwark", history: ".bulwark-history" },
+};
+const DEFAULT_SKILL = "sos";
 
 /**
- * Resolve the audit directory based on the "audit" parameter.
+ * Resolve the audit directory based on the "audit" parameter and optional skill.
  */
-async function resolveAuditDir(projectDir, audit) {
+async function resolveAuditDir(projectDir, audit, skill) {
+  const dirs = AUDIT_DIRS[skill] || AUDIT_DIRS[DEFAULT_SKILL];
   if (!audit || audit === "current") {
-    return join(projectDir, AUDIT_DIR);
+    return join(projectDir, dirs.audit);
   }
   if (audit === "previous") {
-    const histPath = join(projectDir, HISTORY_DIR);
+    const histPath = join(projectDir, dirs.history);
     try {
       const entries = await readdir(histPath, { withFileTypes: true });
-      const dirs = entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
-      if (dirs.length === 0) return null;
-      return join(histPath, dirs[dirs.length - 1]); // Most recent
+      const subdirs = entries.filter((e) => e.isDirectory()).map((e) => e.name).sort();
+      if (subdirs.length === 0) return null;
+      return join(histPath, subdirs[subdirs.length - 1]); // Most recent
     } catch {
       return null;
     }
@@ -77,10 +81,14 @@ async function getFindings(auditDir, params) {
 }
 
 export async function handleGetAudit(projectDir, params) {
-  const auditDir = await resolveAuditDir(projectDir, params.audit);
+  // Support skill parameter: "sos" (default) or "db"
+  const skill = params.skill || DEFAULT_SKILL;
+  const dirs = AUDIT_DIRS[skill] || AUDIT_DIRS[DEFAULT_SKILL];
+  const auditDir = await resolveAuditDir(projectDir, params.audit, skill);
 
   if (!auditDir) {
-    return { text: "No audit found. Run /SOS:scan to start a security audit." };
+    const cmd = skill === "db" ? "/DB:scan" : "/SOS:scan";
+    return { text: `No ${skill} audit found. Run ${cmd} to start a security audit.` };
   }
 
   const type = params.type || "report";
@@ -89,7 +97,7 @@ export async function handleGetAudit(projectDir, params) {
     case "report": {
       const content = await readMd(join(auditDir, "FINAL_REPORT.md"));
       return content
-        ? { type: "report", path: `${AUDIT_DIR}/FINAL_REPORT.md`, content }
+        ? { type: "report", path: `${dirs.audit}/FINAL_REPORT.md`, content }
         : { text: "No final report found. The audit may not have reached the report phase yet." };
     }
     case "findings":
@@ -97,13 +105,13 @@ export async function handleGetAudit(projectDir, params) {
     case "architecture": {
       const content = await readMd(join(auditDir, "ARCHITECTURE.md"));
       return content
-        ? { type: "architecture", path: `${AUDIT_DIR}/ARCHITECTURE.md`, content }
+        ? { type: "architecture", path: `${dirs.audit}/ARCHITECTURE.md`, content }
         : { text: "No architecture document found." };
     }
     case "strategies": {
       const content = await readMd(join(auditDir, "STRATEGIES.md"));
       return content
-        ? { type: "strategies", path: `${AUDIT_DIR}/STRATEGIES.md`, content }
+        ? { type: "strategies", path: `${dirs.audit}/STRATEGIES.md`, content }
         : { text: "No strategies document found." };
     }
     default:

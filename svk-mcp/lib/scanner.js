@@ -39,14 +39,18 @@ export async function scanSkillStates(projectDir) {
 }
 
 /**
- * Count directories in .audit-history/
+ * Count directories in .audit-history/ and .bulwark-history/
  */
 export async function countAuditHistory(projectDir) {
-  const histDir = join(projectDir, ".audit-history");
-  try {
-    const entries = await readdir(histDir, { withFileTypes: true });
-    return entries.filter((e) => e.isDirectory()).length;
-  } catch {
-    return 0;
+  let count = 0;
+  for (const histName of [".audit-history", ".bulwark-history"]) {
+    const histDir = join(projectDir, histName);
+    try {
+      const entries = await readdir(histDir, { withFileTypes: true });
+      count += entries.filter((e) => e.isDirectory()).length;
+    } catch {
+      // Directory doesn't exist — skip
+    }
   }
+  return count;
 }

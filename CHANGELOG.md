@@ -2,6 +2,29 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
+## v1.2.0 — 2026-02-18
+
+### Dinh's Bulwark (NEW)
+- Off-chain adversarial security audit skill — backends, APIs, bots, frontends, infrastructure
+- 51 dynamic auditor agents with trigger-based selection across 14 security domains
+- 312 Exa-researched off-chain exploit patterns (OC-001 through OC-312)
+- 168 AI-generated code pitfalls across 14 domains
+- Audit stacking with finding evolution (NEW/RECURRENT/REGRESSION/RESOLVED) and regression escalation
+- Cross-skill awareness — reads SOS findings and GL documentation for cross-boundary analysis
+- Combination attack analysis with attack trees and critical fix node identification
+- Devil's Advocate methodology and invariant-first investigation
+- Hot-spots map for per-auditor file prioritization
+
+### Awareness Layer
+- MCP `svk_get_audit` now supports `.bulwark/` and `.bulwark-history/` directories
+- MCP `svk_search` indexes Dinh's Bulwark artifacts
+- MCP `svk_suggest` adds off-chain audit suggestions
+- MCP `svk_list_knowledge` / `svk_read_knowledge` expose DB knowledge base
+- SessionStart hook shows DB audit progress
+- MCP `svk_project_status` formats DB phase progress
+
+---
+
 ## v1.1.0 — 2026-02-18
 
 ### Awareness Layer (Hook + MCP)

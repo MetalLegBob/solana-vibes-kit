@@ -103,6 +103,54 @@ export async function handleSuggest(projectDir) {
     }
   }
 
+  // Rule: Code exists, no off-chain audit
+  const hasBulwark = await dirExists(join(projectDir, ".bulwark"));
+  if (codeExists && !hasBulwark) {
+    const offChainIndicators = ["package.json", "requirements.txt", "Pipfile", "pyproject.toml"];
+    let hasOffChain = false;
+    for (const indicator of offChainIndicators) {
+      try {
+        await stat(indicator);
+        hasOffChain = true;
+        break;
+      } catch {}
+    }
+    if (hasOffChain) {
+      suggestions.push({
+        suggestion: "Off-chain code detected — consider /DB:scan",
+        priority: "high",
+        reason: "Project has off-chain code (backends, APIs, bots) but no Dinh's Bulwark audit. Off-chain vulnerabilities are a common attack vector.",
+      });
+    }
+  }
+
+  // Rule: SOS audit exists but no DB audit
+  if (hasAudit && !hasBulwark && codeExists) {
+    suggestions.push({
+      suggestion: "SOS covers on-chain — add /DB:scan for off-chain coverage",
+      priority: "medium",
+      reason: "On-chain audit exists but off-chain code hasn't been audited. Attack chains often cross the on-chain/off-chain boundary.",
+    });
+  }
+
+  // Rule: DB audit has unresolved findings
+  if (hasBulwark) {
+    const bulwarkReport = join(projectDir, ".bulwark", "FINAL_REPORT.md");
+    try {
+      const content = await readFile(bulwarkReport, "utf-8");
+      const criticalCount = (content.match(/CRITICAL/gi) || []).length;
+      const highCount = (content.match(/\bHIGH\b/gi) || []).length;
+      const hasUnresolved = /unresolved|open|pending|not\s+fixed/i.test(content);
+      if (hasUnresolved && (criticalCount > 0 || highCount > 0)) {
+        suggestions.push({
+          suggestion: `DB audit: ${criticalCount} CRITICAL + ${highCount} HIGH findings may be unresolved`,
+          priority: "critical",
+          reason: "The Dinh's Bulwark audit report contains unresolved critical or high severity findings.",
+        });
+      }
+    } catch {}
+  }
+
   // Rule: Previous audit exists, code changed, no current audit
   if (historyCount > 0 && !hasAudit && codeExists) {
     suggestions.push({

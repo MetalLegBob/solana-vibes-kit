@@ -2,7 +2,7 @@
 skill: svk-setup
 type: tool-catalog
 version: "1.0.0"
-total_tools: 27
+total_tools: 28
 ---
 
 # SVK Tool Catalog
@@ -218,6 +218,17 @@ Each tool entry uses these fields:
 - **requires_api_key:** false
 - **when_recommended:** Always recommended; *emphasized* for DeFi/token projects
 - **docs_url:** https://github.com/trailofbits/skills
+
+### Dinh's Bulwark (DB)
+- **id:** dinhs-bulwark
+- **tier:** recommended
+- **description:** Off-chain adversarial security audit — backends, APIs, bots, frontends, infra. Complements SOS (on-chain). 312 exploit patterns + 168 AI pitfalls.
+- **cost:** Free
+- **install_method:** skill
+- **install_command:** `cd dinhs-bulwark && ./install.sh <project-dir>`
+- **requires_api_key:** false
+- **when_recommended:** Always recommended alongside SOS; *emphasized* for projects with significant off-chain code
+- **docs_url:** See dinhs-bulwark/SKILL.md
 
 ---
 

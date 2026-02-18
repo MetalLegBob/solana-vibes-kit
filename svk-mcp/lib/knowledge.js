@@ -24,6 +24,13 @@ const KNOWLEDGE_SOURCES = [
     primaryIndex: "INDEX.md",
   },
   {
+    id: "dinhs-bulwark",
+    name: "Dinh's Bulwark (DB)",
+    description: "312 off-chain exploit patterns and 168 AI-generated code pitfalls for off-chain security auditing",
+    basePath: "dinhs-bulwark/knowledge-base",
+    primaryIndex: "PATTERNS_INDEX.md",
+  },
+  {
     id: "svk",
     name: "SVK Core",
     description: "Skill foundation patterns, vision, and goals",

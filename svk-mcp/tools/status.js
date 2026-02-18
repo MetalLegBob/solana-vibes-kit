@@ -55,6 +55,14 @@ function formatSkillStatus(skillState) {
     }
   }
 
+  if (skill === "dinhs-bulwark") {
+    info.audit_number = state.audit_number || 1;
+    info.tier = state.config?.tier || "standard";
+    if (phase === "investigate" && status === "in_progress") {
+      info.progress = `${state.phases.investigate?.batches_completed || 0}/${state.phases.investigate?.batches_total || 0} batches`;
+    }
+  }
+
   return info;
 }
 
@@ -80,6 +88,13 @@ function getNextStep(skill, phase, status) {
     }
     if (skill === "stronghold-of-security") {
       const next = { scan: "/SOS:analyze", analyze: "/SOS:strategize", strategize: "/SOS:investigate", investigate: "/SOS:report", report: "/SOS:verify" };
+      return next[phase] ? `Next: /clear then ${next[phase]}` : null;
+    }
+    if (skill === "dinhs-bulwark") {
+      if (status === "in_progress") {
+        return `Resume: /DB:${phase} (auto-resumes)`;
+      }
+      const next = { scan: "/DB:analyze", analyze: "/DB:strategize", strategize: "/DB:investigate", investigate: "/DB:report", report: "/DB:verify" };
       return next[phase] ? `Next: /clear then ${next[phase]}` : null;
     }
   }

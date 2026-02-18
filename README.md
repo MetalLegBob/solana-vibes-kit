@@ -40,6 +40,18 @@ A comprehensive adversarial security audit system for Solana/Anchor smart contra
 - Attack trees, combination matrix analysis, and severity re-calibration
 - Condensed summary system for efficient cross-phase synthesis
 
+### [Dinh's Bulwark](dinhs-bulwark/)
+
+An adversarial security audit for off-chain Solana code — backends, APIs, trading bots, frontends, infrastructure. Everything SOS doesn't cover.
+
+**Features:**
+- Phase-based pipeline with 7 subcommands — scan, analyze, strategize, investigate, report, verify, status
+- 51 dynamic auditor agents with trigger-based selection across 14 security domains
+- 312 Exa-researched off-chain exploit patterns + 168 AI-generated code pitfalls
+- Audit stacking with finding evolution (NEW/RECURRENT/REGRESSION/RESOLVED)
+- Cross-skill awareness — reads SOS findings and GL docs for cross-boundary attack chains
+- Combination analysis with attack trees and critical fix node identification
+
 ### [SVK Update](svk-update/)
 
 Check for and install SVK updates. Compares your installed version against the latest release and selectively reinstalls only the skills that changed.
@@ -81,6 +93,9 @@ cd grand-library && ./install.sh /path/to/your-project
 
 # Install Stronghold of Security
 cd stronghold-of-security && ./install.sh /path/to/your-project
+
+# Install Dinh's Bulwark
+cd dinhs-bulwark && ./install.sh /path/to/your-project
 
 # Install SVK Update
 cd svk-update && ./install.sh /path/to/your-project

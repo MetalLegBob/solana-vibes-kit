@@ -5,9 +5,9 @@ import { join, relative } from "node:path";
 
 const SCOPE_DIRS = {
   docs: [".docs"],
-  audit: [".audit", ".audit-history"],
+  audit: [".audit", ".audit-history", ".bulwark", ".bulwark-history"],
   decisions: [".docs/DECISIONS"],
-  all: [".docs", ".audit", ".audit-history", ".svk"],
+  all: [".docs", ".audit", ".audit-history", ".bulwark", ".bulwark-history", ".svk"],
 };
 
 /**

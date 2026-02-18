@@ -17,11 +17,11 @@ This creates:
 ## Usage
 
 ```
-/svk-setup              Full guided flow (interview → recommend → install → reference)
-/SVK:setup:interview    Phase 1 — Experience & project interview
-/SVK:setup:recommend    Phase 2 — Tiered tool recommendations
-/SVK:setup:install      Phase 3 — Installation walkthrough
-/SVK:setup:reference    Phase 4 — Generate personalized reference doc
+/SVK-setup              Full guided flow (interview → recommend → install → reference)
+/SVK-setup:interview    Phase 1 — Experience & project interview
+/SVK-setup:recommend    Phase 2 — Tiered tool recommendations
+/SVK-setup:install      Phase 3 — Installation walkthrough
+/SVK-setup:reference    Phase 4 — Generate personalized reference doc
 ```
 
 ## What It Sets Up

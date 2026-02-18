@@ -31,7 +31,7 @@ You are building a personalized list of tool recommendations based on the user's
 
 ### Error if missing:
 If `.svk/SETUP_PROFILE.json` doesn't exist:
-"No setup profile found. Run `/SVK:setup:interview` first."
+"No setup profile found. Run `/SVK-setup:interview` first."
 
 ---
 
@@ -192,7 +192,7 @@ After saving:
 {N} tools queued for installation, organized by category.
 Estimated time: {5-15} minutes depending on API key setup.
 
-Ready? Run `/SVK:setup:install` or say "let's go" to proceed.
+Ready? Run `/SVK-setup:install` or say "let's go" to proceed.
 ```
 
 ---

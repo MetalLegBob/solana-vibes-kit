@@ -715,6 +715,28 @@ This is progressive disclosure applied to the UX. Users don't need to understand
 
 5. **CRITICAL — The `name` field in SKILL.md IS the command prefix.** Claude Code routes slash commands as `/<skill-name>:<command-filename>`. The `name` field in SKILL.md determines the prefix users actually type. If your skill is called `stronghold-of-security`, users must type `/stronghold-of-security:scan` — not the `/SOS:scan` you documented. **Always use the short abbreviation as the `name` field** (e.g., `SOS`, `GL`, `SVK-setup`), and keep the full thematic name in the `description` field instead.
 
+### Naming Surfaces Checklist
+
+There are **three distinct names** for every skill that must stay consistent:
+
+| Surface | Example (SOS) | Example (GL) | What it controls |
+|---------|---------------|--------------|-----------------|
+| **Skill directory** | `.claude/skills/stronghold-of-security/` | `.claude/skills/grand-library/` | Filesystem path. Used in `find -path` commands. Full thematic name is fine here. |
+| **SKILL.md `name` field** | `SOS` | `GL` | Command routing. This is what users type: `/SOS`, `/GL`. **Must be the short abbreviation.** |
+| **Commands directory** | `.claude/commands/SOS/` | `.claude/commands/GL/` | Sub-command routing. **Must match the `name` field exactly**, not the skill directory name. |
+
+**Common mistakes** (all found and fixed in practice):
+
+1. **Install script echo says the wrong command.** The install script creates `.claude/skills/grand-library/` but the user types `/GL`. Don't echo "Run `/grand-library`" — echo "Run `/GL`".
+
+2. **README manual install uses wrong commands directory.** If your skill name is `SOS`, the commands directory is `.claude/commands/SOS/`, not `.claude/commands/stronghold-of-security/`. Users who follow wrong manual instructions get a broken setup.
+
+3. **Cross-references between command files use wrong syntax.** If a command says "Run `/SVK:setup:interview`" but the skill name is `SVK-setup`, the correct command is `/SVK-setup:interview`. The colon separates `<skill-name>` from `<command>` — it is not part of the skill name.
+
+4. **Status/fallback messages reference the directory name instead of the skill name.** Every user-facing string that says "Run `/something`" must use the `name` field value, not the directory name.
+
+**Rule of thumb:** Grep your skill for `/<full-thematic-name>` before shipping. Any hit that isn't a filesystem path is a bug.
+
 ---
 
 ## References

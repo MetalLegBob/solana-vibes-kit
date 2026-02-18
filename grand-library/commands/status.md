@@ -36,7 +36,7 @@ Run `/GL:survey` to begin a new documentation session.
 | 3 | `/GL:draft` | Generate all documents in waves (Milestone 2) |
 | 4 | `/GL:reconcile` | Cross-check docs for contradictions (Milestone 2) |
 
-Run `/grand-library` for a detailed getting-started guide.
+Run `/GL` for a detailed getting-started guide.
 ```
 
 ### If state exists:

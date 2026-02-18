@@ -36,7 +36,7 @@ Check progress anytime: `/SOS:status`
 
 | Command | Description |
 |---------|-------------|
-| `/stronghold-of-security` | Getting-started guide and command reference |
+| `/SOS` | Getting-started guide and command reference |
 | `/SOS:scan` | Phase 0+0.25+0.5: Scan codebase, build index, generate KB manifest, static pre-scan |
 | `/SOS:index` | Build codebase INDEX.md with per-file metadata and focus relevance tags |
 | `/SOS:analyze` | Phase 1+1.5: Deploy 8-9 parallel context auditors + quality gate |
@@ -99,7 +99,7 @@ Plus a conditional **Economic Model Analyzer** for DeFi protocols.
 
 ```
 stronghold-of-security/
-  SKILL.md                          # Help/router — run /stronghold-of-security for guide
+  SKILL.md                          # Help/router — run /SOS for guide
   commands/
     scan.md                         # Phase 0+0.25+0.5 orchestration
     index.md                        # Standalone codebase indexer
@@ -149,8 +149,8 @@ mkdir -p your-project/.claude/skills/stronghold-of-security
 cp -R agents knowledge-base resources templates SKILL.md your-project/.claude/skills/stronghold-of-security/
 
 # 2. Copy the commands (subcommand orchestration)
-mkdir -p your-project/.claude/commands/stronghold-of-security
-cp commands/*.md your-project/.claude/commands/stronghold-of-security/
+mkdir -p your-project/.claude/commands/SOS
+cp commands/*.md your-project/.claude/commands/SOS/
 ```
 
 Or use the install script:
@@ -160,8 +160,8 @@ Or use the install script:
 
 ### Why Two Directories?
 
-- `.claude/skills/stronghold-of-security/` — Skill definition (SKILL.md), agent templates, knowledge base, and resources. This is what `/stronghold-of-security` loads.
-- `.claude/commands/stronghold-of-security/` — Subcommand files. This is what `/SOS:scan`, `/SOS:analyze`, etc. load. Each gets a fresh context window.
+- `.claude/skills/stronghold-of-security/` — Skill definition (SKILL.md), agent templates, knowledge base, and resources. This is what `/SOS` loads.
+- `.claude/commands/SOS/` — Subcommand files. This is what `/SOS:scan`, `/SOS:analyze`, etc. load. Each gets a fresh context window.
 
 ## Usage
 

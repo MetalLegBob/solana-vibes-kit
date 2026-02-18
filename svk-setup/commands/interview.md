@@ -211,7 +211,7 @@ Based on your answers:
 {For intermediate: "I'll keep explanations focused. You'll see the full recommended tier."}
 {For advanced: "I'll keep it brief. You'll get the full catalog to cherry-pick from."}
 
-Ready for recommendations? Run `/SVK:setup:recommend` or just say "continue" and I'll proceed.
+Ready for recommendations? Run `/SVK-setup:recommend` or just say "continue" and I'll proceed.
 ```
 
 ---

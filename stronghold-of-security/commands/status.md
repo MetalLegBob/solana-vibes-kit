@@ -60,7 +60,7 @@ Run `/SOS:scan` to begin a new security audit.
 | 5 | `/SOS:report` | Generate final report with attack trees |
 | 6 | `/SOS:verify` | (After fixes) Verify vulnerabilities resolved |
 
-Run `/stronghold-of-security` for a detailed getting-started guide.
+Run `/SOS` for a detailed getting-started guide.
 ```
 
 ### If audit exists:

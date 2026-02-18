@@ -34,7 +34,7 @@ You are walking the user through installing each recommended tool, one category 
 
 ### Error if missing:
 If `.svk/SETUP_RECOMMENDATIONS.json` doesn't exist:
-"No recommendations found. Run `/SVK:setup:recommend` first."
+"No recommendations found. Run `/SVK-setup:recommend` first."
 
 ---
 
@@ -283,7 +283,7 @@ Update `.svk/SETUP_INSTALLED.json` with `completed` timestamp.
 
 ```markdown
 Ready to generate your personalized reference document?
-Run `/SVK:setup:reference` or say "continue".
+Run `/SVK-setup:reference` or say "continue".
 ```
 
 ---

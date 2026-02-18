@@ -10,6 +10,8 @@ import { handleGetDoc, handleGetDecisions } from "./tools/docs.js";
 import { handleGetAudit } from "./tools/audit.js";
 import { handleSearch } from "./tools/search.js";
 import { handleSuggest } from "./tools/suggest.js";
+import { handleListKnowledge } from "./tools/list-knowledge.js";
+import { handleReadKnowledge } from "./tools/read-knowledge.js";
 
 const PROJECT_DIR = process.env.SVK_PROJECT_DIR || process.cwd();
 
@@ -98,6 +100,51 @@ server.tool(
   {},
   async () => {
     const result = await handleSuggest(PROJECT_DIR);
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: svk_list_knowledge ---
+server.tool(
+  "svk_list_knowledge",
+  "List available SVK knowledge bases — exploit patterns, domain packs, skill references. Returns metadata and structure, not file content. Use to discover what knowledge is available before reading specific files.",
+  {
+    skill: z
+      .string()
+      .optional()
+      .describe(
+        "Filter to a specific knowledge base: 'stronghold-of-security', 'grand-library', or 'svk'. Omit to see all."
+      ),
+  },
+  async ({ skill }) => {
+    const result = await handleListKnowledge({ skill });
+    return {
+      content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+    };
+  }
+);
+
+// --- Tool: svk_read_knowledge ---
+server.tool(
+  "svk_read_knowledge",
+  "Read a specific SVK knowledge file — exploit patterns, domain pack entries, templates, or reference docs. Use svk_list_knowledge first to discover available files.",
+  {
+    skill: z
+      .string()
+      .describe(
+        "Knowledge base to read from: 'stronghold-of-security', 'grand-library', or 'svk'."
+      ),
+    path: z
+      .string()
+      .optional()
+      .describe(
+        "Relative path within the knowledge base (e.g., 'patterns/cpi/EP-042-arbitrary-cpi-program-substitution.md'). Omit to get the primary index."
+      ),
+  },
+  async ({ skill, path }) => {
+    const result = await handleReadKnowledge({ skill, path });
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

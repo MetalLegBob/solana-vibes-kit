@@ -2,17 +2,6 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
-## v1.2.0 — 2026-02-18
-
-### Forge
-- SVK Skill Builder: 5-phase pipeline for building skills with convention enforcement
-- Wraps Superpowers brainstorming, planning, and execution skills with SVK context
-- 20-item shipping checklist with automated validation (Pass 1) and guided review (Pass 2)
-- Directory scaffolding with pre-filled version-check block and install script template
-- Install script testing in temp directory before ship
-
----
-
 ## v1.1.0 — 2026-02-18
 
 ### Awareness Layer (Hook + MCP)

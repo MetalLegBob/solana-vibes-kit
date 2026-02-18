@@ -2,7 +2,7 @@
 skill: svk-setup
 type: tool-catalog
 version: "1.0.0"
-total_tools: 28
+total_tools: 27
 ---
 
 # SVK Tool Catalog
@@ -68,18 +68,6 @@ Each tool entry uses these fields:
 > "GSD runs your project — it handles planning, execution, and milestones. Superpowers improves how you code — brainstorming, debugging, testing, code review. They complement each other."
 
 ---
-
-### Forge
-- **id:** forge
-- **tier:** optional
-- **description:** SVK Skill Builder — 5-phase pipeline for building new SVK skills with automated convention enforcement and a 20-item shipping checklist. For SVK developers.
-- **cost:** Free
-- **install_method:** skill
-- **install_command:** `cd forge && ./install.sh /path/to/your-project`
-- **requires_api_key:** false
-- **verify_command:** Check that `.claude/commands/Forge/` exists after install
-- **when_recommended:** SVK developers building new skills
-- **docs_url:** https://github.com/your-repo/SVK/tree/main/forge
 
 ---
 

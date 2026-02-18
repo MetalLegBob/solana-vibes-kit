@@ -44,6 +44,17 @@ A comprehensive adversarial security audit system for Solana/Anchor smart contra
 
 Check for and install SVK updates. Compares your installed version against the latest release and selectively reinstalls only the skills that changed.
 
+### [Forge](forge/)
+
+SVK Skill Builder. A meta-skill that guides you through designing, planning, building, validating, and shipping new SVK skills with automated convention enforcement.
+
+**Features:**
+- 5-phase pipeline: brainstorm → plan → build → validate → ship
+- Wraps Superpowers skills with SVK context injection
+- 20-item shipping checklist with automated validation
+- Scaffolds skill directory structure with version-check block
+- Install script testing before ship
+
 ## Awareness Layer (Hook + MCP)
 
 SVK includes a project awareness layer that makes skill artifacts visible across sessions and tools:
@@ -84,6 +95,9 @@ cd stronghold-of-security && ./install.sh /path/to/your-project
 
 # Install SVK Update
 cd svk-update && ./install.sh /path/to/your-project
+
+# Install Forge (SVK developers only)
+cd forge && ./install.sh /path/to/your-project
 ```
 
 ## Updating

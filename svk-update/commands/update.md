@@ -58,7 +58,7 @@ Run:
 
 ```bash
 # Find which skill directories changed between tags
-git -C <svk_repo> diff --name-only v$INSTALLED..$LATEST | grep -E '^(grand-library|stronghold-of-security|svk-setup|svk-update)/' | cut -d/ -f1 | sort -u
+git -C <svk_repo> diff --name-only v$INSTALLED..$LATEST | grep -E '^(forge|grand-library|stronghold-of-security|svk-setup|svk-update)/' | cut -d/ -f1 | sort -u
 ```
 
 Read the `CHANGELOG.md` from the SVK repo at the latest tag to get release notes between the two versions.

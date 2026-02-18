@@ -128,6 +128,16 @@ export async function handleSuggest(projectDir) {
     }
   }
 
+  // Rule: .forge state exists but no recent activity — remind to continue
+  const hasForge = await dirExists(join(projectDir, ".forge"));
+  if (hasForge) {
+    suggestions.push({
+      suggestion: "Forge build in progress — check /Forge:validate or resume where you left off",
+      priority: "medium",
+      reason: "A .forge/STATE.json exists, indicating an in-progress skill build. Continue or clean up.",
+    });
+  }
+
   // If nothing to suggest
   if (suggestions.length === 0) {
     suggestions.push({

@@ -69,6 +69,20 @@ Each tool entry uses these fields:
 
 ---
 
+### Forge
+- **id:** forge
+- **tier:** optional
+- **description:** SVK Skill Builder — 5-phase pipeline for building new SVK skills with automated convention enforcement and a 20-item shipping checklist. For SVK developers.
+- **cost:** Free
+- **install_method:** skill
+- **install_command:** `cd forge && ./install.sh /path/to/your-project`
+- **requires_api_key:** false
+- **verify_command:** Check that `.claude/commands/Forge/` exists after install
+- **when_recommended:** SVK developers building new skills
+- **docs_url:** https://github.com/your-repo/SVK/tree/main/forge
+
+---
+
 ## Category 2: Safety
 
 ### Safety Net (claude-code-safety-net)

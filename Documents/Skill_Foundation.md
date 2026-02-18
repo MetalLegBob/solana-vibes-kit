@@ -663,6 +663,7 @@ When building a new skill, answer these in order:
 - [ ] **Handoff:** Will this skill's output be consumed by other skills? If yes, define the provides schema.
 - [ ] **Directory structure:** Follow the template from Pattern 4.
 - [ ] **Frontmatter:** Write the ~100-token elevator pitch FIRST.
+- [ ] **Artifact Convention:** Does this skill follow the artifact convention? (dot-directory, STATE.json with `skill` field, structured phases)
 
 ---
 
@@ -736,6 +737,82 @@ There are **three distinct names** for every skill that must stay consistent:
 4. **Status/fallback messages reference the directory name instead of the skill name.** Every user-facing string that says "Run `/something`" must use the `name` field value, not the directory name.
 
 **Rule of thumb:** Grep your skill for `/<full-thematic-name>` before shipping. Any hit that isn't a filesystem path is a bug.
+
+---
+
+## Artifact Convention
+
+Every SVK skill that produces persistent output must follow this convention to enable automatic discovery by the SessionStart hook and SVK MCP server.
+
+### Output Directory
+
+Each skill writes to a dot-directory named after the skill's shortname:
+
+| Skill | Output Directory |
+|-------|-----------------|
+| SOS | `.audit/` |
+| GL | `.docs/` |
+| SVK-setup | `.svk/` |
+| Future skills | `.<shortname>/` |
+
+### STATE.json Requirements
+
+Every output directory must contain a `STATE.json` file with these required fields:
+
+```json
+{
+  "skill": "<skill-name>",
+  "version": "<skill-version>",
+  "updated": "<ISO-8601>",
+  "phases": {
+    "<phase-name>": {
+      "status": "pending | in_progress | complete | completed"
+    }
+  }
+}
+```
+
+The `skill` field is the **discovery key**. The hook and MCP server scan for `.*/STATE.json` files and check for this field. Any file without `"skill"` is ignored.
+
+Additional fields are skill-specific (see each skill's state schema).
+
+### Primary Output
+
+Named markdown files in the output directory (e.g., `.audit/FINAL_REPORT.md`, `.docs/ARCHITECTURE.md`).
+
+### Sub-Artifacts
+
+Organized in subdirectories (e.g., `.audit/findings/`, `.docs/DECISIONS/`).
+
+### Automatic Discovery
+
+Skills that follow this convention get:
+1. **Hook visibility** — SessionStart shows their status to users on session start
+2. **MCP queryability** — `svk_project_status` reports their state, `svk_search` indexes their artifacts
+3. **Suggestion integration** — `svk_suggest` can recommend next steps based on their state
+
+No changes to the hook script or MCP server are needed for new skills. Follow the convention and they appear automatically.
+
+---
+
+## MCP Visibility
+
+Skills can enhance their MCP integration by registering suggestion rules.
+
+### Suggestion Rules
+
+The `svk_suggest` tool uses a rule table to recommend which skills to run next. Rules check for conditions (directory exists, state age, code changes) and produce prioritized suggestions.
+
+To add rules for a new skill, update `svk-mcp/tools/suggest.js` with conditions specific to that skill's artifacts. Use the existing GL and SOS rules as templates.
+
+### Rule Schema
+
+| Field | Type | Description |
+|-------|------|-------------|
+| condition | string | What to check (directory existence, state freshness, etc.) |
+| suggestion | string | What to recommend (include the slash command) |
+| priority | enum | `critical`, `high`, `medium`, `info` |
+| reason | string | Why this suggestion is being made |
 
 ---
 

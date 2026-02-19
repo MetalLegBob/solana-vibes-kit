@@ -1,6 +1,6 @@
 ---
 pack: solana
-version: "1.0.0"
+version: "1.3.0"
 description: >
   Comprehensive Solana domain pack for Grand Library. 93 knowledge files across
   19 categories covering the full builder journey — architecture, DeFi, transactions,

@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "svk": {
+      "command": "node",
+      "args": [
+        "/Users/mlbob/Projects/SVK/svk-mcp/index.js"
+      ],
+      "env": {
+        "SVK_PROJECT_DIR": "."
+      }
+    }
+  }
+}

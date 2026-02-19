@@ -279,13 +279,104 @@ Update `.svk/SETUP_INSTALLED.json` with `completed` timestamp.
 
 ---
 
-## Step 5.5: SVK Infrastructure — Hook + MCP Server
+## Step 5.5: Install SVK Core Skills
 
-After all tool categories are installed, set up the SVK awareness layer. This runs automatically (no user choice needed — it's part of SVK itself).
+SVK includes core skills that provide security auditing, documentation generation, and math verification. These are installed automatically — they're part of SVK itself, not optional third-party tools.
 
-### 5.5a: Install SessionStart Hook
+### Skills to install:
 
-1. Read the SVK repo path from `.claude/svk-meta.json` (`svk_repo` field)
+| Skill | Abbreviation | Purpose |
+|-------|-------------|---------|
+| Stronghold of Security | SOS | On-chain security audit |
+| Grand Library | GL | Documentation generation |
+| Dinh's Bulwark | DB | Off-chain security audit |
+| Book of Knowledge | BOK | Math verification & invariant proving |
+| SVK Update | SVK | Version management |
+
+> **Note:** svk-setup is already installed (it's what's running). Forge is optional and only for SVK skill developers (it's in the tool catalog if the user wants it).
+
+### Procedure:
+
+1. Read `svk_repo` from `.claude/svk-meta.json`
+2. Get the project root directory (the current working directory)
+3. Run each skill's installer. For each skill, run via Bash:
+   ```bash
+   "{svk_repo}/stronghold-of-security/install.sh" "{project_dir}"
+   ```
+   ```bash
+   "{svk_repo}/grand-library/install.sh" "{project_dir}"
+   ```
+   ```bash
+   "{svk_repo}/dinhs-bulwark/install.sh" "{project_dir}"
+   ```
+   ```bash
+   "{svk_repo}/book-of-knowledge/install.sh" "{project_dir}"
+   ```
+   ```bash
+   "{svk_repo}/svk-update/install.sh" "{project_dir}"
+   ```
+
+4. **Verify** each one created its commands directory:
+   ```bash
+   ls .claude/commands/SOS/ .claude/commands/GL/ .claude/commands/DB/ .claude/commands/BOK/ .claude/commands/SVK/
+   ```
+
+5. Show progress as each skill installs (even in Express mode):
+   ```
+   Installing SVK core skills...
+     ✓ Stronghold of Security (SOS) — 8 commands
+     ✓ Grand Library (GL) — 8 commands
+     ✓ Dinh's Bulwark (DB) — 7 commands
+     ✓ Book of Knowledge (BOK) — installed
+     ✓ SVK Update — installed
+
+   5 SVK skills installed. Commands available: /SOS, /GL, /DB, /BOK, /SVK:update
+   ```
+
+6. If any script fails, report the error and continue with the next one. Do not abort.
+
+### Track Results
+
+Update `.svk/SETUP_INSTALLED.json` with entries for each skill:
+```json
+{
+  "svk-sos": {
+    "status": "installed",
+    "category": "svk-core-skills",
+    "installed_at": "{ISO timestamp}"
+  },
+  "svk-gl": {
+    "status": "installed",
+    "category": "svk-core-skills",
+    "installed_at": "{ISO timestamp}"
+  },
+  "svk-db": {
+    "status": "installed",
+    "category": "svk-core-skills",
+    "installed_at": "{ISO timestamp}"
+  },
+  "svk-bok": {
+    "status": "installed",
+    "category": "svk-core-skills",
+    "installed_at": "{ISO timestamp}"
+  },
+  "svk-update": {
+    "status": "installed",
+    "category": "svk-core-skills",
+    "installed_at": "{ISO timestamp}"
+  }
+}
+```
+
+---
+
+## Step 5.6: SVK Infrastructure — Hook + MCP Server
+
+After all skills are installed, set up the SVK awareness layer. This runs automatically (no user choice needed — it's part of SVK itself).
+
+### 5.6a: Install SessionStart Hook
+
+1. Read the SVK repo path from `.claude/svk-meta.json` (`svk_repo` field) — already available from Step 5.5
 2. Copy the hook script:
    ```bash
    mkdir -p .claude/hooks
@@ -317,7 +408,7 @@ After all tool categories are installed, set up the SVK awareness layer. This ru
    test -x .claude/hooks/svk-session-start.sh && echo "✓ SVK SessionStart hook installed"
    ```
 
-### 5.5b: Install SVK MCP Server
+### 5.6b: Install SVK MCP Server
 
 1. Read the SVK repo path from `.claude/svk-meta.json`
 2. Install MCP server dependencies (if not already done):

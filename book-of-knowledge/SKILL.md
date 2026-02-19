@@ -1,6 +1,6 @@
 ---
 name: BOK
-version: "1.0.0"
+version: "1.3.0"
 description: >
   Book of Knowledge: Math verification and economic invariant proving for Solana/Anchor programs.
   Uses Kani (formal proof), LiteSVM (runtime tests), and Proptest (property-based testing).

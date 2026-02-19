@@ -17,7 +17,7 @@ const PROJECT_DIR = process.env.SVK_PROJECT_DIR || process.cwd();
 
 const server = new McpServer({
   name: "svk",
-  version: "1.0.0",
+  version: "1.3.0",
 });
 
 // --- Tool: svk_project_status ---

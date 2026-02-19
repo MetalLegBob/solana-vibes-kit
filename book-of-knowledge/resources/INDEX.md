@@ -1,7 +1,7 @@
 ---
 skill: book-of-knowledge
 type: resource-index
-version: "1.0.0"
+version: "1.3.0"
 ---
 
 # Book of Knowledge — Resource Index

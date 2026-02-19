@@ -1,7 +1,7 @@
 ---
 skill: grand-library
 type: topic-tree
-version: "1.0.0"
+version: "1.3.0"
 description: >
   General-purpose topic tree for software project interviews.
   Domain packs extend this with domain-specific branches.

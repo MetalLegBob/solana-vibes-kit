@@ -1,11 +1,11 @@
 ---
 name: SVK-setup
-version: "1.0.0"
+version: "1.3.0"
 description: >
   SVK Setup: Guided onboarding skill that interviews users about their experience
   and project scope, recommends tools from a tiered catalog (MCPs, plugins, skills),
-  walks through installation, and generates a personalized reference document.
-  The first thing a new SVK user runs.
+  walks through installation of third-party tools and SVK core skills (SOS, GL, DB, BOK),
+  and generates a personalized reference document. The first thing a new SVK user runs.
   Run /SVK-setup for the full guided flow, or /SVK-setup:interview to begin.
 user-invocable: true
 allowed-tools:

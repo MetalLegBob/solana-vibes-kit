@@ -1,7 +1,7 @@
 ---
 skill: dinhs-bulwark
 type: resource-index
-version: "1.0.0"
+version: "1.3.0"
 ---
 
 # Dinh's Bulwark — Resources Index

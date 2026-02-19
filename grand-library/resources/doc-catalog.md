@@ -1,7 +1,7 @@
 ---
 skill: grand-library
 type: doc-catalog
-version: "1.0.0"
+version: "1.3.0"
 description: >
   Master catalog of document types Grand Library can produce.
   Phase 0 selects from this catalog to build the project's DOC_MANIFEST.

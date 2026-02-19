@@ -230,6 +230,17 @@ Each tool entry uses these fields:
 - **when_recommended:** Always recommended alongside SOS; *emphasized* for projects with significant off-chain code
 - **docs_url:** See dinhs-bulwark/SKILL.md
 
+### Book of Knowledge (BOK)
+- **id:** book-of-knowledge
+- **tier:** recommended
+- **description:** Math verification and economic invariant proving for Solana programs. Uses Kani, LiteSVM, and Proptest. 101 verification patterns across 19 DeFi math categories.
+- **cost:** Free
+- **install_method:** skill
+- **install_command:** `cd book-of-knowledge && ./install.sh <project-dir>`
+- **requires_api_key:** false
+- **when_recommended:** Project has Solana/Anchor programs with DeFi math (fees, swaps, staking, LP, oracles, etc.)
+- **docs_url:** See book-of-knowledge/SKILL.md
+
 ---
 
 ## Category 7: Frontend & UI

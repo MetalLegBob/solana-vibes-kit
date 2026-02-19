@@ -2,6 +2,26 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
+## v1.3.0 — 2026-02-19
+
+### Book of Knowledge (NEW)
+- Math verification and economic invariant proving skill for Solana/Anchor programs
+- 7-phase pipeline: scan → analyze → confirm → generate → execute → report
+- 101 verification patterns (VP-001 through VP-101) across 19 DeFi math categories
+- Kani formal proofs, LiteSVM runtime tests, Proptest property-based testing
+- Isolated git worktree workflow — tests generated in separate branch, user chooses merge/cherry-pick/discard
+- Educational approach: plain-English explanations and concrete exploit scenarios for every invariant
+- Graceful degradation: runs with LiteSVM + Proptest only if Kani unavailable
+- Cross-skill integration: reads GL docs and SOS findings, SOS reads BOK reports
+
+### Awareness Layer
+- MCP `svk_suggest` now recommends BOK for math-heavy Solana code
+- MCP `svk_read_knowledge` can access BOK verification patterns
+- SessionStart hook shows BOK verification progress
+- MCP `status.js` formats BOK phase progression and verification tallies
+
+---
+
 ## v1.2.0 — 2026-02-18
 
 ### Dinh's Bulwark (NEW)

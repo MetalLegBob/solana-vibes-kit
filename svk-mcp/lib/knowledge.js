@@ -31,6 +31,13 @@ const KNOWLEDGE_SOURCES = [
     primaryIndex: "PATTERNS_INDEX.md",
   },
   {
+    id: "book-of-knowledge",
+    name: "Book of Knowledge (BOK)",
+    description: "101 verification patterns for DeFi math across 19 categories — Kani proofs, LiteSVM tests, Proptest suites",
+    basePath: "book-of-knowledge/resources",
+    primaryIndex: "INDEX.md",
+  },
+  {
     id: "svk",
     name: "SVK Core",
     description: "Skill foundation patterns, vision, and goals",

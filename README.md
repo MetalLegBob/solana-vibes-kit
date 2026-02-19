@@ -52,6 +52,19 @@ An adversarial security audit for off-chain Solana code — backends, APIs, trad
 - Cross-skill awareness — reads SOS findings and GL docs for cross-boundary attack chains
 - Combination analysis with attack trees and critical fix node identification
 
+### [Book of Knowledge](book-of-knowledge/)
+
+Math verification and economic invariant proving for Solana/Anchor programs. Uses Kani (formal proof), LiteSVM (runtime tests), and Proptest (property-based testing) in a layered approach.
+
+**Features:**
+- 101 verification patterns across 19 DeFi math categories (swaps, fees, staking, LP, oracles, liquidation, etc.)
+- Kani formal proofs for pure arithmetic (overflow, precision, rounding, division-by-zero)
+- LiteSVM runtime tests for multi-account economic invariants (conservation of value, share fairness)
+- Proptest property-based testing for rapid stress testing (10,000+ random inputs)
+- Isolated git worktree workflow — user's working tree never touched
+- Educational approach: every invariant comes with plain-English explanation and exploit scenario
+- Cross-skill integration: reads GL specs and SOS findings, SOS reads BOK reports
+
 ### [SVK Update](svk-update/)
 
 Check for and install SVK updates. Compares your installed version against the latest release and selectively reinstalls only the skills that changed.
@@ -96,6 +109,9 @@ cd stronghold-of-security && ./install.sh /path/to/your-project
 
 # Install Dinh's Bulwark
 cd dinhs-bulwark && ./install.sh /path/to/your-project
+
+# Install Book of Knowledge
+cd book-of-knowledge && ./install.sh /path/to/your-project
 
 # Install SVK Update
 cd svk-update && ./install.sh /path/to/your-project

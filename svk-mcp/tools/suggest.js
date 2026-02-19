@@ -176,6 +176,58 @@ export async function handleSuggest(projectDir) {
     }
   }
 
+  // Rule: BOK — math-heavy code without verification
+  const hasBok = await dirExists(join(projectDir, ".bok"));
+  if (codeExists && !hasBok) {
+    // Check for Solana programs with math signals
+    const programsDir = join(projectDir, "programs");
+    if (await dirExists(programsDir)) {
+      try {
+        const { execSync } = await import("node:child_process");
+        const mathHits = execSync(
+          `grep -rl 'checked_mul\\|checked_add\\|as u64\\|as u128\\|fee\\|swap\\|reward\\|stake\\|liquidity\\|price' "${programsDir}" --include="*.rs" 2>/dev/null | wc -l`,
+          { encoding: "utf-8", timeout: 5000 }
+        ).trim();
+        if (parseInt(mathHits, 10) > 3) {
+          suggestions.push({
+            suggestion: "Math-heavy code detected — consider /BOK:scan for formal verification",
+            priority: "medium",
+            reason: "Found arithmetic and DeFi math patterns that benefit from formal verification with Kani, LiteSVM, and Proptest.",
+          });
+        }
+      } catch {}
+    }
+  }
+
+  // Rule: BOK found verification failures
+  if (hasBok) {
+    try {
+      const bokState = JSON.parse(await readFile(join(projectDir, ".bok", "STATE.json"), "utf-8"));
+      if (bokState.phases?.execute?.failed > 0) {
+        suggestions.push({
+          suggestion: `BOK found ${bokState.phases.execute.failed} verification failures — review /BOK:report`,
+          priority: "high",
+          reason: "Math violations detected that may indicate bugs or exploitable conditions.",
+        });
+      }
+    } catch {}
+  }
+
+  // Rule: SOS flagged arithmetic, no BOK
+  if (hasAudit && !hasBok && codeExists) {
+    try {
+      const auditReport = await readFile(join(projectDir, ".audit", "FINAL_REPORT.md"), "utf-8");
+      const hasArithmetic = /arithmetic|overflow|underflow|precision|rounding|division.by.zero/i.test(auditReport);
+      if (hasArithmetic) {
+        suggestions.push({
+          suggestion: "SOS flagged arithmetic concerns — /BOK:scan can formally verify",
+          priority: "medium",
+          reason: "BOK can confirm or refute SOS arithmetic findings with formal proofs.",
+        });
+      }
+    } catch {}
+  }
+
   // Rule: .forge state exists but no recent activity — remind to continue
   const hasForge = await dirExists(join(projectDir, ".forge"));
   if (hasForge) {

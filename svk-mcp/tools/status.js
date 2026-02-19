@@ -63,6 +63,22 @@ function formatSkillStatus(skillState) {
     }
   }
 
+  if (skill === "book-of-knowledge" || skill === "BOK") {
+    info.kani_available = state.kani_available || false;
+    info.degraded_mode = state.degraded_mode || false;
+    if (phase === "execute" && (status === "complete" || status === "in_progress")) {
+      info.progress = {
+        proven: state.phases.execute?.proven || 0,
+        stress_tested: state.phases.execute?.stress_tested || 0,
+        failed: state.phases.execute?.failed || 0,
+        inconclusive: state.phases.execute?.inconclusive || 0,
+      };
+    }
+    if (phase === "analyze" && status === "complete") {
+      info.invariants_proposed = state.phases.analyze?.invariants_proposed || 0;
+    }
+  }
+
   return info;
 }
 
@@ -96,6 +112,13 @@ function getNextStep(skill, phase, status) {
       }
       const next = { scan: "/DB:analyze", analyze: "/DB:strategize", strategize: "/DB:investigate", investigate: "/DB:report", report: "/DB:verify" };
       return next[phase] ? `Next: /clear then ${next[phase]}` : null;
+    }
+    if (skill === "book-of-knowledge" || skill === "BOK") {
+      if (status === "in_progress") {
+        return `Resume: /BOK:${phase}`;
+      }
+      const next = { scan: "/BOK:analyze", analyze: "/BOK:confirm", confirm: "/BOK:generate", generate: "/BOK:execute", execute: "/BOK:report" };
+      return next[phase] ? `Next: /clear then ${next[phase]}` : "Verification complete";
     }
   }
   return null;

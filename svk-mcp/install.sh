@@ -55,7 +55,7 @@ fi
 
 # Copy hook script (skip if source and target are the same file, e.g. self-install)
 mkdir -p "$TARGET/.claude/hooks"
-HOOK_SRC="$(cd "$SCRIPT_DIR/../.claude/hooks" && pwd)/svk-session-start.sh"
+HOOK_SRC="$SCRIPT_DIR/svk-session-start.sh"
 HOOK_DST="$(cd "$TARGET/.claude/hooks" && pwd)/svk-session-start.sh"
 if [ "$HOOK_SRC" != "$HOOK_DST" ]; then
   cp "$HOOK_SRC" "$HOOK_DST"

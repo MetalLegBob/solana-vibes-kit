@@ -5,7 +5,7 @@ description: >
   SVK Update: Check for and install updates to SVK skills.
   Compares installed version against latest git tag and selectively
   reinstalls only the skills that changed.
-user-invocable: true
+user-invocable: false
 allowed-tools:
   - Read
   - Bash

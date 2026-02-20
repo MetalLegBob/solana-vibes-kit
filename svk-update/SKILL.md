@@ -1,6 +1,6 @@
 ---
 name: SVK-update
-version: "1.3.0"
+version: "1.3.1"
 description: >
   SVK Update: Check for and install updates to SVK skills.
   Compares installed version against latest git tag and selectively

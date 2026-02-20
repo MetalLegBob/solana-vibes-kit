@@ -81,6 +81,43 @@ Decision files loaded: {N}
 Starting with Wave 1 (Foundation). These documents must be validated before I continue to Wave 2.
 ```
 
+## Step 2.5: Context Budget
+
+Subagent prompts have limited space. Apply these rules when assembling context for each doc writer.
+
+### Prior Wave Doc Summaries (Wave 2+ only)
+
+Do NOT pass full prior wave documents to subagents. For each validated prior wave doc, extract only:
+
+1. **Full YAML frontmatter** (as-is)
+2. **Executive summary** — the first paragraph under the top-level `#` heading
+3. **Section headings only** — all `##` headings as a table of contents (no body content)
+
+Target: ~100–150 tokens per prior doc.
+
+If a DECISIONS file's `affects` field references a specific section of a prior doc, also include that section's heading + first paragraph (not the full section).
+
+### DECISIONS File Trimming
+
+For each DECISIONS file matched via `requires`/`provides`:
+
+- **Always include:** each decision's `choice` and `rationale` (first sentence only)
+- **Always include:** `affects_docs` list and any `NEEDS_VERIFICATION` flags
+- **Omit:** `alternatives_considered` details, `open_questions`, `raw_notes` sections
+
+Target: max ~2000 tokens per DECISIONS file.
+
+### Pre-Spawn Check
+
+Before spawning each subagent, estimate total assembled context (PROJECT_BRIEF + trimmed DECISIONS + template + prior wave summaries). If the context looks very large (e.g., 5+ DECISIONS files all required for one doc):
+
+1. Further trim by keeping only the decision `choice` lines — drop rationales entirely
+2. Warn the user: "Context for {doc_id} is large — trimming decision rationales to fit"
+
+The doc writers can always read full files from disk if they need more detail. The prompt should be slim; disk access is the fallback.
+
+---
+
 ## Step 3: Generate Wave
 
 For each wave, process all documents in that wave:
@@ -108,16 +145,17 @@ Task(
 
   PROJECT_BRIEF: {project_brief_content}
 
-  DECISIONS FILES:
+  DECISIONS (trimmed — choices + first-sentence rationales + affects + verification flags):
   {relevant_decisions_content}
 
   TEMPLATE:
   {template_content}
 
-  PRIOR WAVE DOCS:
+  PRIOR WAVE DOCS (summaries only — frontmatter + executive summary + section headings):
   {prior_wave_summaries_if_applicable}
 
-  Write the complete document following the template structure. Every section must have substantive content."
+  Write the complete document following the template structure. Every section must have substantive content.
+  If any summary feels insufficient, read the full doc from .docs/{doc_id}.md for details."
 )
 ```
 

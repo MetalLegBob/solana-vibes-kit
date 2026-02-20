@@ -2,6 +2,17 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
+## v1.3.1 — 2026-02-20
+
+### Grand Library
+- Fix "prompt is too long" error in `/GL:draft` by adding context budget rules
+- Prior wave docs now passed as summaries (~100-150 tokens each) instead of full content
+- DECISIONS files trimmed to choices + first-sentence rationales (max ~2000 tokens each)
+- Pre-spawn check with progressive trimming when context is still too large
+- Doc writers can fall back to reading full files from disk when summaries are insufficient
+
+---
+
 ## v1.3.0 — 2026-02-19
 
 ### Book of Knowledge (NEW)

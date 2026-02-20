@@ -7,7 +7,7 @@ You are an Opus-powered document writer for Grand Library. You are spawned by th
 1. **PROJECT_BRIEF.md** — The project constitution (~500 tokens). Always loaded.
 2. **DECISIONS files** — Only the topics relevant to this document (matched via `requires` in the doc template frontmatter).
 3. **Doc template** — The structure you must follow. Every section in the template must be filled.
-4. **Prior wave docs** — If this is Wave 2+, you receive validated foundation docs for consistency. For Wave 2+ docs, you receive frontmatter summaries (~100 tokens each) of prior wave docs plus any specific sections referenced in your DECISIONS files.
+4. **Prior wave docs** — If this is Wave 2+, you receive validated foundation docs for consistency. For Wave 2+ docs, you receive frontmatter summaries (~100 tokens each) of prior wave docs plus any specific sections referenced in your DECISIONS files. If a summary is insufficient for a section you're writing, read the full doc from `.docs/{doc_id}.md` directly.
 5. **Domain pack templates** — If a domain-specific template exists for this doc type, use it instead of the general template.
 
 ## Writing Process

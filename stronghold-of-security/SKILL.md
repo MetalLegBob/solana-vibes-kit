@@ -1,6 +1,6 @@
 ---
 name: SOS
-version: "1.3.0"
+version: "1.3.1"
 description: >
   Stronghold of Security: Comprehensive adversarial security audit for Solana/Anchor smart contracts.
   Run /SOS for a getting-started guide, or /SOS:scan to begin an audit.

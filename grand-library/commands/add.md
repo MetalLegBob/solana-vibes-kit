@@ -76,11 +76,45 @@ Conduct a focused interview for the new document:
 
 Keep this short — 3-5 questions max.
 
+## Step 3.5: Context Budget
+
+Apply the same context budget rules as GL:draft Step 2.5 when assembling the doc writer prompt.
+
+### DECISIONS File Trimming
+
+For each relevant DECISIONS file:
+- **Always include:** each decision's `choice` and `rationale` (first sentence only)
+- **Always include:** `affects_docs` list and any `NEEDS_VERIFICATION` flags
+- **Omit:** `alternatives_considered` details, `open_questions`, `raw_notes` sections
+
+Target: max ~2000 tokens per DECISIONS file.
+
+### Existing Doc Summaries
+
+For `relevant_existing_doc_summaries`, do NOT pass full documents. For each existing doc referenced for consistency, extract only:
+1. **Full YAML frontmatter** (as-is)
+2. **Executive summary** — first paragraph under the top-level `#` heading
+3. **Section headings only** — all `##` headings as a table of contents
+
+Target: ~100-150 tokens per existing doc summary.
+
+### Pre-Spawn Check
+
+Estimate total context (PROJECT_BRIEF + trimmed DECISIONS + template + doc summaries). Hard cap: 80K tokens per doc writer.
+
+- **Under 60K:** Proceed as normal.
+- **60K–80K:** Drop decision rationales entirely, keep only `choice` lines. Warn user.
+- **Over 80K:** Switch decisions to disk-read mode. Pass only decision IDs and choices inline. Add to prompt: "Read full decisions from .docs/DECISIONS/{topic}.md if needed."
+- **Over 80K after disk-read fallback:** Also move existing doc summaries to disk reads. The doc writer reads them directly from `.docs/{doc_id}.md`.
+
+**Hard cap on decision count:** If the new doc requires more than 8 DECISIONS files, automatically use disk-read mode for decisions.
+
 ## Step 4: Generate Document
 
 1. Select or create a template
 2. Gather relevant DECISIONS files and existing docs
-3. Spawn an Opus doc writer:
+3. Apply Step 3.5 trimming rules
+4. Spawn an Opus doc writer:
 
 ```
 Task(
@@ -98,20 +132,21 @@ Task(
 
   PROJECT_BRIEF: {project_brief_content}
 
-  DECISIONS FILES:
-  {relevant_decisions_content}
+  DECISIONS (trimmed — choices + first-sentence rationales, max ~2000 tokens each):
+  {trimmed_decisions_content}
 
   TEMPLATE:
   {template_content}
 
-  EXISTING DOCS FOR CONSISTENCY:
-  {relevant_existing_doc_summaries}
+  EXISTING DOCS (summaries — frontmatter + executive summary + section headings):
+  {existing_doc_summaries}
 
-  Write the complete document following the template structure. Every section must have substantive content."
+  Write the complete document following the template structure. Every section must have substantive content.
+  If any summary is insufficient, read the full doc from .docs/{doc_id}.md for details."
 )
 ```
 
-4. Write the generated doc to `.docs/{doc_id}.md`
+5. Write the generated doc to `.docs/{doc_id}.md`
 
 ## Step 5: Update Manifest & State
 

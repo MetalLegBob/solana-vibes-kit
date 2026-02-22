@@ -116,6 +116,32 @@ Before spawning each subagent, estimate total assembled context (PROJECT_BRIEF +
 
 The doc writers can always read full files from disk if they need more detail. The prompt should be slim; disk access is the fallback.
 
+### Pre-Spawn Enforcement (Hard Cap)
+
+After assembling context for each subagent (trimmed per the rules above), estimate the total token count:
+
+```
+Assembled context estimate:
+  PROJECT_BRIEF:              {lines × 3 tokens/line}
+  Trimmed DECISIONS:          {lines × 3 tokens/line}
+  Template:                   {lines × 3 tokens/line}
+  Prior wave summaries:       {count × 150 tokens each}
+  ────────────────────────
+  Estimated total:            Sum of above
+```
+
+**Hard cap: 80K tokens per doc writer.**
+
+- **Under 60K:** Proceed as normal.
+- **60K–80K:** Apply the aggressive trim (Pre-Spawn Check rule 1: keep only decision `choice` lines). Log warning.
+- **Over 80K after aggressive trim:** Switch DECISIONS to disk-read mode. Include only the list of decision IDs and `choice` one-liners. Add to prompt: "Read full decisions from .docs/DECISIONS/{topic}.md if you need rationale details for any decision."
+  Log: "Context for {doc_id} exceeds budget — decisions moved to disk reads."
+
+**Hard cap on decision count:** If a single doc requires more than 8 DECISIONS files (regardless of token count), automatically use disk-read mode for decisions.
+
+**Abort safeguard:** If estimated total is still over 80K after all trimming and disk-read fallbacks, abort that doc and report to user:
+"Cannot generate {doc_id} — context too large even after maximum trimming. Consider splitting this document into two smaller docs in the DOC_MANIFEST."
+
 ---
 
 ## Step 3: Generate Wave

@@ -59,17 +59,46 @@ find ~/.claude -name "common-false-positives.md" -path "*/stronghold-of-security
 find ~/.claude -name "PATTERNS_INDEX.md" -path "*/stronghold-of-security/knowledge-base/*" 2>/dev/null | head -1
 ```
 
-### Step 3: Assess Context Budget
+### Step 3: Assess Context Budget (Enforced)
 
-Count total input size. The final synthesizer needs to process potentially many findings.
+Count total findings content by reading all files in `.audit/findings/`:
 
-If total findings content exceeds ~200KB:
-- Inline the CONFIRMED and POTENTIAL findings in full
-- For NOT VULNERABLE findings, include only the ID, status, and one-line summary
-- For NEEDS MANUAL REVIEW, include full content
+1. **Classify findings by status:** Read each finding file, extract the status line (CONFIRMED/POTENTIAL/NOT_VULNERABLE/NEEDS_MANUAL_REVIEW). Count total lines per category.
 
-If total fits in context (~200KB or less):
-- Inline everything
+2. **Apply trimming rules (always — not just when over threshold):**
+   - **NOT_VULNERABLE findings:** ALWAYS trim to ID + status + one-line summary only. Never inline full NOT_VULNERABLE finding bodies — they add bulk with no synthesis value.
+   - **NEEDS_MANUAL_REVIEW:** Include full content.
+   - **CONFIRMED + POTENTIAL:** Include full content.
+
+3. **Estimate total inline content:**
+   ```
+   Findings (trimmed):      {confirmed + potential full + NMR full + NV summaries} lines × 3 tokens/line
+   ARCHITECTURE.md:         Read, count lines × 3
+   STRATEGIES.md:           Read, count lines × 3
+   COVERAGE.md:             Read, count lines × 3
+   KB calibration files:    ~1,500 tokens total (fixed estimate)
+   HANDOVER.md (if exists): Read, count lines × 3
+   ────────────────────────
+   Estimated total:         Sum of above
+   ```
+
+4. **Apply hard cap — 120K tokens estimated total:**
+   - **Under 80K → Full Inline Mode:** Inline all findings (NOT_VULNERABLE already trimmed per rule 2), all reference material inline.
+   - **80K–120K → Partial Disk Mode:** Move STRATEGIES.md, COVERAGE.md, and KB files to disk reads. Inline only: trimmed findings + ARCHITECTURE.md + HANDOVER summary. Add to synthesizer prompt: "Read these files from disk: {paths}"
+   - **Over 120K → Disk-Heavy Mode:** Additionally move ARCHITECTURE.md to disk read. If still over 120K after all reference material moved to disk, further trim CONFIRMED+POTENTIAL findings to: ID + status + severity + one-paragraph summary + code location. Full details available via disk read. Warn user: "Very large finding set ({N} findings). Synthesizer will work from summaries and read full details from disk as needed."
+
+5. **Announce budget to user:**
+   ```
+   Context budget: ~{estimated}K tokens ({mode: full inline / partial disk / disk-heavy})
+   Findings: {confirmed} CONFIRMED, {potential} POTENTIAL, {nv} NOT_VULNERABLE (trimmed), {nmr} NEEDS_MANUAL_REVIEW
+   ```
+
+### Step 3.5: Pre-Spawn Validation
+
+After assembling the prompt content (before spawning), verify:
+- Total assembled content (prompt text + inline content) < 120K estimated tokens
+- If over, re-apply trimming from Step 3 rule 4 with stricter thresholds
+- Log: `Pre-spawn check: ~{N}K tokens estimated. Mode: {mode}.`
 
 ### Step 4: Spawn Final Synthesizer
 
@@ -80,6 +109,9 @@ Locate the synthesizer template:
 find ~/.claude -name "final-synthesizer.md" -path "*/stronghold-of-security/agents/*" 2>/dev/null | head -1
 ```
 
+The prompt is **conditional on the mode** determined in Step 3:
+
+**Full Inline Mode (under 80K):**
 ```
 Task(
   subagent_type="general-purpose",
@@ -90,11 +122,20 @@ Task(
     === STEP 1: READ YOUR INSTRUCTIONS ===
     Read this file: {SYNTHESIZER_PATH} — Full synthesis methodology
 
-    === STEP 2: READ ALL INPUTS ===
-    1. All .audit/findings/H*.md, S*.md, G*.md — Investigation results
-    2. .audit/ARCHITECTURE.md — Architectural context
-    3. .audit/STRATEGIES.md — Attack hypotheses
-    4. .audit/COVERAGE.md — Coverage gaps (if exists)
+    === STEP 2: READ ALL INPUTS (inline) ===
+    All findings provided inline (NOT_VULNERABLE trimmed to summaries).
+
+    FINDINGS:
+    {trimmed_findings_content}
+
+    ARCHITECTURE:
+    {architecture_content}
+
+    STRATEGIES:
+    {strategies_content}
+
+    COVERAGE:
+    {coverage_content_if_exists}
 
     === STEP 3: READ KB FOR CALIBRATION ===
     {severity-calibration.md path} — Severity calibration reference
@@ -106,26 +147,78 @@ Task(
     Read .audit/HANDOVER.md and extract:
     - Audit Lineage section (<!-- AUDIT_LINEAGE_START --> markers)
     - Previous Findings Digest (<!-- FINDINGS_DIGEST_START --> markers)
+    Classify findings as NEW/RECURRENT/REGRESSION/RESOLVED.
+    REGRESSION ESCALATION: +1 severity bump.
+    For RECURRENT findings surviving 2+ audits, add prominent warning.
 
-    Use this to generate two new report sections:
+    === OUTPUT ===
+    Write the final report to .audit/FINAL_REPORT.md
+  "
+)
+```
 
-    **Audit Lineage:** Full chain of previous audits with summary stats.
-    Include in the report metadata section.
+**Partial Disk Mode (80K–120K):**
+```
+Task(
+  subagent_type="general-purpose",
+  model="{config.models.report}",
+  prompt="
+    You are the final report synthesizer for Stronghold of Security.
 
-    **Finding Evolution:** For EACH finding in this audit, classify it:
-    - NEW — First seen in this audit. Not present in any previous audit.
-    - RECURRENT — Was present in a previous audit AND is still present.
-      Flag prominently if it has survived 2+ audits.
-    - REGRESSION — Was in a previous audit, was marked as fixed/resolved
-      in an intermediate audit, and is now back. ESCALATE severity.
-    - RESOLVED — Was in the previous audit but is no longer present
-      (either explicitly fixed or the code was deleted/rewritten).
+    === STEP 1: READ YOUR INSTRUCTIONS ===
+    Read this file: {SYNTHESIZER_PATH}
 
-    For RESOLVED findings, list them in a separate section so users can
-    see their fix progress.
+    === STEP 2: READ FINDINGS (inline) ===
+    Findings provided inline (NOT_VULNERABLE trimmed to summaries).
 
-    For RECURRENT findings surviving 2+ audits, add a prominent warning:
-    "⚠ This finding has persisted across {N} audits without resolution."
+    FINDINGS:
+    {trimmed_findings_content}
+
+    ARCHITECTURE:
+    {architecture_content}
+
+    === STEP 3: READ FROM DISK ===
+    These files were too large to include inline:
+    - .audit/STRATEGIES.md
+    - .audit/COVERAGE.md (if exists)
+    - {severity-calibration.md path}
+    - {common-false-positives.md path}
+    - {PATTERNS_INDEX.md path}
+
+    {Audit evolution section same as full inline mode}
+
+    === OUTPUT ===
+    Write the final report to .audit/FINAL_REPORT.md
+  "
+)
+```
+
+**Disk-Heavy Mode (over 120K):**
+```
+Task(
+  subagent_type="general-purpose",
+  model="{config.models.report}",
+  prompt="
+    You are the final report synthesizer for Stronghold of Security.
+
+    === STEP 1: READ YOUR INSTRUCTIONS ===
+    Read this file: {SYNTHESIZER_PATH}
+
+    === STEP 2: FINDING SUMMARIES (inline — read full details from disk) ===
+    {summary_only_findings — ID + status + severity + one-paragraph + location}
+
+    For full finding details, read individual files from: .audit/findings/
+    Prioritize reading full details for CONFIRMED and high-severity POTENTIAL findings.
+
+    === STEP 3: READ ALL REFERENCE MATERIAL FROM DISK ===
+    - .audit/ARCHITECTURE.md
+    - .audit/STRATEGIES.md
+    - .audit/COVERAGE.md (if exists)
+    - {severity-calibration.md path}
+    - {common-false-positives.md path}
+    - {PATTERNS_INDEX.md path}
+
+    {Audit evolution section same as full inline mode}
 
     === OUTPUT ===
     Write the final report to .audit/FINAL_REPORT.md

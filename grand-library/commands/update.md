@@ -102,6 +102,14 @@ I'll regenerate these with your updated decisions. Proceed?
 
 ## Step 7: Regenerate Affected Documents
 
+**Context Budget:** Apply GL:draft Step 2.5 context budget rules when assembling context for each regenerated document. This includes:
+- Trim DECISIONS to choices + first-sentence rationales (max ~2000 tokens each)
+- Pass non-regenerated docs as summaries only (frontmatter + executive summary + headings, ~100-150 tokens each)
+- Pre-spawn enforcement with 80K hard cap per doc writer
+- Disk-read fallback if context exceeds budget
+
+Since update regenerates only affected docs, the unchanged docs serve as "prior wave" equivalents and must be summarized, not inlined in full.
+
 For each affected document, follow the same process as `/GL:draft` Step 3a:
 - Spawn an Opus doc writer with updated decisions
 - Write the regenerated doc to `.docs/{doc_id}.md`

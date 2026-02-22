@@ -67,11 +67,37 @@ Read `config.selected_auditors` from STATE.json. For each selected auditor, deri
 - **KB manifest path:** From KB_MANIFEST.md
 - **AI pitfalls domain:** Category slug from KB_MANIFEST.md
 
+### Step 3.5: Context Budget Estimation
+
+Estimate per-agent input tokens before spawning:
+
+```
+Per agent budget estimate:
+  Agent template (context-auditor.md):  ~3,000 tokens (fixed)
+  Auditor catalog section:              ~500 tokens (fixed)
+  INDEX.md (agent's focus subset):      Count tagged entries × ~50 tokens each
+  KB manifest files:                    Count files × ~500 tokens each
+  AI pitfalls file:                     ~500 tokens (fixed)
+  Cross-skill context (if available):   ~1,000 tokens (fixed)
+  ────────────────────────
+  Estimated total per agent:            Sum of above
+```
+
+**Adaptive batch sizing:**
+- If avg estimate < 40K tokens: batch size = 8
+- If avg estimate 40-80K tokens: batch size = 5 (default)
+- If avg estimate > 80K tokens: batch size = 3
+
+**Auto-split for large scopes:**
+If estimated total > 120K tokens for any single agent (e.g., an auditor whose focus area tags hundreds of files in INDEX.md), split that agent's file scope across 2 agents. Both use the same auditor ID and focus area. Agent A gets the first half of tagged files; Agent B gets the second half. Both write to the same output file (A creates, B appends).
+
+Report: `Estimated ~{N}K tokens per agent, using batch size {N}.`
+
 ### Step 4: Spawn Auditor Agents
 
 **CRITICAL — Batching Rules:**
 
-- Spawn **max 5 agents per response** (Claude Code parallel limit)
+- Spawn **max {adaptive_batch_size} agents per response** (from Step 3.5 estimate)
 - Each batch is a single response with multiple Task() calls (parallel within batch)
 - Wait for a batch to complete, then spawn the next
 - Do NOT use `run_in_background=true`
@@ -79,8 +105,8 @@ Read `config.selected_auditors` from STATE.json. For each selected auditor, deri
 
 **Batch calculation:**
 - Total agents: {config.auditor_count}
-- Batches needed: ceil(auditor_count / 5)
-- Example: 16 auditors = 4 batches (5+5+5+1)
+- Batches needed: ceil(auditor_count / {adaptive_batch_size})
+- Example: 16 auditors with batch size 5 = 4 batches (5+5+5+1)
 
 **Spawn Pattern — each agent gets this prompt:**
 

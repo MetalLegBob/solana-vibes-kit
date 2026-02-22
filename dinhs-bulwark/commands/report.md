@@ -52,17 +52,55 @@ find ~/.claude -name "final-synthesizer.md" -path "*/dinhs-bulwark/agents/*" 2>/
    ```
 6. **SOS findings (cross-boundary analysis):** If `.audit/FINAL_REPORT.md` exists, read for cross-boundary combination analysis
 
-### Step 3: Assess Context Budget
+### Step 3: Assess Context Budget (Enforced)
 
-If total findings content exceeds ~200KB:
-- Inline CONFIRMED and POTENTIAL findings in full
-- For NOT VULNERABLE: include only ID, status, one-line summary
-- For NEEDS MANUAL REVIEW: include full content
+Count total findings content by reading all files in `.bulwark/findings/`:
+
+1. **Classify findings by status:** Read each finding file, extract the status line (CONFIRMED/POTENTIAL/NOT_VULNERABLE/NEEDS_MANUAL_REVIEW). Count total lines per category.
+
+2. **Apply trimming rules (always — not just when over threshold):**
+   - **NOT_VULNERABLE findings:** ALWAYS trim to ID + status + one-line summary only. Never inline full NOT_VULNERABLE finding bodies — they add bulk with no synthesis value.
+   - **NEEDS_MANUAL_REVIEW:** Include full content.
+   - **CONFIRMED + POTENTIAL:** Include full content.
+
+3. **Estimate total inline content:**
+   ```
+   Findings (trimmed):      {confirmed + potential full + NMR full + NV summaries} lines × 3 tokens/line
+   ARCHITECTURE.md:         Read, count lines × 3
+   STRATEGIES.md:           Read, count lines × 3
+   COVERAGE.md:             Read, count lines × 3
+   KB calibration files:    ~1,500 tokens total (fixed estimate)
+   HANDOVER.md (if exists): Read, count lines × 3
+   SOS FINAL_REPORT (if exists): Read, count lines × 3
+   ────────────────────────
+   Estimated total:         Sum of above
+   ```
+
+4. **Apply hard cap — 120K tokens estimated total:**
+   - **Under 80K → Full Inline Mode:** Inline all findings (NOT_VULNERABLE already trimmed per rule 2), all reference material inline.
+   - **80K–120K → Partial Disk Mode:** Move STRATEGIES.md, COVERAGE.md, and KB files to disk reads. Inline only: trimmed findings + ARCHITECTURE.md + HANDOVER summary. Add to synthesizer prompt: "Read these files from disk: {paths}"
+   - **Over 120K → Disk-Heavy Mode:** Additionally move ARCHITECTURE.md to disk read. If still over 120K after all reference material moved to disk, further trim CONFIRMED+POTENTIAL findings to: ID + status + severity + one-paragraph summary + code location. Full details available via disk read. Warn user: "Very large finding set ({N} findings). Synthesizer will work from summaries and read full details from disk as needed."
+
+5. **Announce budget to user:**
+   ```
+   Context budget: ~{estimated}K tokens ({mode: full inline / partial disk / disk-heavy})
+   Findings: {confirmed} CONFIRMED, {potential} POTENTIAL, {nv} NOT_VULNERABLE (trimmed), {nmr} NEEDS_MANUAL_REVIEW
+   ```
+
+### Step 3.5: Pre-Spawn Validation
+
+After assembling the prompt content (before spawning), verify:
+- Total assembled content (prompt text + inline content) < 120K estimated tokens
+- If over, re-apply trimming from Step 3 rule 4 with stricter thresholds
+- Log: `Pre-spawn check: ~{N}K tokens estimated. Mode: {mode}.`
 
 ### Step 4: Spawn Final Synthesizer
 
 Read `config.models.report` from `.bulwark/STATE.json` (default: opus).
 
+The prompt is **conditional on the mode** determined in Step 3:
+
+**Full Inline Mode (under 80K):**
 ```
 Task(
   subagent_type="general-purpose",
@@ -73,35 +111,104 @@ Task(
     === STEP 1: READ YOUR INSTRUCTIONS ===
     Read: {SYNTHESIZER_PATH}
 
-    === STEP 2: READ ALL INPUTS ===
-    1. All .bulwark/findings/H*.md, S*.md, G*.md
-    2. .bulwark/ARCHITECTURE.md
-    3. .bulwark/STRATEGIES.md
-    4. .bulwark/COVERAGE.md (if exists)
+    === STEP 2: READ ALL INPUTS (inline) ===
+    All findings are provided inline (NOT_VULNERABLE trimmed to summaries).
+
+    FINDINGS:
+    {trimmed_findings_content}
+
+    ARCHITECTURE:
+    {architecture_content}
+
+    STRATEGIES:
+    {strategies_content}
+
+    COVERAGE:
+    {coverage_content_if_exists}
 
     === STEP 3: READ KB FOR CALIBRATION ===
     {severity-calibration.md path}
     {common-false-positives.md path}
     {PATTERNS_INDEX.md path}
 
-    {If .audit/FINAL_REPORT.md exists (SOS audit available):}
+    {If .audit/FINAL_REPORT.md exists:}
     === STEP 4: CROSS-BOUNDARY ANALYSIS ===
     Read .audit/FINAL_REPORT.md — the on-chain audit report.
-    Identify on-chain/off-chain combination attack chains where:
-    - An on-chain vulnerability is exploitable via off-chain code
-    - An off-chain vulnerability undermines on-chain security assumptions
-    - Combined on-chain + off-chain findings create a more severe attack path
+    Identify on-chain/off-chain combination attack chains.
 
-    {If .bulwark/HANDOVER.md exists (stacked audit):}
+    {If .bulwark/HANDOVER.md exists:}
     === STEP 5: FINDING EVOLUTION ===
-    Read .bulwark/HANDOVER.md. For each current finding, classify:
-    - NEW: Not in previous audit
-    - RECURRENT: Same finding present in previous audit (same file, same issue)
-    - REGRESSION: Was fixed in a previous audit but reappeared (target file was MODIFIED, previous finding had RESOLVED status)
-    - RESOLVED: Previous finding no longer present (include in report as positive progress)
+    Read .bulwark/HANDOVER.md. Classify findings as NEW/RECURRENT/REGRESSION/RESOLVED.
+    REGRESSION ESCALATION: +1 severity bump for any REGRESSION finding.
 
-    REGRESSION ESCALATION: Any REGRESSION finding gets +1 severity bump
-    (LOW → MEDIUM, MEDIUM → HIGH, HIGH → CRITICAL). Document the escalation.
+    === OUTPUT ===
+    Write the final report to .bulwark/FINAL_REPORT.md
+  "
+)
+```
+
+**Partial Disk Mode (80K–120K):**
+```
+Task(
+  subagent_type="general-purpose",
+  model="{config.models.report}",
+  prompt="
+    You are the final report synthesizer for Dinh's Bulwark off-chain audit.
+
+    === STEP 1: READ YOUR INSTRUCTIONS ===
+    Read: {SYNTHESIZER_PATH}
+
+    === STEP 2: READ FINDINGS (inline) ===
+    Findings provided inline (NOT_VULNERABLE trimmed to summaries).
+
+    FINDINGS:
+    {trimmed_findings_content}
+
+    ARCHITECTURE:
+    {architecture_content}
+
+    === STEP 3: READ FROM DISK ===
+    These files were too large to include inline:
+    - .bulwark/STRATEGIES.md
+    - .bulwark/COVERAGE.md (if exists)
+    - {severity-calibration.md path}
+    - {common-false-positives.md path}
+    - {PATTERNS_INDEX.md path}
+
+    {Cross-boundary and finding evolution sections same as full inline mode}
+
+    === OUTPUT ===
+    Write the final report to .bulwark/FINAL_REPORT.md
+  "
+)
+```
+
+**Disk-Heavy Mode (over 120K):**
+```
+Task(
+  subagent_type="general-purpose",
+  model="{config.models.report}",
+  prompt="
+    You are the final report synthesizer for Dinh's Bulwark off-chain audit.
+
+    === STEP 1: READ YOUR INSTRUCTIONS ===
+    Read: {SYNTHESIZER_PATH}
+
+    === STEP 2: FINDING SUMMARIES (inline — read full details from disk) ===
+    {summary_only_findings — ID + status + severity + one-paragraph + location}
+
+    For full finding details, read individual files from: .bulwark/findings/
+    Prioritize reading full details for CONFIRMED and high-severity POTENTIAL findings.
+
+    === STEP 3: READ ALL REFERENCE MATERIAL FROM DISK ===
+    - .bulwark/ARCHITECTURE.md
+    - .bulwark/STRATEGIES.md
+    - .bulwark/COVERAGE.md (if exists)
+    - {severity-calibration.md path}
+    - {common-false-positives.md path}
+    - {PATTERNS_INDEX.md path}
+
+    {Cross-boundary and finding evolution sections same as full inline mode}
 
     === OUTPUT ===
     Write the final report to .bulwark/FINAL_REPORT.md

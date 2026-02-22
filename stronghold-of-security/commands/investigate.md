@@ -95,6 +95,17 @@ Per investigator budget:
 
 **Tier 3 with Haiku:** Tier 3 investigators get condensed context (CONDENSED SUMMARY only, no full analysis), so their estimates are smaller. Use batch size 8 for Tier 3 batches.
 
+**Auto-split for large scopes:**
+If estimated total > 120K tokens for any single agent (e.g., a strategy that requires multiple large context files and many KB patterns):
+- Split that strategy's investigation across 2 agents
+- Agent A: Reads ARCHITECTURE.md + primary context files (first 1-2 from routing table)
+- Agent B: Reads remaining context files + all KB patterns
+- Both investigate the same hypothesis but from different vantage points
+- Both write to the same output file (A writes, B appends a `## Supplemental Analysis` section)
+
+**Pre-spawn validation:**
+Before spawning each batch, verify the strategy text entry from STRATEGIES.md is under 2K tokens. If a single strategy entry is exceptionally long (>2K tokens), trim to: title + hypothesis + target files + attack path. The agent can read the full strategy from STRATEGIES.md if needed.
+
 Group into batches using the adaptive batch size.
 
 ### Step 3: Locate Skill Files & Build Routing Table

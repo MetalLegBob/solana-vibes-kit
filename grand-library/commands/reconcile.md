@@ -56,9 +56,55 @@ Total decisions to trace: {N}
 Spawning reconciliation agent...
 ```
 
-## Step 2: Spawn Reconciliation Agent
+## Step 1.5: Context Budget Assessment
 
-This is a single Opus agent with a large context. It needs to see everything.
+Before spawning the reconciliation agent, estimate whether the full document suite fits comfortably in a single prompt.
+
+### Sizing Rules
+
+1. **Count generated documents** (excluding STATE.json, PROJECT_BRIEF, DOC_MANIFEST, DECISIONS/)
+2. **Threshold: 6 generated docs OR 4+ DECISIONS files**
+   - **At or below threshold → Inline mode:** proceed to Step 2a (all content inline)
+   - **Above threshold → Slim mode:** proceed to Step 2b (summaries inline + disk access)
+
+If in doubt, prefer slim mode. A slightly slower reconciliation is always better than a prompt overflow.
+
+### Summary Extraction (Slim mode only)
+
+For each generated document, extract:
+
+1. **Full YAML frontmatter** (as-is)
+2. **Executive summary** — the first paragraph under the top-level `#` heading
+3. **All section headings** — every `##` and `###` heading as a table of contents (no body content)
+
+Target: ~100–150 tokens per doc summary.
+
+### DECISIONS Trimming (Slim mode only)
+
+For each DECISIONS file:
+
+- **Always include:** each decision's `choice` and `rationale` (first sentence only)
+- **Always include:** `affects_docs` list and any `NEEDS_VERIFICATION` flags
+- **Omit:** `alternatives_considered` details, `open_questions`, `raw_notes` sections
+
+Target: max ~2000 tokens per DECISIONS file.
+
+### Announce mode to user:
+
+```
+{If slim mode:}
+Large documentation suite ({N} docs, {N} decision files) — using summary-first reconciliation.
+The agent will read full documents from disk as needed for detailed checks.
+
+{If inline mode:}
+Documentation suite fits comfortably in context — running full inline reconciliation.
+```
+
+---
+
+## Step 2a: Spawn Reconciliation Agent (Inline Mode)
+
+For small suites where everything fits. Pass all content directly.
 
 ```
 Task(
@@ -81,6 +127,46 @@ Task(
 
   GENERATED DOCUMENTS:
   {all_generated_docs_content}
+
+  Perform all four passes and produce the RECONCILIATION_REPORT.md"
+)
+```
+
+## Step 2b: Spawn Reconciliation Agent (Slim Mode)
+
+For large suites. Pass summaries inline; the agent reads full docs from disk.
+
+```
+Task(
+  subagent_type="general-purpose",
+  model="opus",
+  prompt="You are a Grand Library reconciliation agent running in SLIM CONTEXT MODE.
+
+  Read the agent instructions at: {skill_path}/agents/reconciler.md
+  Pay special attention to the 'Slim Context Mode' section.
+
+  ## Context (summaries — read full docs from disk as needed)
+
+  PROJECT BRIEF:
+  {brief_content}
+
+  DECISIONS (trimmed — choices + first-sentence rationales + affects + verification flags):
+  {trimmed_decisions_content}
+
+  DOC MANIFEST:
+  {manifest_content}
+
+  DOCUMENT SUMMARIES:
+  {for each generated doc:}
+  ### {doc_id}
+  {frontmatter}
+  {executive_summary}
+  Sections: {list of ## headings}
+  Full path: .docs/{doc_id}.md
+  ---
+
+  You have summaries of {N} documents above. Read the full documents from disk
+  using the Read tool when you need detailed content for any pass.
 
   Perform all four passes and produce the RECONCILIATION_REPORT.md"
 )

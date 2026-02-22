@@ -2,6 +2,29 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
+## v1.3.2 — 2026-02-20
+
+### Context Budget Protections (all skills)
+
+Comprehensive audit and fix for "prompt too long" errors across all skill phases that spawn subagents. Shared constants: 80K soft cap, 120K hard cap, 3-tier progressive fallback (full inline → partial disk → disk-heavy).
+
+#### Dinh's Bulwark
+- **DB:investigate**: Added adaptive batch sizing (3/5/8) based on token estimation. Added 120K auto-split rule. Enforce condensed-summary-first reading for large context files.
+- **DB:report**: Replaced soft 200KB advisory with enforced 3-tier budget. NOT_VULNERABLE findings always trimmed to summaries. Hard cap at 120K with progressive fallback to disk reads.
+- **DB:analyze**: Added adaptive batch sizing and 120K auto-split, ported from SOS:analyze pattern.
+
+#### Stronghold of Security
+- **SOS:investigate**: Added 120K auto-split rule matching SOS:analyze pattern. Added pre-spawn validation for strategy text size.
+- **SOS:report**: Replaced soft 200KB advisory with enforced 3-tier budget matching DB:report pattern. NOT_VULNERABLE always trimmed.
+
+#### Grand Library
+- **GL:reconcile**: Added inline/slim mode split — suites over 6 docs or 4+ DECISIONS files use summary-first reconciliation with disk access fallback.
+- **GL:draft**: Added hard-cap enforcement to existing Step 2.5 budget rules. 80K per doc writer with progressive disk-read fallback. Hard cap of 8 DECISIONS files before automatic disk-read mode.
+- **GL:update**: Added explicit context budget reference for doc regeneration (defers to GL:draft Step 2.5).
+- **GL:add**: Added full context budget section — DECISIONS trimming, existing doc summaries, 80K hard cap with disk-read fallback.
+
+---
+
 ## v1.3.1 — 2026-02-20
 
 ### Grand Library

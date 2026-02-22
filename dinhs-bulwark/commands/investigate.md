@@ -59,10 +59,45 @@ Read `.bulwark/STRATEGIES.md` and parse all strategies.
 2. **Tier 2** (HIGH) — investigate second
 3. **Tier 3** (MEDIUM-LOW) — investigate last
 
-Group into batches by tier:
-- **Tier 1 (CRITICAL):** Batch size 5 — deep investigation, full context loading
-- **Tier 2 (HIGH):** Batch size 5 — full investigation
-- **Tier 3 (MEDIUM-LOW):** Batch size 8 — lightweight investigation, condensed context
+Group by tier for priority ordering. Batch sizes are determined by Step 2.5 estimates (adaptive).
+- **Tier 1 (CRITICAL):** Investigate first — deep investigation, full context loading
+- **Tier 2 (HIGH):** Investigate second — full investigation
+- **Tier 3 (MEDIUM-LOW):** Investigate last — lightweight investigation, condensed context
+
+### Step 2.5: Context Budget Estimation
+
+Estimate per-investigator input tokens before spawning:
+
+```
+Per investigator budget:
+  Agent template (hypothesis-investigator.md):  ~3,000 tokens (fixed)
+  Hypothesis text from STRATEGIES.md:           ~500 tokens
+  ARCHITECTURE.md:                              Read file, estimate ~3 tokens/line
+  Routed context files (1-3):                   Read files, estimate ~3 tokens/line
+  KB pattern files:                             ~500 tokens each
+  HANDOVER.md (if stacked):                     Read file, estimate ~3 tokens/line
+  ────────────────────────
+  Estimated total per investigator:             Sum of above
+```
+
+**Adaptive batch sizing:**
+- If avg estimate < 40K tokens: batch size = 8
+- If avg estimate 40-80K tokens: batch size = 5 (default)
+- If avg estimate > 80K tokens: batch size = 3
+
+**Tier 3 with Haiku:** Tier 3 investigators get condensed context only (CONDENSED SUMMARY, no full analysis), so their estimates are smaller. Use batch size 8 for Tier 3 batches.
+
+**Auto-split for large scopes:**
+If estimated total > 120K tokens for any single agent (e.g., a strategy that requires many context files and KB patterns):
+- Split that strategy's investigation across 2 agents
+- Agent A: Reads ARCHITECTURE.md + primary context files (first 1-2 from routing table)
+- Agent B: Reads remaining context files + all KB patterns
+- Both investigate the same hypothesis but from different vantage points
+- Both write to the same output file (A writes, B appends a `## Supplemental Analysis` section)
+
+Report estimate to user: `Estimated ~{N}K tokens per agent, using batch size {N}.`
+
+Group into batches using the adaptive batch size.
 
 ### Step 3: Locate Skill Files & Build Routing Table
 
@@ -92,10 +127,11 @@ transaction-findings → .bulwark/context/03-transaction-construction.md
 ### Step 4: Execute Batches
 
 **CRITICAL — Batching Rules:**
-- Max 5 investigators per response
+- Max {adaptive_batch_size} investigators per response (from Step 2.5 estimate)
 - Each batch = single response with multiple Task() calls
 - Wait for batch to complete, then spawn next
 - Do NOT use `run_in_background=true`
+- Only strategy text is inlined in prompts. All other content (ARCHITECTURE, context files, KB, HANDOVER) passed as file paths — agents read from disk via the Read tool
 
 **Tier 1+2 — full investigation (Sonnet):**
 ```
@@ -128,6 +164,11 @@ Task(
     OUTPUT FILE: .bulwark/findings/{strategy_id}.md
     {If STACKED_AUDIT: 'EVOLUTION: Classify your finding as NEW / RECURRENT / REGRESSION / RESOLVED relative to previous audit.'}
 
+    === CONTEXT BUDGET ===
+    If any context file is very large (>1000 lines), read the CONDENSED SUMMARY
+    section first. Read the FULL ANALYSIS only for code locations directly
+    referenced by this strategy's attack path.
+
     Investigate. Determine: CONFIRMED / POTENTIAL / NOT VULNERABLE / NEEDS MANUAL REVIEW
     Focus on off-chain code. Skip Anchor programs.
   "
@@ -154,11 +195,14 @@ Task(
     STRATEGY: {strategy entry}
     OUTPUT FILE: .bulwark/findings/{strategy_id}.md
     {If STACKED_AUDIT: 'EVOLUTION: NEW / RECURRENT / REGRESSION / RESOLVED'}
+
+    === CONTEXT BUDGET ===
+    Read CONDENSED SUMMARY only from context files. Do not read FULL ANALYSIS sections.
   "
 )
 ```
 
-**Tier 3 batch size is 8** (vs 5 for Tier 1+2) because lightweight investigations use condensed context and smaller models.
+**Tier 3 batch size is 8** because lightweight investigations use condensed context and smaller models.
 
 After each batch: update STATE.json and report progress.
 

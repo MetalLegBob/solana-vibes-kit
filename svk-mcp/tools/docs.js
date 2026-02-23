@@ -2,9 +2,24 @@
 // svk_get_decisions — retrieve architectural decisions from GL interview.
 
 import { readdir, readFile } from "node:fs/promises";
-import { join, basename } from "node:path";
+import { join } from "node:path";
 
 const DOCS_DIR = ".docs";
+const MAX_CONTENT_CHARS = 50_000;
+
+/**
+ * Truncate content with a warning if it exceeds the limit.
+ */
+function truncateIfNeeded(content, limit = MAX_CONTENT_CHARS) {
+  if (content.length <= limit) return content;
+  const truncated = content.slice(0, limit);
+  const lastNewline = truncated.lastIndexOf("\n");
+  const cutPoint = lastNewline > limit * 0.8 ? lastNewline : limit;
+  return (
+    truncated.slice(0, cutPoint) +
+    `\n\n--- TRUNCATED (${content.length.toLocaleString()} chars total, showing first ${cutPoint.toLocaleString()}). ---`
+  );
+}
 
 /**
  * List all available GL docs with one-line descriptions.
@@ -66,7 +81,11 @@ async function getDoc(projectDir, name) {
   }
 
   const content = await readFile(join(docsPath, match), "utf-8");
-  return { name: match.replace(".md", ""), path: `${DOCS_DIR}/${match}`, content };
+  return {
+    name: match.replace(".md", ""),
+    path: `${DOCS_DIR}/${match}`,
+    content: truncateIfNeeded(content),
+  };
 }
 
 export async function handleGetDoc(projectDir, params) {
@@ -97,7 +116,11 @@ export async function handleGetDecisions(projectDir, params) {
   const decisions = [];
   for (const file of mdFiles) {
     const content = await readFile(join(decisionsPath, file), "utf-8");
-    decisions.push({ name: file.replace(".md", ""), path: `${DOCS_DIR}/DECISIONS/${file}`, content });
+    decisions.push({
+      name: file.replace(".md", ""),
+      path: `${DOCS_DIR}/DECISIONS/${file}`,
+      content: truncateIfNeeded(content),
+    });
   }
 
   // Filter by topic if specified

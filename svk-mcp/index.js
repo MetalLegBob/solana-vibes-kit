@@ -17,7 +17,7 @@ const PROJECT_DIR = process.env.SVK_PROJECT_DIR || process.cwd();
 
 const server = new McpServer({
   name: "svk",
-  version: "1.3.0",
+  version: "1.4.0",
 });
 
 // --- Tool: svk_project_status ---
@@ -62,15 +62,20 @@ server.tool(
 // --- Tool: svk_get_audit ---
 server.tool(
   "svk_get_audit",
-  "Retrieve SOS audit findings, reports, architecture docs, or strategies. Use when you need security audit results or want to check for unresolved findings.",
+  "Retrieve SOS or DB audit findings, reports, architecture docs, or strategies. Use when you need security audit results or want to check for unresolved findings.",
   {
+    skill: z.enum(["sos", "db"]).optional().describe("Which audit skill: 'sos' (Stronghold of Security, default) or 'db' (Dinh's Bulwark)."),
     type: z.enum(["report", "findings", "architecture", "strategies"]).optional().describe("What to retrieve. Defaults to 'report'."),
+    section: z.string().optional().describe("Extract a specific report section by name (e.g., 'executive-summary', 'critical-findings', 'recommendations', 'combination-analysis'). Only applies to type='report'."),
     subsystem: z.string().optional().describe("Filter findings by subsystem (e.g., 'tax-program', 'staking')."),
     severity: z.string().optional().describe("Filter findings by severity (e.g., 'critical', 'high')."),
-    audit: z.string().optional().describe("'current' (default), 'previous', or a specific archive path."),
+    mode: z.enum(["full", "list"]).optional().describe("For findings: 'list' returns just titles and severities (lightweight), 'full' returns content (default)."),
+    offset: z.number().optional().describe("For findings: skip this many results (default 0). Use with limit for pagination."),
+    limit: z.number().optional().describe("For findings: max results to return (default 10, max 50). Use with offset for pagination."),
+    audit: z.string().optional().describe("'current' (default) or 'previous'."),
   },
-  async ({ type, subsystem, severity, audit }) => {
-    const result = await handleGetAudit(PROJECT_DIR, { type, subsystem, severity, audit });
+  async ({ skill, type, section, subsystem, severity, mode, offset, limit, audit }) => {
+    const result = await handleGetAudit(PROJECT_DIR, { skill, type, section, subsystem, severity, mode, offset, limit, audit });
     return {
       content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
     };

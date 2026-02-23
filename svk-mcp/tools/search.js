@@ -1,14 +1,17 @@
 // svk_search — full-text search across all SVK artifacts.
 
-import { readdir, readFile, stat } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { join, relative } from "node:path";
 
 const SCOPE_DIRS = {
   docs: [".docs"],
-  audit: [".audit", ".audit-history", ".bulwark", ".bulwark-history"],
+  audit: [".audit", ".audit-history", ".bulwark", ".bulwark-history", ".bok"],
   decisions: [".docs/DECISIONS"],
-  all: [".docs", ".audit", ".audit-history", ".bulwark", ".bulwark-history", ".svk"],
+  all: [".docs", ".audit", ".audit-history", ".bulwark", ".bulwark-history", ".bok", ".forge", ".svk"],
 };
+
+const MAX_RESULTS = 20;
+const MAX_EXCERPTS_PER_FILE = 3;
 
 /**
  * Recursively collect all .md and .json files from a directory.
@@ -35,25 +38,67 @@ async function collectFiles(dir, files = []) {
 }
 
 /**
- * Search files for a query string, returning matching excerpts.
+ * Tokenize a query string into search terms.
+ * Supports quoted phrases: "exact phrase" single terms
  */
-function searchContent(content, query, filePath, maxExcerpts = 3) {
-  const queryLower = query.toLowerCase();
-  const lines = content.split("\n");
-  const matches = [];
+function tokenizeQuery(query) {
+  const terms = [];
+  const regex = /"([^"]+)"|(\S+)/g;
+  let match;
+  while ((match = regex.exec(query)) !== null) {
+    terms.push((match[1] || match[2]).toLowerCase());
+  }
+  return terms;
+}
 
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].toLowerCase().includes(queryLower)) {
-      // Get context: 2 lines before and after
-      const start = Math.max(0, i - 2);
-      const end = Math.min(lines.length - 1, i + 2);
-      const excerpt = lines.slice(start, end + 1).join("\n");
-      matches.push({ line: i + 1, excerpt });
-      if (matches.length >= maxExcerpts) break;
-    }
+/**
+ * Search a file's content with tokenized multi-term matching.
+ * - File matches if ALL terms appear somewhere in its content (AND logic).
+ * - Excerpts are extracted for lines where ANY term appears.
+ * - Results are scored by how many distinct terms appear on matching lines.
+ */
+function searchFile(content, terms, maxExcerpts = MAX_EXCERPTS_PER_FILE) {
+  const contentLower = content.toLowerCase();
+
+  // File-level AND gate: every term must appear somewhere in the file
+  for (const term of terms) {
+    if (!contentLower.includes(term)) return null;
   }
 
-  return matches;
+  // Extract matching lines with context
+  const lines = content.split("\n");
+  const matches = [];
+  const usedLines = new Set(); // avoid overlapping excerpts
+
+  for (let i = 0; i < lines.length; i++) {
+    if (usedLines.has(i)) continue;
+    const lineLower = lines[i].toLowerCase();
+    const matchingTerms = terms.filter((t) => lineLower.includes(t));
+    if (matchingTerms.length === 0) continue;
+
+    // Get context: 2 lines before and after
+    const start = Math.max(0, i - 2);
+    const end = Math.min(lines.length - 1, i + 2);
+    const excerpt = lines.slice(start, end + 1).join("\n");
+
+    // Mark these lines as used to avoid overlap
+    for (let j = start; j <= end; j++) usedLines.add(j);
+
+    matches.push({
+      line: i + 1,
+      matched_terms: matchingTerms,
+      excerpt,
+    });
+    if (matches.length >= maxExcerpts) break;
+  }
+
+  // Score: count of distinct terms that matched across all excerpts
+  const allMatchedTerms = new Set(matches.flatMap((m) => m.matched_terms));
+
+  return {
+    score: allMatchedTerms.size,
+    matches,
+  };
 }
 
 export async function handleSearch(projectDir, params) {
@@ -66,6 +111,11 @@ export async function handleSearch(projectDir, params) {
   const dirs = SCOPE_DIRS[scope];
   if (!dirs) {
     return { text: `Unknown scope "${scope}". Valid: docs, audit, decisions, all.` };
+  }
+
+  const terms = tokenizeQuery(query);
+  if (terms.length === 0) {
+    return { text: "Search query is required." };
   }
 
   // Collect all files from scope directories
@@ -83,11 +133,12 @@ export async function handleSearch(projectDir, params) {
   for (const filePath of allFiles) {
     try {
       const content = await readFile(filePath, "utf-8");
-      const matches = searchContent(content, query, filePath);
-      if (matches.length > 0) {
+      const result = searchFile(content, terms);
+      if (result) {
         results.push({
           file: relative(projectDir, filePath),
-          matches,
+          score: result.score,
+          matches: result.matches,
         });
       }
     } catch {
@@ -99,10 +150,19 @@ export async function handleSearch(projectDir, params) {
     return { text: `No results for "${query}" in scope "${scope}".` };
   }
 
+  // Sort by score descending, then by file path
+  results.sort((a, b) => b.score - a.score || a.file.localeCompare(b.file));
+
+  // Cap results
+  const truncated = results.length > MAX_RESULTS;
+  const capped = results.slice(0, MAX_RESULTS);
+
   return {
     query,
+    terms,
     scope,
     total_files_matched: results.length,
-    results,
+    results: capped,
+    ...(truncated && { note: `Showing top ${MAX_RESULTS} of ${results.length} matches.` }),
   };
 }

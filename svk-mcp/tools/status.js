@@ -94,6 +94,12 @@ function getNextStep(skill, phase, status) {
     if (skill === "stronghold-of-security") {
       return `Resume: /SOS:${phase} (auto-resumes)`;
     }
+    if (skill === "dinhs-bulwark") {
+      return `Resume: /DB:${phase} (auto-resumes)`;
+    }
+    if (skill === "book-of-knowledge" || skill === "BOK") {
+      return `Resume: /BOK:${phase}`;
+    }
     return null;
   }
 
@@ -107,16 +113,10 @@ function getNextStep(skill, phase, status) {
       return next[phase] ? `Next: /clear then ${next[phase]}` : null;
     }
     if (skill === "dinhs-bulwark") {
-      if (status === "in_progress") {
-        return `Resume: /DB:${phase} (auto-resumes)`;
-      }
       const next = { scan: "/DB:analyze", analyze: "/DB:strategize", strategize: "/DB:investigate", investigate: "/DB:report", report: "/DB:verify" };
       return next[phase] ? `Next: /clear then ${next[phase]}` : null;
     }
     if (skill === "book-of-knowledge" || skill === "BOK") {
-      if (status === "in_progress") {
-        return `Resume: /BOK:${phase}`;
-      }
       const next = { scan: "/BOK:analyze", analyze: "/BOK:confirm", confirm: "/BOK:generate", generate: "/BOK:execute", execute: "/BOK:report" };
       return next[phase] ? `Next: /clear then ${next[phase]}` : "Verification complete";
     }
@@ -146,14 +146,18 @@ export async function handleProjectStatus(projectDir) {
   // Also provide a human-readable summary
   const lines = statuses.map((s) => {
     let line = `▸ ${s.skill} — ${s.phase} (${s.status})`;
-    if (s.progress) line += ` — ${s.progress}`;
+    if (s.progress) {
+      line += typeof s.progress === "string"
+        ? ` — ${s.progress}`
+        : ` — proven:${s.progress.proven} stress:${s.progress.stress_tested} failed:${s.progress.failed} inconclusive:${s.progress.inconclusive}`;
+    }
     line += ` — updated ${s.updated}`;
     if (s.next) line += `\n  ${s.next}`;
     return line;
   });
 
   if (historyCount > 0) {
-    lines.push(`\nHistory: ${historyCount} previous SOS audit(s) in .audit-history/`);
+    lines.push(`\nHistory: ${historyCount} previous audit(s) in .audit-history/ and .bulwark-history/`);
   }
 
   result.summary = lines.join("\n");

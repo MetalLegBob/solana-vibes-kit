@@ -3,6 +3,10 @@
 import { scanSkillStates, countAuditHistory } from "../lib/scanner.js";
 import { readFile, stat, readdir } from "node:fs/promises";
 import { join } from "node:path";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
+
+const execAsync = promisify(exec);
 
 /**
  * Check if a directory exists.
@@ -11,6 +15,18 @@ async function dirExists(path) {
   try {
     const s = await stat(path);
     return s.isDirectory();
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Check if a file exists.
+ */
+async function fileExists(path) {
+  try {
+    const s = await stat(path);
+    return s.isFile();
   } catch {
     return false;
   }
@@ -28,20 +44,36 @@ async function hasCode(projectDir) {
 }
 
 /**
- * Check if FINAL_REPORT has unresolved critical/high findings.
+ * Count findings by severity from the findings/ directory.
+ * More reliable than regex-counting words in the full report text.
  */
-async function getUnresolvedFindings(projectDir) {
-  const reportPath = join(projectDir, ".audit", "FINAL_REPORT.md");
+async function countFindingsBySeverity(auditDir) {
+  const findingsPath = join(auditDir, "findings");
+  let entries;
   try {
-    const content = await readFile(reportPath, "utf-8");
-    const criticalCount = (content.match(/CRITICAL/gi) || []).length;
-    const highCount = (content.match(/\bHIGH\b/gi) || []).length;
-    // Check if report mentions unresolved/open status
-    const hasUnresolved = /unresolved|open|pending|not\s+fixed/i.test(content);
-    return { criticalCount, highCount, hasUnresolved };
+    entries = await readdir(findingsPath);
   } catch {
     return null;
   }
+
+  const mdFiles = entries.filter((e) => e.endsWith(".md"));
+  if (mdFiles.length === 0) return null;
+
+  const counts = { critical: 0, high: 0, medium: 0, low: 0, informational: 0 };
+
+  for (const file of mdFiles) {
+    try {
+      const content = await readFile(join(findingsPath, file), "utf-8");
+      // Match severity from structured finding metadata (e.g., "Severity: CRITICAL" or "severity: high")
+      const sevMatch = content.match(/severity:\s*(critical|high|medium|low|informational)/i);
+      if (sevMatch) {
+        const sev = sevMatch[1].toLowerCase();
+        if (sev in counts) counts[sev]++;
+      }
+    } catch {}
+  }
+
+  return counts;
 }
 
 export async function handleSuggest(projectDir) {
@@ -93,12 +125,12 @@ export async function handleSuggest(projectDir) {
 
   // Rule: Audit has unresolved critical/high findings
   if (hasAudit) {
-    const findings = await getUnresolvedFindings(projectDir);
-    if (findings && findings.hasUnresolved && (findings.criticalCount > 0 || findings.highCount > 0)) {
+    const counts = await countFindingsBySeverity(join(projectDir, ".audit"));
+    if (counts && (counts.critical > 0 || counts.high > 0)) {
       suggestions.push({
-        suggestion: `${findings.criticalCount} CRITICAL + ${findings.highCount} HIGH findings may be unresolved — fix before launch`,
+        suggestion: `${counts.critical} CRITICAL + ${counts.high} HIGH findings — fix before launch`,
         priority: "critical",
-        reason: "The audit report contains unresolved critical or high severity findings.",
+        reason: "The audit contains critical or high severity findings that should be addressed.",
       });
     }
   }
@@ -109,11 +141,10 @@ export async function handleSuggest(projectDir) {
     const offChainIndicators = ["package.json", "requirements.txt", "Pipfile", "pyproject.toml"];
     let hasOffChain = false;
     for (const indicator of offChainIndicators) {
-      try {
-        await stat(indicator);
+      if (await fileExists(join(projectDir, indicator))) {
         hasOffChain = true;
         break;
-      } catch {}
+      }
     }
     if (hasOffChain) {
       suggestions.push({
@@ -135,20 +166,14 @@ export async function handleSuggest(projectDir) {
 
   // Rule: DB audit has unresolved findings
   if (hasBulwark) {
-    const bulwarkReport = join(projectDir, ".bulwark", "FINAL_REPORT.md");
-    try {
-      const content = await readFile(bulwarkReport, "utf-8");
-      const criticalCount = (content.match(/CRITICAL/gi) || []).length;
-      const highCount = (content.match(/\bHIGH\b/gi) || []).length;
-      const hasUnresolved = /unresolved|open|pending|not\s+fixed/i.test(content);
-      if (hasUnresolved && (criticalCount > 0 || highCount > 0)) {
-        suggestions.push({
-          suggestion: `DB audit: ${criticalCount} CRITICAL + ${highCount} HIGH findings may be unresolved`,
-          priority: "critical",
-          reason: "The Dinh's Bulwark audit report contains unresolved critical or high severity findings.",
-        });
-      }
-    } catch {}
+    const counts = await countFindingsBySeverity(join(projectDir, ".bulwark"));
+    if (counts && (counts.critical > 0 || counts.high > 0)) {
+      suggestions.push({
+        suggestion: `DB audit: ${counts.critical} CRITICAL + ${counts.high} HIGH findings`,
+        priority: "critical",
+        reason: "The Dinh's Bulwark audit contains critical or high severity findings.",
+      });
+    }
   }
 
   // Rule: Previous audit exists, code changed, no current audit
@@ -183,12 +208,11 @@ export async function handleSuggest(projectDir) {
     const programsDir = join(projectDir, "programs");
     if (await dirExists(programsDir)) {
       try {
-        const { execSync } = await import("node:child_process");
-        const mathHits = execSync(
+        const { stdout } = await execAsync(
           `grep -rl 'checked_mul\\|checked_add\\|as u64\\|as u128\\|fee\\|swap\\|reward\\|stake\\|liquidity\\|price' "${programsDir}" --include="*.rs" 2>/dev/null | wc -l`,
           { encoding: "utf-8", timeout: 5000 }
-        ).trim();
-        if (parseInt(mathHits, 10) > 3) {
+        );
+        if (parseInt(stdout.trim(), 10) > 3) {
           suggestions.push({
             suggestion: "Math-heavy code detected — consider /BOK:scan for formal verification",
             priority: "medium",

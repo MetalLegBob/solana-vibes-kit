@@ -29,13 +29,38 @@ Read `.bok/INDEX.md` — this is the math region index from the scan phase.
 
 ---
 
-## Step 1: Update State
+## Step 1: Re-check Kani Availability
+
+If STATE.json shows `kani_available: false`, re-check whether Kani has been installed since the scan phase:
+
+```bash
+command -v cargo-kani >/dev/null 2>&1 && echo "KANI_AVAILABLE" || echo "KANI_NOT_FOUND"
+```
+
+**If Kani is now available but STATE says `kani_available: false`:**
+- Update STATE.json: `kani_available: true`, `degraded_mode: false`
+- Inform the user:
+  ```
+  Kani detected! Updating from degraded mode → full verification mode.
+  All three verification tools are now available (Kani + LiteSVM + Proptest).
+  ```
+
+**If Kani is still not available:**
+- Offer to install: `cargo install --locked kani-verifier && cargo kani setup`
+- If user installs: verify with `cargo kani --version`, then update STATE.json: `kani_available: true`, `degraded_mode: false`
+- If user declines: continue in degraded mode (no change needed)
+
+**IMPORTANT:** Always re-check — the user may have installed Kani between phases. Stale `kani_available: false` causes the generate phase to skip all Kani harnesses.
+
+---
+
+## Step 2: Update State
 
 Set `phases.analyze.status` to `"in_progress"` in `.bok/STATE.json`.
 
 ---
 
-## Step 2: Load Pattern Index
+## Step 3: Load Pattern Index
 
 Read the skill's `resources/INDEX.md` to identify which pattern categories are relevant. For each category that has matching math regions in `.bok/INDEX.md`, note the category directory path.
 
@@ -43,7 +68,7 @@ Read the skill's `resources/INDEX.md` to identify which pattern categories are r
 
 ---
 
-## Step 3: Deploy Parallel Analysis Agents
+## Step 4: Deploy Parallel Analysis Agents
 
 For each cluster of math regions (grouped by category or by file proximity), spawn an Opus subagent:
 
@@ -78,7 +103,7 @@ Launch agents in parallel — one per category cluster. Use the `Task` tool with
 
 ---
 
-## Step 4: Collect Results
+## Step 5: Collect Results
 
 After all agents complete:
 
@@ -91,7 +116,7 @@ After all agents complete:
 
 ---
 
-## Step 5: Update State & Present Results
+## Step 6: Update State & Present Results
 
 Update `.bok/STATE.json`:
 - `phases.analyze.status`: `"complete"`

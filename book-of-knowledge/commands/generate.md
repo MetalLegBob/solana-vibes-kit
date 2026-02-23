@@ -29,13 +29,38 @@ Verify `.bok/confirmed-invariants/` directory exists and has files.
 
 ---
 
-## Step 1: Update State
+## Step 1: Re-check Kani Availability
+
+If STATE.json shows `kani_available: false`, re-check whether Kani has been installed since the previous phase:
+
+```bash
+command -v cargo-kani >/dev/null 2>&1 && echo "KANI_AVAILABLE" || echo "KANI_NOT_FOUND"
+```
+
+**If Kani is now available but STATE says `kani_available: false`:**
+- Update STATE.json: `kani_available: true`, `degraded_mode: false`
+- Inform the user:
+  ```
+  Kani detected! Updating from degraded mode → full verification mode.
+  Kani harnesses will be generated for all confirmed Kani invariants.
+  ```
+
+**If Kani is still not available:**
+- Offer to install: `cargo install --locked kani-verifier && cargo kani setup`
+- If user installs: verify with `cargo kani --version`, then update STATE.json: `kani_available: true`, `degraded_mode: false`
+- If user declines: continue in degraded mode — Kani harnesses will be skipped
+
+**IMPORTANT:** This is the last chance to enable Kani before harness generation. Always re-check — the user may have installed Kani between phases.
+
+---
+
+## Step 2: Update State
 
 Set `phases.generate.status` to `"in_progress"` in `.bok/STATE.json`.
 
 ---
 
-## Step 2: Create Worktree
+## Step 3: Create Worktree
 
 ```bash
 BRANCH_NAME="bok/verify-$(date +%s)"
@@ -54,7 +79,7 @@ Please commit or stash your changes, then re-run /BOK:generate.
 
 ---
 
-## Step 3: Dependency Setup
+## Step 4: Dependency Setup
 
 In the worktree, add verification dependencies to `Cargo.toml`:
 
@@ -77,7 +102,7 @@ mkdir -p .bok/worktree/tests/bok/proptest
 
 ---
 
-## Step 4: Generate Verification Code
+## Step 5: Generate Verification Code
 
 Read all confirmed invariant files from `.bok/confirmed-invariants/`.
 
@@ -115,7 +140,7 @@ Launch one agent per function. Use `run_in_background` for parallelism.
 
 ---
 
-## Step 5: Verify Generated Code
+## Step 6: Verify Generated Code
 
 After all agents complete:
 
@@ -129,7 +154,7 @@ After all agents complete:
 
 ---
 
-## Step 6: Update State & Present Summary
+## Step 7: Update State & Present Summary
 
 Update `.bok/STATE.json`:
 - `phases.generate.status`: `"complete"`

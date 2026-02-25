@@ -2,6 +2,21 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
+## v1.3.3 — 2026-02-25
+
+### Don't Break Shit (DBS) — New Skill
+
+Controlled change management for large-scope codebase modifications. Ensures sweeping changes don't break existing functionality.
+
+- **8-command pipeline:** brief → interview → analyze → map → discuss/plan/execute per phase
+- **Hybrid analysis:** Sonnet blanket sweep + Opus cross-file synthesis for complete impact mapping
+- **Deep interview engine:** Maps primary changes, 1st/2nd/3rd order effects, constraints, and testing criteria
+- **Multi-phase execution:** GSD-wrapped discuss → plan → execute cycle with testing gates
+- **SVK awareness:** Reads GL, SOS, DB, BOK artifacts when present for richer context
+- **State management:** `.dbs/` artifact directory with full pipeline + per-phase tracking
+
+---
+
 ## v1.3.2 — 2026-02-20
 
 ### Context Budget Protections (all skills)

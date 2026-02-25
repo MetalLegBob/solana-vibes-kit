@@ -2,7 +2,7 @@
 
 All notable changes to the Security Vulnerability Kit are documented here.
 
-## v1.3.3 — 2026-02-25
+## v1.4.0 — 2026-02-25
 
 ### Don't Break Shit (DBS) — New Skill
 

@@ -1,6 +1,6 @@
 ---
 name: DB
-version: "1.3.2"
+version: "1.4.0"
 description: >
   Dinh's Bulwark: Adversarial security and correctness audit for off-chain Solana code —
   backends, APIs, bots, frontends, infrastructure. Everything SOS doesn't cover.

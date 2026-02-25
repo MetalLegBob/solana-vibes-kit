@@ -1,6 +1,6 @@
 ---
 name: DBS
-version: "1.3.3"
+version: "1.4.0"
 description: >
   Don't Break Shit: Controlled change management for large-scope modifications.
   Use when: sweeping codebase changes needed, refactoring across many files,

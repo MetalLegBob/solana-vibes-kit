@@ -1,6 +1,6 @@
 ---
 name: GL
-version: "1.3.2"
+version: "1.4.0"
 description: >
   Grand Library: Full-stack documentation skill that transforms project ideas into
   comprehensive specification suites. Guides greenfield projects from idea to spec,

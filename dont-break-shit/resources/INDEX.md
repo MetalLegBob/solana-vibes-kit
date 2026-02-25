@@ -1,7 +1,7 @@
 ---
 skill: dbs
 type: resource-index
-version: "1.3.3"
+version: "1.4.0"
 ---
 
 # DBS Resources
@@ -26,7 +26,7 @@ version: "1.3.3"
 ```json
 {
   "skill": "dbs",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "updated": "ISO-8601 timestamp",
   "project": {
     "brief": "Short description of the intended changes",

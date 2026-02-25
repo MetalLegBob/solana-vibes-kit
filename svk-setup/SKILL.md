@@ -1,6 +1,6 @@
 ---
 name: SVK-setup
-version: "1.3.1"
+version: "1.4.0"
 description: >
   SVK Setup: Guided onboarding skill that interviews users about their experience
   and project scope, recommends tools from a tiered catalog (MCPs, plugins, skills),

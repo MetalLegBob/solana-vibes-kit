@@ -55,7 +55,7 @@ Write `.dbs/STATE.json` with this exact schema:
 ```json
 {
   "skill": "dbs",
-  "version": "1.3.3",
+  "version": "1.4.0",
   "updated": "<ISO-8601 timestamp>",
   "project": {
     "brief": "<condensed 1-2 sentence brief>",

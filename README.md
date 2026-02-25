@@ -65,6 +65,18 @@ Math verification and economic invariant proving for Solana/Anchor programs. Use
 - Educational approach: every invariant comes with plain-English explanation and exploit scenario
 - Cross-skill integration: reads GL specs and SOS findings, SOS reads BOK reports
 
+### [Don't Break Shit](dont-break-shit/)
+
+Controlled change management for large-scope codebase modifications. Ensures sweeping changes don't break existing functionality by mapping every change, its cascading effects, and surfacing every micro-decision before implementation.
+
+**Features:**
+- 8-command pipeline: brief → interview → analyze → map → (discuss → plan → execute) per phase
+- Hybrid Sonnet sweep + Opus synthesis for full-codebase impact analysis
+- Deep interview capturing 1st/2nd/3rd order effects with explicit decision points
+- Multi-phase execution plans with testing gates between phases
+- GSD integration for tactical execution (soft dependency — analysis phases work standalone)
+- SVK awareness — reads GL docs, SOS/DB findings, BOK reports when present
+
 ### [SVK Update](svk-update/)
 
 Check for and install SVK updates. Compares your installed version against the latest release and selectively reinstalls only the skills that changed.
@@ -112,6 +124,9 @@ cd dinhs-bulwark && ./install.sh /path/to/your-project
 
 # Install Book of Knowledge
 cd book-of-knowledge && ./install.sh /path/to/your-project
+
+# Install Don't Break Shit
+cd dont-break-shit && ./install.sh /path/to/your-project
 
 # Install SVK Update
 cd svk-update && ./install.sh /path/to/your-project

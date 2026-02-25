@@ -79,6 +79,32 @@ function formatSkillStatus(skillState) {
     }
   }
 
+  if (skill === "dbs") {
+    info.brief = state.project?.brief || "unnamed";
+    // Check pipeline phases first
+    const pipelinePhases = ["brief", "interview", "analyze", "map"];
+    for (const p of pipelinePhases) {
+      const pStatus = state.pipeline?.[p]?.status;
+      if (pStatus === "in_progress") {
+        info.phase = p;
+        info.status = "in_progress";
+        break;
+      }
+      if (pStatus === "complete") {
+        info.phase = p;
+        info.status = "complete";
+      }
+    }
+    // If pipeline complete, check execution phases
+    if (info.phase === "map" && info.status === "complete" && state.project?.total_phases) {
+      info.total_exec_phases = state.project.total_phases;
+      info.current_exec_phase = state.project.current_phase;
+    }
+    if (info.phase === "analyze" && info.status === "in_progress") {
+      info.progress = `${state.pipeline?.analyze?.batches_completed || 0}/${state.pipeline?.analyze?.batches_total || 0} batches`;
+    }
+  }
+
   return info;
 }
 
@@ -100,6 +126,9 @@ function getNextStep(skill, phase, status) {
     if (skill === "book-of-knowledge" || skill === "BOK") {
       return `Resume: /BOK:${phase}`;
     }
+    if (skill === "dbs") {
+      return `Resume: /DBS:${phase}`;
+    }
     return null;
   }
 
@@ -119,6 +148,10 @@ function getNextStep(skill, phase, status) {
     if (skill === "book-of-knowledge" || skill === "BOK") {
       const next = { scan: "/BOK:analyze", analyze: "/BOK:confirm", confirm: "/BOK:generate", generate: "/BOK:execute", execute: "/BOK:report" };
       return next[phase] ? `Next: /clear then ${next[phase]}` : "Verification complete";
+    }
+    if (skill === "dbs") {
+      const next = { brief: "/DBS:interview", interview: "/DBS:analyze", analyze: "/DBS:map", map: "/DBS:discuss" };
+      return next[phase] ? `Next: /clear then ${next[phase]}` : null;
     }
   }
   return null;

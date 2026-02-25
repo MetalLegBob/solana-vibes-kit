@@ -7,7 +7,7 @@ const SCOPE_DIRS = {
   docs: [".docs"],
   audit: [".audit", ".audit-history", ".bulwark", ".bulwark-history", ".bok"],
   decisions: [".docs/DECISIONS"],
-  all: [".docs", ".audit", ".audit-history", ".bulwark", ".bulwark-history", ".bok", ".forge", ".svk"],
+  all: [".docs", ".audit", ".audit-history", ".bulwark", ".bulwark-history", ".bok", ".svk"],
 };
 
 const MAX_RESULTS = 20;

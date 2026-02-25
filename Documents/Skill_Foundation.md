@@ -576,7 +576,6 @@ This pattern is the communication protocol between all agents in any multi-phase
 | **SVK-setup (onboarding)** | ○ Not needed | ○ Not needed | ○ Not needed | ✅ Required | ○ Not needed |
 | **SVK-update (updater)** | ○ Not needed | ○ Not needed | ○ Not needed | ✅ Required | ○ Not needed |
 | **DBS (change management)** | ✅ Core | ✅ Core | ○ Not needed | ✅ Required | ✅ Core |
-| **Forge (skill builder)** | ○ Not needed | ○ Not needed | ○ Not needed | ✅ Required | ○ Not needed |
 | **CPI Mapper** | ✅ Core | ✅ Core | ○ Optional | ✅ Required | ✅ Core |
 | **Token Launchpad** | ✅ Core | ○ Optional | ○ Not needed | ✅ Required | ✅ Core |
 | **Economics Simulator** | ○ Optional | ○ Optional | ✅ Core | ✅ Required | ○ Optional |

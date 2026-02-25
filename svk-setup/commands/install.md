@@ -293,7 +293,7 @@ SVK includes core skills that provide security auditing, documentation generatio
 | Book of Knowledge | BOK | Math verification & invariant proving |
 | SVK Update | SVK | Version management |
 
-> **Note:** svk-setup is already installed (it's what's running). Forge is optional and only for SVK skill developers (it's in the tool catalog if the user wants it).
+> **Note:** svk-setup is already installed (it's what's running).
 
 ### Procedure:
 

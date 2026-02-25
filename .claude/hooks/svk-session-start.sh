@@ -216,6 +216,63 @@ for state_file in .*/STATE.json; do
       [ -n "$NEXT" ] && STATUS_LINES+=("$NEXT")
       ;;
 
+    dbs)
+      BRIEF=$(jq -r '.project.brief // "unnamed"' "$state_file" 2>/dev/null)
+      # Truncate brief to 60 chars
+      [ ${#BRIEF} -gt 60 ] && BRIEF="${BRIEF:0:57}..."
+
+      # Find current pipeline phase
+      CURRENT_PHASE=""
+      CURRENT_STATUS=""
+      for phase in brief interview analyze map; do
+        PHASE_STATUS=$(jq -r ".pipeline.${phase}.status // \"pending\"" "$state_file" 2>/dev/null)
+        if [ "$PHASE_STATUS" = "in_progress" ]; then
+          CURRENT_PHASE="$phase"
+          CURRENT_STATUS="in_progress"
+          break
+        elif [ "$PHASE_STATUS" = "complete" ]; then
+          CURRENT_PHASE="$phase"
+          CURRENT_STATUS="complete"
+        fi
+      done
+
+      # If pipeline complete, check execution phases
+      if [ "$CURRENT_PHASE" = "map" ] && [ "$CURRENT_STATUS" = "complete" ]; then
+        TOTAL_PHASES=$(jq -r '.project.total_phases // 0' "$state_file" 2>/dev/null)
+        CURRENT_EXEC=$(jq -r '.project.current_phase // 0' "$state_file" 2>/dev/null)
+        CURRENT_PHASE="execute ${CURRENT_EXEC}/${TOTAL_PHASES}"
+        # Check if current exec phase is in progress
+        EXEC_STATUS=$(jq -r ".phases.\"${CURRENT_EXEC}\".execute // \"pending\"" "$state_file" 2>/dev/null)
+        CURRENT_STATUS="$EXEC_STATUS"
+      fi
+
+      # Build progress detail
+      DETAIL=""
+      if [ "$CURRENT_PHASE" = "analyze" ] && [ "$CURRENT_STATUS" = "in_progress" ]; then
+        BATCHES_DONE=$(jq -r '.pipeline.analyze.batches_completed // 0' "$state_file" 2>/dev/null)
+        BATCHES_TOTAL=$(jq -r '.pipeline.analyze.batches_total // 0' "$state_file" 2>/dev/null)
+        [ "$BATCHES_TOTAL" != "0" ] && [ "$BATCHES_TOTAL" != "null" ] && DETAIL=" — ${BATCHES_DONE}/${BATCHES_TOTAL} batches"
+      fi
+
+      # Determine next step
+      NEXT=""
+      if [ "$CURRENT_STATUS" = "in_progress" ]; then
+        NEXT="  Next: /DBS:${CURRENT_PHASE%% *} (resume)"
+      elif [ "$CURRENT_STATUS" = "complete" ]; then
+        case "$CURRENT_PHASE" in
+          brief)     NEXT="  Next: /clear then /DBS:interview" ;;
+          interview) NEXT="  Next: /clear then /DBS:analyze" ;;
+          analyze)   NEXT="  Next: /clear then /DBS:map" ;;
+          map)       NEXT="  Next: /clear then /DBS:discuss" ;;
+          execute*)  NEXT="  Next: /DBS:discuss (next phase)" ;;
+        esac
+      fi
+
+      LINE="▸ DBS \"${BRIEF}\" — ${CURRENT_PHASE} (${CURRENT_STATUS})${DETAIL} — updated ${UPDATED_SHORT}"
+      STATUS_LINES+=("$LINE")
+      [ -n "$NEXT" ] && STATUS_LINES+=("$NEXT")
+      ;;
+
     *)
       # Generic handler for future skills: show skill name, updated, and phases overview
       CURRENT_PHASE=$(jq -r '

@@ -252,6 +252,29 @@ export async function handleSuggest(projectDir) {
     } catch {}
   }
 
+  // Rule: .dbs state exists — check progress and staleness
+  const hasDbs = await dirExists(join(projectDir, ".dbs"));
+  if (hasDbs) {
+    try {
+      const dbsState = JSON.parse(await readFile(join(projectDir, ".dbs", "STATE.json"), "utf-8"));
+      const lastUpdated = new Date(dbsState.updated || 0);
+      const daysSinceUpdate = (Date.now() - lastUpdated.getTime()) / (1000 * 60 * 60 * 24);
+      if (daysSinceUpdate > 3) {
+        suggestions.push({
+          suggestion: "DBS session stale — resume with /DBS:status or delete .dbs/ to start fresh",
+          priority: "medium",
+          reason: `DBS change management session was last updated ${Math.floor(daysSinceUpdate)} days ago.`,
+        });
+      } else {
+        suggestions.push({
+          suggestion: "DBS session in progress — run /DBS:status for next steps",
+          priority: "medium",
+          reason: "An active DBS change management session exists.",
+        });
+      }
+    } catch {}
+  }
+
   // Rule: .forge state exists but no recent activity — remind to continue
   const hasForge = await dirExists(join(projectDir, ".forge"));
   if (hasForge) {

@@ -15,6 +15,10 @@ allowed-tools:
 
 Compile all verification results into a final report with fix suggestions, then offer to merge generated tests back to the user's branch.
 
+## CRITICAL — Artifact Output Path
+
+All BOK artifacts MUST be read from and written to **`.bok/` at the project root** — the same directory that contains `Cargo.toml` or `Anchor.toml`. **Never** create BOK artifacts under `.claude/`.
+
 ## Prerequisites
 
 ```bash
@@ -42,6 +46,8 @@ Task(
   prompt="
     You are a BOK report synthesizer. Read the agent definition from:
     {skill_path}/agents/report-synthesizer.md
+
+    IMPORTANT: .bok/ is at the PROJECT ROOT (next to Cargo.toml), NOT under .claude/.
 
     Read all verification results from .bok/results/
     Read the report template from {skill_path}/templates/REPORT.md

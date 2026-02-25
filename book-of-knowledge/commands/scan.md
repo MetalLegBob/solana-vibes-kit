@@ -15,6 +15,16 @@ allowed-tools:
 You are starting a math verification pipeline using Book of Knowledge.
 This phase indexes the codebase, identifies math-heavy regions, and checks for Kani installation.
 
+## CRITICAL — Artifact Output Path
+
+All BOK artifacts MUST be written to **`.bok/` at the project root** — the same directory that contains `Cargo.toml` or `Anchor.toml`. **Never** create BOK artifacts under `.claude/`.
+
+```
+<project-root>/.bok/STATE.json   ← CORRECT
+<project-root>/.bok/INDEX.md     ← CORRECT
+<project-root>/.claude/bok/...   ← WRONG — never do this
+```
+
 ## What This Phase Does
 
 1. **Prerequisite Check** — Detect Kani installation, offer install or degraded mode
@@ -27,11 +37,13 @@ This phase indexes the codebase, identifies math-heavy regions, and checks for K
 
 ## Step 1: Initialize State
 
+Create the `.bok/` directory at the project root (NOT under `.claude/`):
+
 ```bash
 mkdir -p .bok
 ```
 
-Write `.bok/STATE.json`:
+Write `.bok/STATE.json` (at the project root, i.e., `<project-root>/.bok/STATE.json`):
 ```json
 {
   "skill": "BOK",

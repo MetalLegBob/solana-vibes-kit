@@ -1,6 +1,6 @@
 ---
 name: BOK
-version: "1.4.0"
+version: "1.4.1"
 description: >
   Book of Knowledge: Math verification and economic invariant proving for Solana/Anchor programs.
   Uses Kani (formal proof), LiteSVM (runtime tests), and Proptest (property-based testing).
@@ -39,6 +39,29 @@ allowed-tools:
 Math verification and economic invariant proving for Solana/Anchor programs.
 
 > *"Knowledge is the greatest weapon."*
+
+---
+
+## Artifact Convention
+
+All BOK artifacts are stored in **`.bok/` at the project root** — the same directory that contains `Cargo.toml` or `Anchor.toml`. This is NOT under `.claude/`.
+
+```
+<project-root>/
+├── .bok/                  ← BOK artifacts go here
+│   ├── STATE.json
+│   ├── INDEX.md
+│   ├── invariants/
+│   ├── confirmed-invariants/
+│   ├── worktree/
+│   ├── results/
+│   └── reports/
+├── .claude/               ← Skill code lives here (NOT for artifacts)
+├── Cargo.toml
+└── programs/
+```
+
+**IMPORTANT:** Never create BOK artifacts under `.claude/`. The `.claude/` directory contains skill definitions and commands — it is not an artifact output location.
 
 ---
 

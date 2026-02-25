@@ -752,14 +752,17 @@ Every SVK skill that produces persistent output must follow this convention to e
 
 ### Output Directory
 
-Each skill writes to a dot-directory named after the skill's shortname:
+Each skill writes to a dot-directory **at the project root** (the same directory that contains `Cargo.toml`, `Anchor.toml`, or the project's main config file). Artifact directories are **never** created under `.claude/` — that directory is reserved for skill definitions and commands.
 
 | Skill | Output Directory |
 |-------|-----------------|
 | SOS | `.audit/` |
 | GL | `.docs/` |
+| BOK | `.bok/` |
 | SVK-setup | `.svk/` |
 | Future skills | `.<shortname>/` |
+
+**IMPORTANT:** `.claude/` contains skill code. `.<shortname>/` contains skill output. These must never be confused.
 
 ### STATE.json Requirements
 

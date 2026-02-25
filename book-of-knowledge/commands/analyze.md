@@ -15,6 +15,10 @@ allowed-tools:
 
 Match identified math regions against the verification pattern knowledge base and propose invariants with plain-language explanations.
 
+## CRITICAL — Artifact Output Path
+
+All BOK artifacts MUST be read from and written to **`.bok/` at the project root** — the same directory that contains `Cargo.toml` or `Anchor.toml`. **Never** create BOK artifacts under `.claude/`.
+
 ## Prerequisites
 
 ```bash
@@ -89,6 +93,7 @@ Task(
 
     For each math region, propose invariants following the format in the agent definition.
     Output to: .bok/invariants/{region_name}.md
+    (IMPORTANT: .bok/ is at the PROJECT ROOT, next to Cargo.toml — NOT under .claude/)
 
     IMPORTANT: Every invariant must include:
     1. Plain-English description of what it checks

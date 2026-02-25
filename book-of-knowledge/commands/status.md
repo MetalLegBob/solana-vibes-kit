@@ -11,6 +11,10 @@ allowed-tools:
 
 Check the current state of a BOK verification run and get guidance on what to do next.
 
+## CRITICAL — Artifact Path
+
+All BOK artifacts live in **`.bok/` at the project root** — the same directory that contains `Cargo.toml` or `Anchor.toml`. **Never** look for or create BOK artifacts under `.claude/`.
+
 ## Step 1: Check for BOK State
 
 ```bash

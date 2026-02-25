@@ -17,6 +17,10 @@ Create an isolated git worktree and generate verification code for all confirmed
 
 **Key principle:** Your working tree is never touched. All generated code lives in an isolated worktree branch. You choose what to keep after execution.
 
+## CRITICAL — Artifact Output Path
+
+All BOK artifacts MUST be read from and written to **`.bok/` at the project root** — the same directory that contains `Cargo.toml` or `Anchor.toml`. **Never** create BOK artifacts under `.claude/`.
+
 ## Prerequisites
 
 ```bash
@@ -115,6 +119,8 @@ Task(
   prompt="
     You are a BOK harness generator. Read the agent definition from:
     {skill_path}/agents/harness-generator.md
+
+    IMPORTANT: .bok/ is at the PROJECT ROOT (next to Cargo.toml), NOT under .claude/.
 
     Your assignment:
     - Function: {function_name} in {file_path}

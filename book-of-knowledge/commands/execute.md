@@ -14,6 +14,10 @@ allowed-tools:
 
 Run all verification tools in the isolated worktree and collect structured results.
 
+## CRITICAL — Artifact Output Path
+
+All BOK artifacts MUST be read from and written to **`.bok/` at the project root** — the same directory that contains `Cargo.toml` or `Anchor.toml`. **Never** create BOK artifacts under `.claude/`.
+
 ## Prerequisites
 
 ```bash

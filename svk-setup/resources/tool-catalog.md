@@ -2,7 +2,7 @@
 skill: svk-setup
 type: tool-catalog
 version: "1.3.0"
-total_tools: 28
+total_tools: 29
 ---
 
 # SVK Tool Catalog
@@ -63,6 +63,20 @@ Each tool entry uses these fields:
 - **verify_command:** Check that superpowers skills appear in `/help`
 - **docs_url:** https://github.com/obra/superpowers
 - **repo_url:** https://github.com/obra/superpowers
+
+### DBS (Don't Break Shit)
+- **id:** dbs
+- **tier:** recommended
+- **description:** Controlled change management for large-scope modifications. Maps every change and its cascading effects before implementation.
+- **cost:** Free
+- **install_method:** skill
+- **install_command:** `cd dont-break-shit && ./install.sh /path/to/project`
+- **requires_api_key:** false
+- **verify_command:** Check that `.claude/commands/DBS/` exists after install
+- **when_recommended:** Projects with existing codebase needing large refactors or architectural changes
+- **alternatives:** GSD (for greenfield execution — DBS wraps GSD for the execution phases)
+- **docs_url:** See `dont-break-shit/README.md`
+- **repo_url:** Part of SVK
 
 ### GSD + Superpowers Distinction
 > "GSD runs your project — it handles planning, execution, and milestones. Superpowers improves how you code — brainstorming, debugging, testing, code review. They complement each other."

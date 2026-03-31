@@ -1,16 +1,10 @@
 ---
-name: BOK
-version: "1.4.0"
-description: >
-  Book of Knowledge: Math verification and economic invariant proving for Solana/Anchor programs.
-  Uses Kani (formal proof), LiteSVM (runtime tests), and Proptest (property-based testing).
-  Run /BOK for a getting-started guide, or /BOK:scan to begin.
-user-invocable: true
-allowed-tools:
-  - Read
-  - Bash
-  - Glob
-  - Grep
+name: bok
+description: "Book of Knowledge: Math verification and economic invariant proving for Solana/Anchor programs. Uses Kani (formal proof), LiteSVM (runtime tests), and Proptest (property-based testing). Use when verifying arithmetic correctness, proving economic invariants, or formally testing DeFi math in Solana/Anchor programs. Run /bok for a getting-started guide, or /bok:scan to begin."
+allowed-tools: "Read, Bash, Glob, Grep"
+metadata:
+  version: "1.4.0"
+  user-invocable: "true"
 ---
 
 <!-- SVK Version Check — runs once per session on first skill invocation -->
@@ -65,10 +59,6 @@ All BOK artifacts are stored in **`.bok/` at the project root** — the same dir
 
 ---
 
-## What BOK Does
-
-BOK systematically verifies that your program's arithmetic is correct and economic properties hold. It uses three verification tools in layers: Kani for formal proofs (checks ALL possible inputs), LiteSVM for runtime tests against the actual SVM, and Proptest for rapid property-based stress testing with thousands of random inputs. Every invariant comes with a plain-English explanation and concrete exploit scenario so you learn something from every run.
-
 ## When to Use
 
 - **Pre-deployment math review** — Verify arithmetic before shipping
@@ -112,11 +102,4 @@ All generated verification code lives in an isolated git worktree — your worki
 
 ## Getting Started
 
-```
-/BOK:scan       — Start here. Indexes your code and checks prerequisites.
-/BOK:analyze    — Proposes invariants with explanations.
-/BOK:confirm    — You review and approve before any code is generated.
-/BOK:generate   — Creates verification code in an isolated worktree.
-/BOK:execute    — Runs Kani, LiteSVM, and Proptest.
-/BOK:report     — Compiles results, suggests fixes, offers test merge.
-```
+Run `/bok:scan` to index your codebase and check prerequisites, then follow the pipeline phases in order. Each phase tells you what to run next.

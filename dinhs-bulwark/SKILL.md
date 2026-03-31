@@ -1,16 +1,10 @@
 ---
-name: DB
-version: "1.4.0"
-description: >
-  Dinh's Bulwark: Adversarial security and correctness audit for off-chain Solana code —
-  backends, APIs, bots, frontends, infrastructure. Everything SOS doesn't cover.
-  Run /DB for a getting-started guide, or /DB:scan to begin.
-user-invocable: true
-allowed-tools:
-  - Read
-  - Bash
-  - Glob
-  - Grep
+name: db
+description: "Dinh's Bulwark: Adversarial security and correctness audit for off-chain Solana code — backends, APIs, bots, frontends, infrastructure. Use when auditing off-chain components like backends, trading bots, keepers, frontends, or API layers that interact with Solana programs. Run /db for a getting-started guide, or /db:scan to begin."
+allowed-tools: "Read, Bash, Glob, Grep"
+metadata:
+  version: "1.4.0"
+  user-invocable: "true"
 ---
 
 <!-- SVK Version Check — runs once per session on first skill invocation -->

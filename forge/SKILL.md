@@ -1,21 +1,10 @@
 ---
-name: Forge
-version: "1.4.0"
-description: >
-  Forge: SVK Skill Builder. A 5-phase pipeline for building SVK skills
-  with automated convention enforcement and shipping checklist validation.
-  Run /Forge:brainstorm to start designing a new skill.
-user-invocable: true
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Bash
-  - Glob
-  - Grep
-  - AskUserQuestion
-  - Skill
-  - Task
+name: forge
+description: "Forge: SVK Skill Builder. A 5-phase pipeline for building new SVK skills with automated convention enforcement and a 21-item shipping checklist. Use when creating new skills for the Solana Vibes Kit ecosystem, scaffolding skill structure, or validating skill conventions. Run /forge:brainstorm to start designing a new skill."
+allowed-tools: "Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, Skill, Task"
+metadata:
+  version: "1.4.0"
+  user-invocable: "true"
 ---
 
 <!-- SVK Version Check — runs once per session on first skill invocation -->

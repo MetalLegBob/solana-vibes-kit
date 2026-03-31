@@ -1,17 +1,10 @@
 ---
-name: GL
-version: "1.4.0"
-description: >
-  Grand Library: Full-stack documentation skill that transforms project ideas into
-  comprehensive specification suites. Guides greenfield projects from idea to spec,
-  or analyzes existing codebases to fill documentation gaps.
-  Run /GL for a getting-started guide, or /GL:survey to begin.
-user-invocable: true
-allowed-tools:
-  - Read
-  - Bash
-  - Glob
-  - Grep
+name: gl
+description: "Grand Library: Full-stack documentation skill that generates technical specs, architecture decision records, data models, API specifications, and system design docs. Use when writing docs for a greenfield project, filling documentation gaps in an existing codebase, creating a project plan or technical spec, or producing architecture and design documents for Solana projects. Run /gl for a getting-started guide, or /gl:survey to begin."
+allowed-tools: "Read, Bash, Glob, Grep"
+metadata:
+  version: "1.4.0"
+  user-invocable: "true"
 ---
 
 <!-- SVK Version Check — runs once per session on first skill invocation -->
@@ -111,17 +104,6 @@ Run `/clear` between each phase for fresh context windows.
 7. **`/GL:reconcile`** — Cross-check everything, resolve conflicts
 
 Check progress anytime with **`/GL:status`**.
-
----
-
-## Foundation Patterns
-
-| Pattern | How Grand Library Uses It |
-|---------|--------------------------|
-| Thin Orchestrator | `/GL:draft` orchestrator spawns doc-writing subagents |
-| Signal-Based Indexing | Existing code scanning in survey, domain pack loading |
-| Progressive Disclosure | Skill structure, domain pack INDEX.md → on-demand knowledge |
-| Structured Handoff | DECISIONS/*.md, PROJECT_BRIEF.md, doc frontmatter |
 
 ---
 

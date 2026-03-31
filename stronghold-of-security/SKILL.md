@@ -1,15 +1,10 @@
 ---
-name: SOS
-version: "1.4.0"
-description: >
-  Stronghold of Security: Comprehensive adversarial security audit for Solana/Anchor smart contracts.
-  Run /SOS for a getting-started guide, or /SOS:scan to begin an audit.
-user-invocable: true
-allowed-tools:
-  - Read
-  - Bash
-  - Glob
-  - Grep
+name: sos
+description: "Stronghold of Security: Comprehensive adversarial security audit for Solana/Anchor smart contracts. Uses parallel multi-agent analysis with a 128-pattern exploit knowledge base built from 200+ real-world incidents. Use when auditing on-chain Solana/Anchor programs for vulnerabilities, preparing for security review, or investigating smart contract exploits. Run /sos for a getting-started guide, or /sos:scan to begin an audit."
+allowed-tools: "Read, Bash, Glob, Grep"
+metadata:
+  version: "1.4.0"
+  user-invocable: "true"
 ---
 
 <!-- SVK Version Check — runs once per session on first skill invocation -->
